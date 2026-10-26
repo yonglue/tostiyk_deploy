@@ -96,6 +96,7 @@ def update_client(
     db_client.address = client_data.address
     db_client.rif_or_cedula = client_data.rif_or_cedula
     db_client.notes = client_data.notes
+    db_client.credit_limit = client_data.credit_limit  # 🌟 补上信用额度更新
     
     # 注意：debt（欠款）不能直接让前端随意修改，所以这里不要更新 debt 字段
 
