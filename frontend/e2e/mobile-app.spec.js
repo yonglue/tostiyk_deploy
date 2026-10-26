@@ -29,7 +29,7 @@ test.describe('移动端主流程 (iPhone 14 Pro 模拟)', () => {
     await expect(page.getByText(/全部|Todos|All/).first()).toBeVisible()
 
     await page.locator('nav button').filter({ hasText: /客户|Clientes|Clients/ }).click()
-    await expect(page.getByText(/客户总应收欠款|应收欠款|Cuentas por cobrar|Receivables/i)).toBeVisible()
+    await expect(page.getByText(/客户总应收欠款|应收欠款|Total por cobrar|Total Receivables/i)).toBeVisible()
 
     await page.locator('nav button').filter({ hasText: /我的|Mi Perfil|Me/ }).click()
     

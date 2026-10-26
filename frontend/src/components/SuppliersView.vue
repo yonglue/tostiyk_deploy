@@ -292,6 +292,9 @@
 </template>
 
 <script setup>
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
 import { usePermissions } from '../composables/usePermissions'
 import { ref, computed, onMounted, watch } from 'vue'
 import { Search, Plus } from 'lucide-vue-next'

@@ -129,6 +129,14 @@
 </template>
 
 <script setup>
+import { useI18n } from '../composables/useI18n'
+
+const { currentLang } = useI18n()
+
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
+
 import { ref, computed, onMounted } from 'vue'
 import { Search, ArrowLeft, Package, ScanLine, PackagePlus } from 'lucide-vue-next'
 import { apiFetch, apiUrl } from '../utils/api'

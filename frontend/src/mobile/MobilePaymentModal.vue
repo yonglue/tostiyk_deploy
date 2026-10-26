@@ -59,6 +59,14 @@
 </template>
 
 <script setup>
+import { useI18n } from '../composables/useI18n'
+
+const { currentLang } = useI18n()
+
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
+
 import { ref, computed, watch, nextTick } from 'vue'
 
 const props = defineProps({

@@ -50,7 +50,7 @@ export function useClientActions() {
       if (res.ok) {
         clientDialogVisible.value = false
         // 重置表单时包含 store_name
-        newClient.value = { name: '', store_name: '', phone: '', address: '', rif_or_cedula: '', client_type: 'Regular', notes: '' }
+        newClient.value = { name: '', store_name: '', phone: '', address: '', rif_or_cedula: '', client_type: 'Regular', notes: '', credit_limit: 500 }
         fetchClients()
         showSuccessModal('✨ ' + getToastMsg('toastClientAdded'))
       } else {

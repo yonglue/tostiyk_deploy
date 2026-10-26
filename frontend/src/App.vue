@@ -407,6 +407,14 @@
               <input v-model="newClient.rif_or_cedula" type="text" placeholder="J-31234567-8" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
             </div>
           </div>
+          <div class="grid grid-cols-1 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
+                {{ isZh ? '信用额度上限 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)' }}
+              </label>
+              <input v-model.number="newClient.credit_limit" type="number" placeholder="500.00" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
+            </div>
+          </div>
         </div>
         <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
           <button @click="clientDialogVisible = false" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors">{{ t.common.cancel }}</button>
@@ -561,6 +569,8 @@ import { useClock } from './composables/useClock'
 import { useGallery } from './composables/useGallery'
 
 const { t, currentLang } = useI18n()
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
 
 // 核心 UI 状态
 const mobileMenuOpen = ref(false)

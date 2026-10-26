@@ -169,6 +169,9 @@
 </template>
 
 <script setup>
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import { apiFetch } from '../utils/api'

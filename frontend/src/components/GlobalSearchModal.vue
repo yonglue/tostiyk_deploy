@@ -100,8 +100,15 @@
 </template>
 
 <script setup>
+import { useI18n } from '../composables/useI18n'
+
+
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { Search, Package, User } from 'lucide-vue-next'
+
+const { currentLang } = useI18n()
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
 
 const props = defineProps({
   visible: Boolean,

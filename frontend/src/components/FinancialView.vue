@@ -191,6 +191,9 @@
 </template>
 
 <script setup>
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 
 // 🌟 按需引入 ECharts 核心模块

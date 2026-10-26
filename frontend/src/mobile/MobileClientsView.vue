@@ -115,6 +115,14 @@
 </template>
 
 <script setup>
+import { useI18n } from '../composables/useI18n'
+
+const { currentLang } = useI18n()
+
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
+
 import { ref, computed, onMounted } from 'vue'
 import { Search, Phone, MessageCircle, HandCoins, ArrowLeft, ChevronRight } from 'lucide-vue-next'
 import { apiFetch } from '../utils/api'

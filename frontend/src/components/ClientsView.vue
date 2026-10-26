@@ -1,3 +1,6 @@
+const { currentLang } = useI18n()
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
 <!-- src/components/ClientsView.vue -->
 <template>
   <div class="space-y-6 max-w-11xl mx-auto pb-24">
@@ -258,6 +261,10 @@
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ t.clients.colAddress }}</p>
               <p class="text-slate-700 dark:text-slate-300">{{ currentClient?.address || '-' }}</p>
             </div>
+            <div class="col-span-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800/30">
+              <p class="text-[11px] font-semibold text-blue-500 dark:text-blue-400 uppercase mb-1">{{ isZh ? '信用额度上限' : isEs ? 'Límite de Crédito' : 'Credit Limit' }}</p>
+              <p class="text-lg font-black text-blue-700 dark:text-blue-300">$ {{ (currentClient?.credit_limit || 0).toFixed(2) }}</p>
+            </div>
             <div class="col-span-2" v-if="currentClient?.notes">
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ isZh ? '备注' : isEs ? 'Notas' : 'Notes' }}</p>
               <p class="text-slate-700 dark:text-slate-300 text-xs">{{ currentClient?.notes }}</p>
@@ -299,6 +306,10 @@
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colAddress }}</label>
               <input v-model="editForm.address" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '信用额度 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)' }}</label>
+              <input v-model.number="editForm.credit_limit" type="number" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white font-mono" />
             </div>
           </div>
           <div>
@@ -408,7 +419,7 @@
       <!-- 🌟 优化后的单排底部操作舱 -->
       
       <!-- 🌟 终极单排操作舱 -->
-      <div class="absolute bottom-0 inset-x-0 p-3 pb-safe bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 z-50">
+      <div v-if="drawerMode === 'read'" class="absolute bottom-0 inset-x-0 p-3 pb-safe bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 z-50">
         <button @click="switchToEdit" class="flex-1 h-10 flex items-center justify-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs transition-colors cursor-pointer">
           <Edit3 :size="14" />{{ isZh ? '编辑' : isEs ? 'Editar' : 'Edit' }}</button>
         <button @click="onDeleteFromDrawer" class="flex-1 h-10 flex items-center justify-center gap-1 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-xl font-bold text-xs transition-colors cursor-pointer">
@@ -699,6 +710,7 @@ const switchToEdit = () => {
     client_type: currentClient.value.client_type || 'Regular',
     phone: currentClient.value.phone || '',
     address: currentClient.value.address || '',
+    credit_limit: currentClient.value.credit_limit || 500.0,
     rif_or_cedula: currentClient.value.rif_or_cedula || '',
     notes: currentClient.value.notes || ''
   }

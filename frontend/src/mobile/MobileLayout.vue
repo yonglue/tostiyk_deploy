@@ -34,6 +34,9 @@
 </template>
 
 <script setup>
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
 import { ref, computed } from 'vue'
 import { Home, Package, ArrowRightLeft, Users, Settings } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'

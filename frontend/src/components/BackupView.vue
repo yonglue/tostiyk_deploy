@@ -264,6 +264,9 @@
 </template>
 
 <script setup>
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
 import { ref, onMounted, reactive, computed, watch } from 'vue'
 import { FileSpreadsheet } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'

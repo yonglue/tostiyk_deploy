@@ -133,7 +133,15 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { useI18n } from '../composables/useI18n'
+
+const { currentLang } = useI18n()
+
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
+
+
+import { ref, computed, onMounted } from 'vue'
 import { TrendingUp, ArrowDownLeft, ArrowUpRight } from 'lucide-vue-next'
 import { apiFetch } from '../utils/api'
 import { useAuth } from '../composables/useAuth'
