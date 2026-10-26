@@ -1,4 +1,6 @@
-const CACHE_NAME = 'tostiyk-erp-v1'
+// 每次发版修改这里的版本号，或者构建时自动注入
+const CACHE_VERSION = 'v1.0.1';
+const CACHE_NAME = `tostiyk-erp-${CACHE_VERSION}`;
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()

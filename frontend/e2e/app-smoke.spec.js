@@ -27,7 +27,7 @@ async function login(page) {
   await expect(page.locator('nav')).toBeVisible({ timeout: 5_000 })
 }
 
-test.skip('admin 登录后进入主界面', async ({ page }) => {
+test('admin 登录后进入主界面', async ({ page }) => {
   await login(page)
 })
 

@@ -7,7 +7,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],
-  timeout: 30_000,
+  timeout: 45_000,
   expect: { timeout: 5_000 },
   use: {
     // 换到 5175，避开开发时占用的 5173

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
 const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少环境变量 PW_ADMIN_PASS，请先 export PW_ADMIN_PASS=<admin密码>')
 
 async function login(page) {
   await page.goto('/')
@@ -31,7 +32,7 @@ test.describe('POS 核心业务与打印闭环', () => {
     await login(page)
   })
 
-  test.skip('快速收银：加购并成功结账，验证打印内容', async ({ page }) => {
+  test('快速收银：加购并成功结账，验证打印内容', async ({ page }) => {
     await page.locator('[data-testid="nav-pos"]').click()
     const searchInput = page.locator('[data-testid="pos-search-input"]')
     
@@ -70,7 +71,7 @@ test.describe('POS 核心业务与打印闭环', () => {
     await expect(page.getByText(/购物车为空|Carrito vacío|Cart is empty/)).toBeVisible()
   })
 
-  test.skip('历史补打：预览订单并验证弹窗内容', async ({ page }) => {
+  test('历史补打：预览订单并验证弹窗内容', async ({ page }) => {
     await page.locator('[data-testid="nav-pos"]').click()
     const searchInput = page.locator('[data-testid="pos-search-input"]')
     

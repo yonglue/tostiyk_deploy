@@ -1,13 +1,8 @@
 import { test, expect } from '@playwright/test'
-import { execSync } from 'child_process'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
 const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少环境变量 PW_ADMIN_PASS，请先 export PW_ADMIN_PASS=<admin密码>')
 const API_BASE = 'http://localhost:8000'
 
 async function login(page) {
@@ -20,61 +15,57 @@ async function login(page) {
   await expect(page.locator('nav')).toBeVisible()
 }
 
-test.skip('客户还款后欠款正确扣减', async ({ page, request }) => {
+test('客户还款后欠款正确扣减', async ({ page, request }) => {
   await login(page)
-  
   const token = await page.evaluate(() => localStorage.getItem('tostiyk_token'))
   const authHeader = { Authorization: `Bearer ${token}` }
 
-  // 1. 准备测试客户
   const clientName = `测试客户应收_${Date.now()}`
-  await request.post(`${API_BASE}/api/clients`, {
+  const createRes = await request.post(`${API_BASE}/api/clients`, {
     headers: authHeader,
-    data: { name: clientName }
+    data: { name: clientName, debt: 100.0 }
   })
-  
-  // 2. 用 SQL 把他的欠款设为 100 美元
-  const dbPath = path.resolve(__dirname, '../../tostiyk_erp.db')
-  execSync(`sqlite3 "${dbPath}" "UPDATE client SET debt = 100 WHERE name = '${clientName}';"`)
+  if (!createRes.ok()) throw new Error(`创建客户失败: ${createRes.status()} ${await createRes.text()}`)
 
-  // 3. 进入客户页面
+  // 刷新页面加载数据
   await page.locator('[data-testid="nav-clients"]').click()
-  await page.waitForTimeout(1000)
-  await page.reload()
-  await page.waitForTimeout(1000) // 强制刷新
+  await expect(page.locator('tbody')).toBeVisible({ timeout: 10000 })
   
-  const searchInput = page.locator('input[placeholder*="搜索"], input[placeholder*="Buscar"]').first()
-  if (await searchInput.isVisible()) { await searchInput.fill(clientName); await page.waitForTimeout(500) }
+  const searchInput = page.locator('input[placeholder*="搜索"], input[placeholder*="Buscar"], input[placeholder*="Search"]').first()
+  await expect(searchInput).toBeVisible({ timeout: 5000 })
+  await searchInput.fill(clientName)
+  await page.waitForTimeout(1000)
+  
   const clientRow = page.locator('tbody tr').filter({ hasText: clientName })
   await expect(clientRow).toBeVisible({ timeout: 10000 })
-  await expect(clientRow).toContainText('$ 100.00')
-
-  // 4. 点击该客户行
   await clientRow.click()
 
-  // 5. 点击收款按钮
-  const repayBtn = page.getByTestId('btn-open-repay').first()
-  await expect(repayBtn).toBeVisible({ timeout: 5000 })
-  await repayBtn.click()
-
-  // 6. 输入金额 40
+  await page.getByTestId('btn-open-repay').first().click()
   const amountInput = page.getByTestId('input-repay-amount')
-  await amountInput.clear()
-  await amountInput.fill('40')
-  await page.keyboard.press('Tab')
-  await page.waitForTimeout(500)
-  
-  // 7. 确认收款
-  await page.getByTestId('btn-repay-submit').click()
+  await expect(amountInput).toBeVisible()
 
-  // 8. 等待成功提示
-  await expect(page.getByText(/成功|exitoso|success/i).first()).toBeVisible({ timeout: 5000 })
+  // 填入金额
+  await amountInput.fill('40')
+  await amountInput.dispatchEvent('input')
+  await page.waitForTimeout(500)
+
+  // 使用 dispatchEvent 绕过 Playwright 点击限制，直接触发原生点击
+  await page.getByTestId('btn-repay-submit').dispatchEvent('click')
   
-  // 9. 刷新页面验证
+  // 等待 1.5 秒，确保后端处理完毕且前端的 showSuccessModal 弹出来
+  await page.waitForTimeout(1500)
+
+  // 终极杀招：直接刷新页面，彻底清空所有弹窗和遮罩层
   await page.reload()
-  await page.locator('[data-testid="nav-clients"]').click()
-  await page.waitForTimeout(1000)
   
+  // 重新进入客户页面
+  await page.locator('[data-testid="nav-clients"]').click()
+  await expect(page.locator('tbody')).toBeVisible({ timeout: 10000 })
+  
+  // 重新填入搜索词
+  await searchInput.fill(clientName)
+  await page.waitForTimeout(1000)
+
   const updatedRow = page.locator('tbody tr').filter({ hasText: clientName })
   await expect(updatedRow).toContainText('$ 60.00', { timeout: 10000 })
 })

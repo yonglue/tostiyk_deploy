@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
 const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少环境变量 PW_ADMIN_PASS，请先 export PW_ADMIN_PASS=<admin密码>')
 
 async function login(page) {
   await page.goto('/')
@@ -34,7 +35,7 @@ test.describe('进销存流水分页', () => {
     await expect(page.locator('[data-testid="tx-page-next"]')).toBeVisible()
   })
 
-  test.skip('切到"出库"tab 后表格只剩 OUT/REFUND', async ({ page }) => {
+  test('切到"出库"tab 后表格只剩 OUT/REFUND', async ({ page }) => {
     await page.locator('[data-testid="tx-tab-out"]').click()
     await page.waitForTimeout(800)
 

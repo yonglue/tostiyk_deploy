@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test'
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
-const PASSWORD = process.env.PW_ADMIN_PASS || 'x'
+const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少环境变量 PW_ADMIN_PASS，请先 export PW_ADMIN_PASS=<admin密码>') || 'x'
 
 async function login(page) {
   await page.goto('/')
