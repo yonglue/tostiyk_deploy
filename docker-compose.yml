@@ -1,0 +1,25 @@
+services:
+  backend:
+    image: tostiyk-erp-backend:v1.0
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./backups:/app/backups
+    environment:
+      - TK_AUTO_CREATE_TABLES=1
+      - TK_STRICT_MIGRATION=0
+      - TK_STRICT_SECURITY=0
+      - TK_ADMIN_PASSWORD=
+    expose:
+      - "8000"
+
+  frontend:
+    image: tostiyk-erp-frontend:v1.0
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

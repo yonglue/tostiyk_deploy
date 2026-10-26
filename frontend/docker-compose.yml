@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: tostiyk-backend
+    restart: unless-stopped
+    volumes:
+      # 将本地数据库和上传文件夹挂载到容器内，防止数据丢失
+      - ./tostiyk_erp.db:/app/tostiyk_erp.db
+      - ./uploads:/app/uploads
+      - ./backups:/app/backups
+    environment:
+      - TK_AUTO_CREATE_TABLES=0
+      - TK_STRICT_MIGRATION=1
+      - TK_MASTER_PIN=TK-PIN-2026
+      - TK_ADMIN_PASSWORD=tostiyk2026
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    container_name: tostiyk-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80" # 外网直接访问 http://localhost
+    depends_on:
+      - backend

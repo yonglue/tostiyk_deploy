@@ -1,0 +1,61 @@
+# 核心保护：敏感数据
+.jwt_secret
+*.db
+*.sqlite
+*.sqlite3
+*.db.bak*
+backups/
+uploads/
+system_settings.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# 前端与 Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# 测试产物
+test-results/
+playwright-report/
+playwright/.cache/
+
+# 系统和编辑器
+.DS_Store
+.idea/
+.vscode/
+tree.txt
+node_modules/
+frontend/key.pem
+frontend/cert.pem
+*.zip
+certs/
+
+# --- 运行时与测试垃圾 ---
+frontend/playwright-report/
+frontend/test-results/
+frontend/.pytest_cache/
+__pycache__/
+*.pyc
+
+# --- 本地证书与密钥 ---
+frontend/*.pem
+
+# --- 备份文件 ---
+*.zip
+*.bak
+* copy*
+
+# 环境变量配置（含密钥，绝不能提交）
+.env
+.env.*
+!.env.example
+
+# 运行日志
+*.log
