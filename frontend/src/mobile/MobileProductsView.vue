@@ -2,10 +2,10 @@
   <div class="min-h-full bg-slate-50 dark:bg-slate-950 pb-24 relative overflow-hidden">
     
     <div class="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl px-5 pt-6 pb-3 border-b border-slate-100 dark:border-slate-800/60">
-      <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">库存产品</h1>
+      <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">{{ isZh ? '库存产品' : isEs ? 'Productos en stock' : 'Products in Stock' }}</h1>
       <div class="relative">
         <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
-        <input v-model="searchQuery" type="text" placeholder="搜索 OEM 或 配件名称..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
+        <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
       </div>
     </div>
 
@@ -27,13 +27,13 @@
             <p class="text-xs font-mono text-slate-400 mt-0.5">{{ part.oem }}</p>
           </div>
           <div class="text-right shrink-0">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">库存</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ isZh ? '库存' : isEs ? 'Inventario' : 'Inventory' }}</p>
             <p class="text-xl font-black font-mono tabular-nums" :class="getStockClass(part.stock)">{{ part.stock }}</p>
           </div>
         </div>
         <div class="mt-3 pt-3 border-t border-slate-50 dark:border-slate-800/60 flex items-center justify-between text-xs">
           <div class="flex gap-4">
-            <div><span class="text-slate-400">售价 </span><span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${{ part.price.toFixed(2) }}</span></div>
+            <div><span class="text-slate-400">{{ isZh ? '售价' : isEs ? 'Precio de Venta' : 'Sale Price' }}</span><span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${{ part.price.toFixed(2) }}</span></div>
           </div>
           <span class="text-[10px] text-slate-400 font-mono">{{ part.bin_location || '-' }}</span>
         </div>
@@ -41,7 +41,7 @@
 
       <div v-if="filteredParts.length === 0" class="text-center py-20">
         <span class="text-4xl">📭</span>
-        <p class="text-sm text-slate-400 mt-3">没有找到相关产品</p>
+        <p class="text-sm text-slate-400 mt-3">{{ isZh ? '没有找到相关产品' : isEs ? 'Sin productos relacionados' : 'No products found' }}</p>
       </div>
     </div>
 
@@ -71,7 +71,7 @@
         <button @click="selectedPart = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
           <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
         </button>
-        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">产品详情</h2>
+        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '产品详情' : isEs ? 'Detalles del producto' : 'Product Details' }}</h2>
         <div class="w-8"></div>
       </header>
 
@@ -92,26 +92,26 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">库存数量</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ isZh ? '库存数量' : isEs ? 'Cantidad en stock' : 'Stock Quantity' }}</p>
             <p class="text-2xl font-black font-mono mt-1" :class="getStockClass(selectedPart.stock)">{{ selectedPart.stock }}</p>
           </div>
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">零售价 (USD)</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ isZh ? '零售价 (USD)' : isEs ? 'Precio Venta (USD)' : 'Retail Price (USD)' }}</p>
             <p class="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-1">${{ selectedPart.price.toFixed(2) }}</p>
           </div>
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">进货价 (USD)</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ isZh ? '进货价 (USD)' : isEs ? 'Costo (USD)' : 'Cost Price (USD)' }}</p>
             <p class="text-2xl font-black font-mono text-slate-600 dark:text-slate-300 mt-1">${{ (selectedPart.cost_price || 0).toFixed(2) }}</p>
           </div>
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">货架位置</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">{{ isZh ? '货架位置' : isEs ? 'Ubicación' : 'Location' }}</p>
             <p class="text-lg font-black font-mono text-slate-600 dark:text-slate-300 mt-1">{{ selectedPart.bin_location || '-' }}</p>
           </div>
         </div>
 
         <div class="space-y-3 pt-2">
-          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">库存变动历史</h3>
-          <div v-if="productHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">暂无历史变动</div>
+          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">{{ isZh ? '库存变动历史' : isEs ? 'Historial de inventario' : 'Inventory History' }}</h3>
+          <div v-if="productHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">{{ isZh ? '暂无历史变动' : isEs ? 'Sin cambios históricos' : 'No historical changes' }}</div>
           <div v-for="tx in productHistory" :key="tx.id" class="bg-white dark:bg-slate-900 rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <div>
               <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ tx.type === 'IN' ? '采购入库' : '销售出库' }}</p>

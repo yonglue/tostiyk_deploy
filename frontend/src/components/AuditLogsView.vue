@@ -110,12 +110,12 @@
       <!-- 🌟 新增：分页组件 -->
       <div v-if="totalPages > 1" class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4 text-xs">
         <span class="text-slate-500 dark:text-slate-400 font-medium">
-          显示第 <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> 到 <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredLogs.length) }}</strong> 条，共 <strong class="text-slate-800 dark:text-slate-200">{{ filteredLogs.length }}</strong> 条记录
+          {{ isZh ? '显示第' : isEs ? 'Mostrando' : 'Showing' }} <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> {{ isZh ? '到' : isEs ? 'a' : 'to' }} <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredLogs.length) }}</strong> {{ isZh ? '条，共' : isEs ? 'de' : 'of' }} <strong class="text-slate-800 dark:text-slate-200">{{ filteredLogs.length }}</strong> {{ isZh ? '条记录' : isEs ? 'registros' : 'records' }}
         </span>
         
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1 shadow-2xs">
-            <span class="text-slate-400 text-[11px]">跳转到</span>
+            <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
             <input 
               type="number" 
               min="1" 
@@ -128,9 +128,7 @@
             <button 
               @click="handleJumpPage" 
               class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
-            >
-              跳转
-            </button>
+            >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -138,9 +136,7 @@
               @click="currentPage--" 
               :disabled="currentPage === 1"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              上一页
-            </button>
+            >{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
             <span class="px-3 py-1 font-mono font-bold text-slate-700 dark:text-slate-300">
               {{ currentPage }} / {{ totalPages }}
             </span>
@@ -148,9 +144,7 @@
               @click="currentPage++" 
               :disabled="currentPage === totalPages"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              下一页
-            </button>
+            >{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
           </div>
         </div>
       </div>

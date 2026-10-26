@@ -3,7 +3,7 @@
     
     <!-- 顶部固定区 -->
     <div class="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl px-5 pt-6 pb-3 border-b border-slate-100 dark:border-slate-800/60">
-      <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">进销存流水</h1>
+      <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">{{ isZh ? '进销存流水' : isEs ? 'Movimientos y Cuentas' : 'Transactions' }}</h1>
       
       <!-- 筛选 Tab -->
       <div class="flex bg-slate-200/60 dark:bg-slate-800/80 p-1 rounded-xl">
@@ -53,7 +53,7 @@
       </div>
       
       <div v-if="transactions.length === 0" class="text-center py-20">
-        <p class="text-sm text-slate-400">暂无流水记录</p>
+        <p class="text-sm text-slate-400">{{ isZh ? '暂无流水记录' : isEs ? 'Sin transacciones' : 'No transactions' }}</p>
       </div>
     </div>
 
@@ -63,7 +63,7 @@
         <button @click="selectedTx = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
           <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
         </button>
-        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">单据详情</h2>
+        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '单据详情' : isEs ? 'Detalles del documento' : 'Document Details' }}</h2>
         <div class="w-8"></div>
       </header>
 
@@ -71,7 +71,7 @@
         <!-- 类型与时间 -->
         <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
           <div>
-            <p class="text-[11px] font-bold text-slate-400 uppercase">时间</p>
+            <p class="text-[11px] font-bold text-slate-400 uppercase">{{ isZh ? '时间' : isEs ? 'Hora' : 'Time' }}</p>
             <p class="text-sm font-mono font-bold text-slate-800 dark:text-slate-100 mt-1">{{ selectedTx.timestamp }}</p>
           </div>
           <span class="px-3 py-1.5 rounded-lg text-sm font-bold border" 
@@ -87,11 +87,11 @@
             <span class="font-mono font-bold text-blue-600 dark:text-blue-400">{{ selectedTx.part_oem }}</span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-xs font-semibold text-slate-500">名称</span>
+            <span class="text-xs font-semibold text-slate-500">{{ isZh ? '名称' : isEs ? 'Nombre' : 'Name' }}</span>
             <span class="font-bold text-slate-800 dark:text-slate-100">{{ selectedTx.part_name }}</span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-xs font-semibold text-slate-500">客户/供应商</span>
+            <span class="text-xs font-semibold text-slate-500">{{ isZh ? '客户/供应商' : isEs ? 'Cliente/Proveedor' : 'Client/Supplier' }}</span>
             <span class="font-bold text-slate-700 dark:text-slate-300">{{ selectedTx.customer_or_supplier || '-' }}</span>
           </div>
         </div>
@@ -104,7 +104,7 @@
           </div>
           <div class="h-px w-full bg-slate-100 dark:bg-slate-800"></div>
           <div class="flex justify-between items-center">
-            <span class="text-sm font-bold text-slate-800 dark:text-slate-100">总金额</span>
+            <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ isZh ? '总金额' : isEs ? 'Monto total' : 'Total Amount' }}</span>
             <span class="text-xl font-black font-mono" :class="selectedTx.type === 'IN' ? 'text-emerald-600' : 'text-slate-800 dark:text-slate-200'">
               ${{ Number(selectedTx.total_amount || 0).toFixed(2) }}
             </span>

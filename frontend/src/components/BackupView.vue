@@ -6,9 +6,8 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span>🗄️</span> 系统运维与数据备份
-        </h2>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">配置系统基础信息、执行自动备份策略、管理数据导入导出以及数据库底层优化。</p>
+          <span>🗄️</span>{{ isZh ? '系统运维与数据备份' : isEs ? 'Mantenimiento y Respaldo' : 'Maintenance & Backup' }}</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '配置系统基础信息、执行自动备份策略、管理数据导入导出以及数据库底层优化。' : isEs ? 'Configurar sistema, respaldos y optimización.' : 'Configure system, backups, and optimization.' }}</p>
       </div>
     </div>
 
@@ -94,13 +93,13 @@
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
           <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shadow-sm">🛡️</div>
           <div>
-            <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">自动备份系统</h3>
-            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">系统每 24 小时自动备份一次，防止数据丢失</p>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ isZh ? '自动备份系统' : isEs ? 'Sistema de respaldo' : 'Auto Backup System' }}</h3>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ isZh ? '系统每 24 小时自动备份一次，防止数据丢失' : isEs ? 'Respaldo automático cada 24h' : 'Auto backup every 24h' }}</p>
           </div>
         </div>
         
         <div class="flex justify-between items-center">
-          <p class="text-xs text-slate-500 dark:text-slate-400">目前保留最近 30 天的备份文件</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">{{ isZh ? '目前保留最近 30 天的备份文件' : isEs ? 'Se conservan 30 días de respaldo' : 'Retains 30 days of backup' }}</p>
           <button @click="triggerBackup" :disabled="isBackingUp" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-50">
             {{ isBackingUp ? '备份中...' : '手动立即备份' }}
           </button>
@@ -112,13 +111,9 @@
               <p class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">{{ bf.filename }}</p>
               <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">{{ bf.created_at }} | {{ bf.size_mb }} MB</p>
             </div>
-            <button @click="downloadBackup(bf.filename)" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 font-bold px-2 py-1 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">
-              📥 下载
-            </button>
+            <button @click="downloadBackup(bf.filename)" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 font-bold px-2 py-1 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">{{ isZh ? '📥 下载' : isEs ? '📥 Descargar' : '📥 Download' }}</button>
           </div>
-          <div v-if="backupList.length === 0" class="text-center py-6 text-slate-400 text-xs">
-            暂无备份记录
-          </div>
+          <div v-if="backupList.length === 0" class="text-center py-6 text-slate-400 text-xs">{{ isZh ? '暂无备份记录' : isEs ? 'Sin copias de seguridad' : 'No backups' }}</div>
         </div>
       </div>
 
@@ -229,7 +224,7 @@
     <div v-if="isImporting" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
       <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl w-96 text-center space-y-4">
         <div class="text-4xl animate-bounce">📥</div>
-        <h3 class="font-bold text-lg dark:text-white">正在上传并解析数据</h3>
+        <h3 class="font-bold text-lg dark:text-white">{{ isZh ? '正在上传并解析数据' : isEs ? 'Subiendo y analizando datos' : 'Uploading and parsing data' }}</h3>
         <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-4 overflow-hidden">
           <div class="bg-indigo-600 h-4 rounded-full transition-all duration-300" :style="{ width: importProgress + '%' }"></div>
         </div>
@@ -241,30 +236,27 @@
     <div v-if="showImportReport" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-2xl max-w-lg w-full space-y-4">
         <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
-          <span>{{ importStats.imported > 0 ? '✅' : '❌' }}</span> 导入结果报告
-        </h3>
+          <span>{{ importStats.imported > 0 ? '✅' : '❌' }}</span>{{ isZh ? '导入结果报告' : isEs ? 'Reporte de importación' : 'Import Report' }}</h3>
         
         <div class="grid grid-cols-2 gap-4">
           <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl text-center">
-            <p class="text-xs text-emerald-600 font-bold">成功导入</p>
+            <p class="text-xs text-emerald-600 font-bold">{{ isZh ? '成功导入' : isEs ? 'Importado con éxito' : 'Imported successfully' }}</p>
             <p class="text-2xl font-black text-emerald-700 dark:text-emerald-400">{{ importStats.imported }}</p>
           </div>
           <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl text-center">
-            <p class="text-xs text-rose-600 font-bold">跳过 / 失败</p>
+            <p class="text-xs text-rose-600 font-bold">{{ isZh ? '跳过 / 失败' : isEs ? 'Omitidos / Fallidos' : 'Skipped / Failed' }}</p>
             <p class="text-2xl font-black text-rose-700 dark:text-rose-400">{{ importStats.skipped }}</p>
           </div>
         </div>
 
         <div v-if="importErrorDetails.length > 0" class="space-y-2">
-          <p class="text-xs font-bold text-slate-500">错误明细（最多显示前 5 条）:</p>
+          <p class="text-xs font-bold text-slate-500">{{ isZh ? '错误明细（最多显示前 5 条）:' : isEs ? 'Detalles del error (máx. 5):' : 'Error details (max 5):' }}</p>
           <ul class="text-xs text-rose-500 bg-rose-50 dark:bg-rose-900/20 p-3 rounded-xl max-h-32 overflow-y-auto">
             <li v-for="(err, i) in importErrorDetails" :key="i" class="mb-1">{{ err }}</li>
           </ul>
         </div>
 
-        <button @click="closeImportReport" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-3 rounded-xl font-bold transition-all cursor-pointer">
-          知道了
-        </button>
+        <button @click="closeImportReport" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-3 rounded-xl font-bold transition-all cursor-pointer">{{ isZh ? '知道了' : isEs ? 'Entendido' : 'Got it' }}</button>
       </div>
     </div>
 

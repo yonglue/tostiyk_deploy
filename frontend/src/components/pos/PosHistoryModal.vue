@@ -42,7 +42,7 @@
               <div class="text-[10px] text-slate-500 font-bold uppercase">{{ getPaymentMethodLabel(order.paymentMethod) }}</div>
             </div>
             <div class="flex items-center gap-2">
-              <button @click="$emit('preview', order)" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">显示小票</button>
+              <button @click="$emit('preview', order)" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ isZh ? '显示小票' : isEs ? 'Mostrar recibo' : 'Show Receipt' }}</button>
 <button @click="$emit('reprint', order)" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnReprint }}</button>
               <button @click="openReturnModal(order.dbId)" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnReturn }}</button>
             </div>

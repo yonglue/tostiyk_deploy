@@ -5,14 +5,14 @@
     <div class="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl px-5 pt-6 pb-3 border-b border-slate-100 dark:border-slate-800/60">
       <div class="bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl p-4 shadow-lg shadow-rose-500/20 mb-4 flex items-center justify-between">
         <div>
-          <p class="text-[11px] font-bold text-rose-100 uppercase tracking-wider">客户总应收欠款</p>
+          <p class="text-[11px] font-bold text-rose-100 uppercase tracking-wider">{{ isZh ? '客户总应收欠款' : isEs ? 'Total por cobrar' : 'Total Receivables' }}</p>
           <h2 class="text-2xl font-black text-white font-mono tabular-nums mt-1">$ {{ formatMoney(totalDebt) }}</h2>
         </div>
         <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><HandCoins :size="20" class="text-white" /></div>
       </div>
       <div class="relative">
         <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
-        <input v-model="searchQuery" type="text" placeholder="搜索客户名称、店铺..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
+        <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索客户名称、店铺...' : isEs ? 'Buscar cliente o tienda...' : 'Search client or store...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
       </div>
     </div>
 
@@ -46,7 +46,7 @@
         <button @click="selectedClient = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
           <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
         </button>
-        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">客户详情</h2>
+        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '客户详情' : isEs ? 'Detalles del cliente' : 'Client Details' }}</h2>
         <div class="w-8"></div>
       </header>
 
@@ -61,18 +61,18 @@
         </div>
 
         <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl p-5 shadow-lg shadow-rose-500/20">
-          <p class="text-[11px] font-bold text-rose-100 uppercase tracking-widest">当前欠款</p>
+          <p class="text-[11px] font-bold text-rose-100 uppercase tracking-widest">{{ isZh ? '当前欠款' : isEs ? 'Deuda actual' : 'Current debt' }}</p>
           <h2 class="text-4xl font-black text-white font-mono mt-1">$ {{ formatMoney(selectedClient.debt) }}</h2>
           <div class="mt-4 pt-4 border-t border-white/20 flex justify-between text-xs text-rose-100">
-            <span>信用额度上限</span>
+            <span>{{ isZh ? '信用额度上限' : isEs ? 'Límite de crédito' : 'Credit Limit' }}</span>
             <span class="font-bold font-mono">$ {{ formatMoney(selectedClient.credit_limit) }}</span>
           </div>
         </div>
 
         <!-- 历史交易记录 -->
         <div class="space-y-3">
-          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">历史交易记录</h3>
-          <div v-if="clientHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">暂无历史记录</div>
+          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">{{ isZh ? '历史交易记录' : isEs ? 'Historial de transacciones' : 'Transaction History' }}</h3>
+          <div v-if="clientHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">{{ isZh ? '暂无历史记录' : isEs ? 'Sin historial' : 'No history' }}</div>
           <div v-for="record in clientHistory" :key="record.id" class="bg-white dark:bg-slate-900 rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <div>
               <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ record.payment_method === 'Fiado' ? '挂账' : '还款/销售' }}</p>
@@ -92,8 +92,7 @@
           @click="showPayModal = true"
           class="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-[0.98] transition-transform"
         >
-          <HandCoins :size="18" /> 极速收款
-        </button>
+          <HandCoins :size="18" />{{ isZh ? '极速收款' : isEs ? 'Cobro rápido' : 'Quick Collection' }}</button>
         <a v-if="selectedClient.phone" :href="`tel:${selectedClient.phone}`" class="w-14 h-[50px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl font-bold flex items-center justify-center active:scale-[0.98] transition-transform">
           <Phone :size="20" />
         </a>

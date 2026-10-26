@@ -194,9 +194,7 @@
                 @click="openHistoryQuotesModal" 
                 type="button"
                 class="text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
-              >
-                📂 载入历史
-              </button>
+              >{{ isZh ? '📂 载入历史' : isEs ? '📂 Cargar historial' : '📂 Load History' }}</button>
             </div>
             
             <div>
@@ -232,11 +230,9 @@
               :disabled="!quoteClientId || cartItems.length === 0 || isSubmitting"
               class="w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-md shadow-rose-500/30 transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <span>📝 确认全单挂账 (Fiado)</span>
+              <span>{{ isZh ? '📝 确认全单挂账 (Fiado)' : isEs ? '📝 Confirmar fiado completo' : '📝 Confirm Entire Credit' }}</span>
             </button>
-            <p v-if="!quoteClientId && cartItems.length > 0" class="text-[10px] text-rose-500 text-center font-bold">
-              * 挂账前请先在顶部搜索并选择客户
-            </p>
+            <p v-if="!quoteClientId && cartItems.length > 0" class="text-[10px] text-rose-500 text-center font-bold">{{ isZh ? '* 挂账前请先在顶部搜索并选择客户' : isEs ? '* Busque y seleccione cliente antes de fiar' : '* Search and select client before crediting' }}</p>
           </div>
         </div>
 
@@ -250,7 +246,7 @@
         <!-- 1. 聚焦搜索 -->
         <div @click="focusSearch" class="bg-white dark:bg-slate-800/70 hover:bg-blue-500/10 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
           <span class="text-slate-800 dark:text-slate-200 font-bold">{{ t.pos.keyFocus }} [/]</span>
-          <span class="bg-blue-500/15 text-blue-700 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">搜索</span>
+          <span class="bg-blue-500/15 text-blue-700 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">{{ isZh ? '搜索' : isEs ? 'Buscar' : 'Search' }}</span>
         </div>
         
         <!-- 2. 选客户 -->
@@ -261,7 +257,7 @@
 
         <!-- 3. 保存报价快捷键（填补缺失的空位） -->
         <div @click="generateQuotationPDF" class="bg-white dark:bg-slate-800/70 hover:bg-amber-500/10 border border-slate-200 dark:border-slate-700 hover:border-amber-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
-          <span class="text-slate-800 dark:text-slate-200 font-bold">保存报价</span>
+          <span class="text-slate-800 dark:text-slate-200 font-bold">{{ isZh ? '保存报价' : isEs ? 'Guardar Cotización' : 'Save Quote' }}</span>
           <span class="bg-amber-500/15 text-amber-700 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">Ctrl+S</span>
         </div>
 
@@ -279,7 +275,7 @@
 
         <!-- 6. 退出 -->
         <div @click="confirmExitPos" class="bg-white dark:bg-slate-800/70 hover:bg-slate-200/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:border-slate-600 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
-          <span class="text-slate-800 dark:text-slate-200 font-bold">退出界面</span>
+          <span class="text-slate-800 dark:text-slate-200 font-bold">{{ isZh ? '退出界面' : isEs ? 'Salir' : 'Exit' }}</span>
           <span class="bg-slate-200 text-slate-800 dark:text-slate-200 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">Esc</span>
         </div>
       </div>
@@ -680,13 +676,13 @@
       <div class="bg-white dark:bg-slate-800/95 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden border border-white/80 flex flex-col cursor-default animate-in zoom-in-95 duration-150">
         <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
           <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-            <span>📂 载入历史报价单</span>
+            <span>{{ isZh ? '📂 载入历史报价单' : isEs ? '📂 Cargar cotización' : '📂 Load Quote' }}</span>
           </h3>
           <button @click="historyQuotesModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
 
         <div class="flex-1 overflow-y-auto p-5 space-y-3 bg-slate-50 dark:bg-slate-900/50">
-          <div v-if="isFetchingQuotes" class="text-center py-10 text-slate-400 text-xs">加载中...</div>
+          <div v-if="isFetchingQuotes" class="text-center py-10 text-slate-400 text-xs">{{ isZh ? '加载中...' : isEs ? 'Cargando...' : 'Loading...' }}</div>
           
           <template v-else-if="historyQuotesList.length > 0">
             <div 
@@ -704,21 +700,17 @@
               </div>
               <div class="flex items-center gap-4">
                 <span class="text-base font-mono font-black text-emerald-600">${{ Number(q.total_usd || 0).toFixed(2) }}</span>
-                <span class="text-xs font-bold text-blue-500 bg-blue-50 px-3 py-1.5 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">载入 ↵</span>
+                <span class="text-xs font-bold text-blue-500 bg-blue-50 px-3 py-1.5 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">{{ isZh ? '载入 ↵' : isEs ? 'Cargar ↵' : 'Load ↵' }}</span>
               </div>
             </div>
           </template>
           
           <div v-else class="text-center py-20 text-slate-400 text-xs font-bold">
-            <span class="text-4xl block mb-2">📭</span>
-            暂无历史报价记录
-          </div>
+            <span class="text-4xl block mb-2">📭</span>{{ isZh ? '暂无历史报价记录' : isEs ? 'Sin cotizaciones históricas' : 'No historical quotes' }}</div>
         </div>
 
         <div class="p-4 border-t border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800 flex justify-end shrink-0">
-          <button @click="historyQuotesModalVisible = false" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">
-            取消
-          </button>
+          <button @click="historyQuotesModalVisible = false" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">{{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}</button>
         </div>
         <!-- 🌟 新增：覆盖购物车确认弹窗 -->
         <ConfirmDialog

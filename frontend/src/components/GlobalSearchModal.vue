@@ -10,7 +10,7 @@
           ref="searchInputRef"
           v-model="searchQuery"
           type="text"
-          placeholder="搜索商品 OEM/名称，或客户姓名..."
+          placeholder="{{ isZh ? '搜索商品 OEM/名称，或客户姓名...' : isEs ? 'Buscar producto o cliente...' : 'Search product or client...' }}"
           class="w-full bg-transparent text-slate-800 text-base outline-none placeholder:text-slate-400 font-medium"
           @keydown.down.prevent="moveSelection(1)"
           @keydown.up.prevent="moveSelection(-1)"
@@ -26,7 +26,7 @@
         
         <!-- 商品结果 -->
         <div v-if="filteredParts.length > 0">
-          <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">商品库存</div>
+          <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ isZh ? '商品库存' : isEs ? 'Stock del producto' : 'Product Stock' }}</div>
           <div 
             v-for="(part, index) in filteredParts" 
             :key="part.id"
@@ -52,7 +52,7 @@
 
         <!-- 客户结果 -->
         <div v-if="filteredClients.length > 0">
-          <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-2">客户档案</div>
+          <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-2">{{ isZh ? '客户档案' : isEs ? 'Directorio de clientes' : 'Client Directory' }}</div>
           <div 
             v-for="(client, index) in filteredClients" 
             :key="client.id"
@@ -84,18 +84,16 @@
           没有找到与 "{{ searchQuery }}" 相关的商品或客户
         </div>
         <div v-else-if="!searchQuery" class="text-center py-12 text-slate-400 text-sm">
-          <span class="text-3xl block mb-2">⌨️</span>
-          请输入商品 OEM、名称或客户姓名开始搜索...
-        </div>
+          <span class="text-3xl block mb-2">⌨️</span>{{ isZh ? '请输入商品 OEM、名称或客户姓名开始搜索...' : isEs ? 'Ingrese OEM o nombre...' : 'Enter OEM or name...' }}</div>
       </div>
 
       <!-- 底部提示 -->
       <div class="bg-slate-50 px-4 py-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
         <div class="flex items-center gap-4">
-          <span class="flex items-center gap-1"><kbd class="bg-white border px-1.5 py-0.5 rounded">↑</kbd> <kbd class="bg-white border px-1.5 py-0.5 rounded">↓</kbd> 选择</span>
-          <span class="flex items-center gap-1"><kbd class="bg-white border px-1.5 py-0.5 rounded">↵</kbd> 确认</span>
+          <span class="flex items-center gap-1"><kbd class="bg-white border px-1.5 py-0.5 rounded">↑</kbd> <kbd class="bg-white border px-1.5 py-0.5 rounded">↓</kbd>{{ isZh ? '选择' : isEs ? 'Seleccionar' : 'Select' }}</span>
+          <span class="flex items-center gap-1"><kbd class="bg-white border px-1.5 py-0.5 rounded">↵</kbd>{{ isZh ? '确认' : isEs ? 'Confirmar' : 'Confirm' }}</span>
         </div>
-        <span>全局搜索 (Ctrl + K)</span>
+        <span>{{ isZh ? '全局搜索 (Ctrl + K)' : isEs ? 'Búsqueda global (Ctrl + K)' : 'Global search (Ctrl + K)' }}</span>
       </div>
     </div>
   </div>

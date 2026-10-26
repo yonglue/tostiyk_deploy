@@ -668,7 +668,7 @@
       <div v-if="receiptPreviewVisible" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden h-[85vh]">
           <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-white shrink-0">
-            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span>🧾</span> 小票预览 (80mm)</h3>
+            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span>🧾</span>{{ isZh ? '小票预览 (80mm)' : isEs ? 'Vista previa de recibo (80mm)' : 'Receipt Preview (80mm)' }}</h3>
             <button @click="receiptPreviewVisible = false" class="text-slate-400 hover:text-rose-500 text-2xl leading-none font-bold">&times;</button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 flex justify-center bg-slate-200/50">
@@ -680,10 +680,9 @@
             ></iframe>
           </div>
           <div class="p-4 border-t border-slate-200 flex gap-3 bg-white shrink-0">
-            <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">关闭</button>
+            <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">{{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}</button>
             <button @click="printFromPreview" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-bold text-white shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
-              <span>🖨️</span> 打印
-            </button>
+              <span>🖨️</span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
           </div>
         </div>
       </div>

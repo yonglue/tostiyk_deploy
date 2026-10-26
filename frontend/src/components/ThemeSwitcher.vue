@@ -1,7 +1,7 @@
 <!-- src/components/ThemeSwitcher.vue -->
 <template>
   <button
-    @click="toggleTheme"
+    @click="toggleThemeWithTransition($event)"
     class="group relative flex items-center justify-center w-10 h-10 rounded-2xl
            border border-slate-200/80 dark:border-slate-700/60
            shadow-2xs backdrop-blur-md
@@ -11,7 +11,7 @@
       'bg-indigo-50/80 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-800/60': theme === 'dark',
       'bg-sky-50/80 hover:bg-sky-100 dark:bg-slate-800/70 dark:hover:bg-slate-700/80': theme === 'system'
     }"
-    :title="`当前: ${currentOption.label}，点击切换`"
+    :title="`${currentOption.label} →`"
   >
     <Transition name="spin-fade" mode="out-in">
       <component 
@@ -34,25 +34,18 @@ import { computed } from 'vue'
 import { Sun, Moon, MonitorSmartphone } from 'lucide-vue-next'
 import { useTheme } from '../composables/useTheme'
 
-const { theme, setTheme } = useTheme()
+// 🌟 引入炫酷的动画切换函数
+const { theme, toggleThemeWithTransition } = useTheme()
 
 const options = [
-  { value: 'light',  icon: Sun,                label: '白天' },
-  { value: 'dark',   icon: Moon,               label: '黑夜' },
-  { value: 'system', icon: MonitorSmartphone,  label: '跟随系统' },
+  { value: 'light',  icon: Sun,                label: '白天 / Día / Day' },
+  { value: 'dark',   icon: Moon,               label: '黑夜 / Noche / Night' },
+  { value: 'system', icon: MonitorSmartphone,  label: '系统 / Sistema / System' },
 ]
 
-// 当前选中的选项
 const currentOption = computed(() => {
   return options.find(o => o.value === theme.value) || options[0]
 })
-
-// 单点循环切换
-const toggleTheme = () => {
-  const currentIndex = options.findIndex(o => o.value === theme.value)
-  const nextIndex = (currentIndex + 1) % options.length
-  setTheme(options[nextIndex].value)
-}
 </script>
 
 <style scoped>

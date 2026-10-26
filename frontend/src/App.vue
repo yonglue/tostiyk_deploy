@@ -33,7 +33,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
             <!-- 🌟 新增：桌面端侧边栏折叠按钮 -->
-            <button @click="isSidebarCollapsed = !isSidebarCollapsed" class="hidden md:flex p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer items-center justify-center" title="折叠/展开侧边栏">
+            <button @click="isSidebarCollapsed = !isSidebarCollapsed" class="hidden md:flex p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer items-center justify-center" :title="isZh ? '折叠/展开侧边栏' : isEs ? 'Colapsar/Expandir' : 'Collapse/Expand sidebar'">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
               </svg>
@@ -191,7 +191,7 @@
         <Transition name="fade">
           <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-blue-600 hover:bg-blue-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
-            <span class="whitespace-nowrap font-bold text-sm ml-2 transition-all duration-300" :class="isFabExpanded ? 'opacity-100 translate-x-0 w-auto' : 'opacity-0 translate-x-4 w-0'">返回顶部</span>
+            <span class="whitespace-nowrap font-bold text-sm ml-2 transition-all duration-300" :class="isFabExpanded ? 'opacity-100 translate-x-0 w-auto' : 'opacity-0 translate-x-4 w-0'">{{ isZh ? '返回顶部' : isEs ? 'Volver arriba' : 'Back to Top' }}</span>
           </button>
         </Transition>
 
@@ -229,7 +229,7 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">OEM 编号</label>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ isZh ? 'OEM 编号' : isEs ? 'Código OEM' : 'OEM No.' }}</label>
               <input v-model="newTx.part_oem" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-mono font-bold outline-none focus:border-blue-500" />
             </div>
             <div>
@@ -240,7 +240,7 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">数量</label>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ isZh ? '数量' : isEs ? 'Cantidad' : 'Qty' }}</label>
               <input v-model.number="newTx.quantity" type="number" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-bold font-mono outline-none focus:border-blue-500" />
             </div>
             <div>
@@ -373,11 +373,11 @@
           <!-- 两列拆分：联系人 + 店铺名 -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">客户名称 (联系人)</label>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</label>
               <input v-model="newClient.name" type="text" placeholder="例如: Juan Perez" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">店铺名称</label>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</label>
               <input v-model="newClient.store_name" type="text" placeholder="例如: Auto Taller Valencia" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
             </div>
           </div>

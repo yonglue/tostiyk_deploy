@@ -6,9 +6,8 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span>📋</span> 库存盘点（实体清点）
-        </h2>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">请录入实际清点的数量。留空的商品将被系统忽略，不参与本次盘点。</p>
+          <span>📋</span>{{ isZh ? '库存盘点（实体清点）' : isEs ? 'Auditoría (Conteo)' : 'Audit (Count)' }}</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '请录入实际清点的数量。留空的商品将被系统忽略，不参与本次盘点。' : isEs ? 'Ingrese cantidad real. Vacíos ignorados.' : 'Enter actual count. Blanks ignored.' }}</p>
       </div>
 
       <!-- Tab 切换 -->
@@ -17,16 +16,12 @@
           @click="activeTab = 'audit'"
           :class="activeTab === 'audit' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-        >
-          盘点操作
-        </button>
+        >{{ isZh ? '盘点操作' : isEs ? 'Operación' : 'Operation' }}</button>
         <button 
           @click="activeTab = 'history'; fetchHistory()"
           :class="activeTab === 'history' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-        >
-          历史盘点记录
-        </button>
+        >{{ isZh ? '历史盘点记录' : isEs ? 'Historial' : 'History' }}</button>
       </div>
     </div>
 
@@ -38,12 +33,12 @@
         <!-- 左侧：实时盈亏统计 -->
         <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
           <div class="text-center">
-            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">盘盈 (资产增加)</div>
+            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">{{ isZh ? '盘盈 (资产增加)' : isEs ? 'Sobrante (Ganancia)' : 'Surplus (Gain)' }}</div>
             <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-mono">+ ${{ totalProfitAmount.toFixed(2) }}</div>
           </div>
           <div class="w-px h-6 bg-slate-300 dark:bg-slate-600"></div>
           <div class="text-center">
-            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">盘亏 (资产损失)</div>
+            <div class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">{{ isZh ? '盘亏 (资产损失)' : isEs ? 'Faltante (Pérdida)' : 'Shortage (Loss)' }}</div>
             <div class="text-sm font-black text-rose-600 dark:text-rose-400 font-mono">- ${{ totalLossAmount.toFixed(2) }}</div>
           </div>
         </div>
@@ -55,7 +50,7 @@
             <input 
               v-model="searchQuery" 
               type="text" 
-              placeholder="搜索 OEM 或 配件名称..." 
+              placeholder="{{ isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...' }}" 
               class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 dark:text-white"
             />
           </div>
@@ -65,8 +60,7 @@
             :disabled="hasNoChanges"
             class="bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-5 py-2.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2"
           >
-            <span>📥</span> 导出差异表
-          </button>
+            <span>📥</span>{{ isZh ? '导出差异表' : isEs ? 'Exportar diferencias' : 'Export diffs' }}</button>
 
           <button 
             @click="submitAudit" 
@@ -81,12 +75,10 @@
       <!-- 历史记录 Tab 的工具栏 -->
       <template v-if="activeTab === 'history'">
         <div>
-          <h3 class="font-bold text-slate-800 dark:text-slate-200">历史盘点单据</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">系统自动汇总的盘点盈亏流水（来源：进销存系统）</p>
+          <h3 class="font-bold text-slate-800 dark:text-slate-200">{{ isZh ? '历史盘点单据' : isEs ? 'Docs Historial' : 'History Docs' }}</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '系统自动汇总的盘点盈亏流水（来源：进销存系统）' : isEs ? 'Flujo automático de inventario' : 'Auto inventory ledger' }}</p>
         </div>
-        <button @click="fetchHistory" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer flex items-center gap-1.5">
-          🔄 刷新记录
-        </button>
+        <button @click="fetchHistory" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer flex items-center gap-1.5">{{ isZh ? '🔄 刷新记录' : isEs ? '🔄 Actualizar' : '🔄 Refresh Records' }}</button>
       </template>
 
     </div>
@@ -99,11 +91,11 @@
         <table class="w-full text-left border-collapse min-w-[900px]">
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              <th class="py-4 px-6">商品信息</th>
-              <th class="py-4 px-6 text-center">系统库存</th>
-              <th class="py-4 px-6 text-center">实盘数量</th>
-              <th class="py-4 px-6 text-center">盈亏差异</th>
-              <th class="py-4 px-6">差异原因 (选填)</th>
+              <th class="py-4 px-6">{{ isZh ? '商品信息' : isEs ? 'Info Producto' : 'Product Info' }}</th>
+              <th class="py-4 px-6 text-center">{{ isZh ? '系统库存' : isEs ? 'Stock Sistema' : 'System Stock' }}</th>
+              <th class="py-4 px-6 text-center">{{ isZh ? '实盘数量' : isEs ? 'Cant. Real' : 'Physical Count' }}</th>
+              <th class="py-4 px-6 text-center">{{ isZh ? '盈亏差异' : isEs ? 'Diferencia' : 'Difference' }}</th>
+              <th class="py-4 px-6">{{ isZh ? '差异原因 (选填)' : isEs ? 'Motivo (opcional)' : 'Reason (optional)' }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
@@ -121,7 +113,7 @@
                   v-model.number="auditForm[item.id]" 
                   type="number" 
                   min="0"
-                  placeholder="未盘"
+                  placeholder="{{ isZh ? '未盘' : isEs ? 'No auditado' : 'Not audited' }}"
                   class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                 />
               </td>
@@ -135,16 +127,14 @@
                 <input 
                   v-model="reasons[item.id]" 
                   type="text" 
-                  placeholder="例如：破损、丢失..."
+                  placeholder="{{ isZh ? '例如：破损、丢失...' : isEs ? 'Ej: Dañado, perdido...' : 'Ex: Damaged, lost...' }}"
                   class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-blue-500 dark:text-white disabled:opacity-50 dark:disabled:bg-slate-800"
                   :disabled="auditForm[item.id] === null || auditForm[item.id] === '' || getDiff(item) === 0"
                 />
               </td>
             </tr>
             <tr v-if="paginatedParts.length === 0">
-              <td colspan="5" class="py-16 text-center text-slate-400 dark:text-slate-500 text-sm font-bold">
-                📭 没有找到符合条件的商品
-              </td>
+              <td colspan="5" class="py-16 text-center text-slate-400 dark:text-slate-500 text-sm font-bold">{{ isZh ? '📭 没有找到符合条件的商品' : isEs ? '📭 Sin productos coincidentes' : '📭 No matching products' }}</td>
             </tr>
           </tbody>
         </table>
@@ -153,12 +143,11 @@
       <!-- 🌟 新增：分页组件 -->
       <div v-if="totalPages > 1" class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4 text-xs">
         <span class="text-slate-500 dark:text-slate-400 font-medium">
-          显示第 <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> 到 <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredParts.length) }}</strong> 条，共 <strong class="text-slate-800 dark:text-slate-200">{{ filteredParts.length }}</strong> 个商品
-        </span>
+          显示第 <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> 到 <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredParts.length) }}</strong> 条，共 <strong class="text-slate-800 dark:text-slate-200">{{ filteredParts.length }}</strong>{{ isZh ? '个商品' : isEs ? 'Productos' : 'Products' }}</span>
         
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1 shadow-2xs">
-            <span class="text-slate-400 text-[11px]">跳转到</span>
+            <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
             <input 
               type="number" 
               min="1" 
@@ -171,9 +160,7 @@
             <button 
               @click="handleJumpPage" 
               class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
-            >
-              跳转
-            </button>
+            >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -181,9 +168,7 @@
               @click="currentPage--" 
               :disabled="currentPage === 1"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              上一页
-            </button>
+            >{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
             <span class="px-3 py-1 font-mono font-bold text-slate-700 dark:text-slate-300">
               {{ currentPage }} / {{ totalPages }}
             </span>
@@ -191,9 +176,7 @@
               @click="currentPage++" 
               :disabled="currentPage === totalPages"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              下一页
-            </button>
+            >{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
           </div>
         </div>
       </div>
@@ -205,19 +188,19 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              <th class="py-4 px-6">盘点时间 / 批次 / 经办人</th>
-              <th class="py-4 px-6">商品信息</th>
-              <th class="py-4 px-6 text-center">变动类型</th>
-              <th class="py-4 px-6 text-center">变动数量</th>
-              <th class="py-4 px-6 text-right">按进价折算金额</th>
+              <th class="py-4 px-6">{{ isZh ? '盘点时间 / 批次 / 经办人' : isEs ? 'Fecha / Lote / Op.' : 'Time / Batch / Op.' }}</th>
+              <th class="py-4 px-6">{{ isZh ? '商品信息' : isEs ? 'Info Producto' : 'Product Info' }}</th>
+              <th class="py-4 px-6 text-center">{{ isZh ? '变动类型' : isEs ? 'Tipo Cambio' : 'Change Type' }}</th>
+              <th class="py-4 px-6 text-center">{{ isZh ? '变动数量' : isEs ? 'Cant. Cambio' : 'Change Qty' }}</th>
+              <th class="py-4 px-6 text-right">{{ isZh ? '按进价折算金额' : isEs ? 'Monto al costo' : 'Amount at cost' }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
             <tr v-if="isFetchingHistory" class="text-center">
-              <td colspan="5" class="py-10 text-slate-400 text-xs">加载中...</td>
+              <td colspan="5" class="py-10 text-slate-400 text-xs">{{ isZh ? '加载中...' : isEs ? 'Cargando...' : 'Loading...' }}</td>
             </tr>
             <tr v-else-if="historyList.length === 0" class="text-center">
-              <td colspan="5" class="py-16 text-slate-400 text-xs font-bold">📭 暂无历史盘点记录</td>
+              <td colspan="5" class="py-16 text-slate-400 text-xs font-bold">{{ isZh ? '📭 暂无历史盘点记录' : isEs ? '📭 Sin historial de inventario' : '📭 No inventory history' }}</td>
             </tr>
             <tr v-for="tx in historyList" :key="tx.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="py-4 px-6">
@@ -230,12 +213,8 @@
                 <div class="text-xs font-mono text-slate-400 dark:text-slate-500 mt-0.5">{{ tx.part_oem }}</div>
               </td>
               <td class="py-4 px-6 text-center">
-                <span v-if="tx.type === 'IN'" class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-md text-xs font-bold">
-                  盘盈 (IN)
-                </span>
-                <span v-else class="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-md text-xs font-bold">
-                  盘亏 (OUT)
-                </span>
+                <span v-if="tx.type === 'IN'" class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-md text-xs font-bold">{{ isZh ? '盘盈 (IN)' : isEs ? 'Sobrante (IN)' : 'Surplus (IN)' }}</span>
+                <span v-else class="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-md text-xs font-bold">{{ isZh ? '盘亏 (OUT)' : isEs ? 'Faltante (OUT)' : 'Shortage (OUT)' }}</span>
               </td>
               <td class="py-4 px-6 text-center font-mono font-black" :class="tx.type === 'IN' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
                 {{ tx.type === 'IN' ? '+' : '-' }}{{ tx.quantity }}

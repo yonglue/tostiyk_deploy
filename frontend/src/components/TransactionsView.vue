@@ -8,7 +8,7 @@
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
           <span>📋</span> {{ tExt.pageTitle }}
         </h2>
-        <p class="text-xs text-slate-500 mt-1">查看所有历史进销存单据、出入库明细及退款记录。</p>
+        <p class="text-xs text-slate-500 mt-1">{{ isZh ? '查看所有历史进销存单据、出入库明细及退款记录。' : isEs ? 'Ver todos los documentos y devoluciones.' : 'View all documents and refunds.' }}</p>
       </div>
     </div>
 

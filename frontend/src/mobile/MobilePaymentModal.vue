@@ -11,13 +11,13 @@
 
           <!-- 头部信息 -->
           <div class="px-5 pb-4 border-b border-slate-200/50 dark:border-slate-800/50 text-center">
-            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">极速收款</h3>
-            <p class="text-xs text-slate-500 mt-1">当前欠款: <span class="font-mono font-bold text-rose-500">$ {{ formatMoney(clientDebt) }}</span></p>
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">{{ isZh ? '极速收款' : isEs ? 'Cobro rápido' : 'Quick Collection' }}</h3>
+            <p class="text-xs text-slate-500 mt-1">{{ isZh ? '当前欠款:' : isEs ? 'Deuda actual:' : 'Current debt:' }}<span class="font-mono font-bold text-rose-500">$ {{ formatMoney(clientDebt) }}</span></p>
           </div>
 
           <!-- 输入区 -->
           <div class="p-5">
-            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">收款金额 (USD)</label>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">{{ isZh ? '收款金额 (USD)' : isEs ? 'Monto a cobrar (USD)' : 'Amount to Collect (USD)' }}</label>
             <div class="relative flex items-center bg-white dark:bg-slate-950 border-2 rounded-2xl px-4 py-3 transition-colors"
                  :class="isOverpay ? 'border-rose-500' : 'border-blue-500/30 focus-within:border-blue-500'">
               <span class="text-xl font-black text-slate-400 mr-2">$</span>
@@ -34,27 +34,21 @@
                 placeholder="0.00"
               />
               <!-- 快捷全额按钮 -->
-              <button @click="amount = clientDebt" class="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md shrink-0">
-                全额
-              </button>
+              <button @click="amount = clientDebt" class="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md shrink-0">{{ isZh ? '全额' : isEs ? 'Monto total' : 'Full amount' }}</button>
             </div>
-            <p v-if="isOverpay" class="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1">
-              ⚠️ 收款金额不能大于当前欠款
-            </p>
+            <p v-if="isOverpay" class="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1">{{ isZh ? '⚠️ 收款金额不能大于当前欠款' : isEs ? '⚠️ El monto no puede exceder la deuda' : '⚠️ Amount cannot exceed debt' }}</p>
           </div>
 
           <!-- 操作按钮 -->
           <div class="p-5 pt-0 flex gap-3">
-            <button @click="close" class="flex-1 py-3.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl active:scale-[0.98] transition-transform">
-              取消
-            </button>
+            <button @click="close" class="flex-1 py-3.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl active:scale-[0.98] transition-transform">{{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}</button>
             <button 
               @click="submit"
               :disabled="!isValid || isSubmitting"
               class="flex-[2] py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
             >
               <span v-if="isSubmitting" class="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></span>
-              <span v-else>确认收款</span>
+              <span v-else>{{ isZh ? '确认收款' : isEs ? 'Confirmar cobro' : 'Confirm Collection' }}</span>
             </button>
           </div>
 

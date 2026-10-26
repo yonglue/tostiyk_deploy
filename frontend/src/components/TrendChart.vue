@@ -2,9 +2,7 @@
   <div class="bg-white dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-4 border border-slate-100 dark:border-slate-700 shadow-sm h-full flex flex-col justify-between">
     <div class="flex justify-between items-center mb-1">
       <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 text-sm">
-        <span class="w-1.5 h-3.5 bg-blue-500 rounded-full"></span>
-        近 7 天销售趋势
-      </h3>
+        <span class="w-1.5 h-3.5 bg-blue-500 rounded-full"></span>{{ isZh ? '近 7 天销售趋势' : isEs ? 'Tendencia de ventas 7 días' : '7-day Sales Trend' }}</h3>
       <span class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md">USD</span>
     </div>
 

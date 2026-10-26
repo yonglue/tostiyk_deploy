@@ -156,9 +156,7 @@
             <button 
               @click="printA4Quotation(currentQuote)" 
               class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer flex items-center gap-1"
-            >
-              🖨️ 打印 A4 报价单
-            </button>
+            >{{ isZh ? '🖨️ 打印 A4 报价单' : isEs ? '🖨️ Imprimir Cotización A4' : '🖨️ Print A4 Quote' }}</button>
             <button 
               @click="convertToPos(currentQuote)" 
               :disabled="currentQuote.converted_order_id"
@@ -187,17 +185,17 @@
           <p>Tel: +58 412-0000000</p>
         </div>
         <div class="document-info">
-          <h2>报价单</h2>
-          <p><strong>单号:</strong> {{ a4PrintData.quotation_no }}</p>
-          <p><strong>日期:</strong> {{ new Date(a4PrintData.created_at || Date.now()).toLocaleDateString() }}</p>
+          <h2>{{ isZh ? '报价单' : isEs ? 'Cotización' : 'Quote' }}</h2>
+          <p><strong>{{ isZh ? '单号:' : isEs ? 'Nro:' : 'No:' }}</strong> {{ a4PrintData.quotation_no }}</p>
+          <p><strong>{{ isZh ? '日期:' : isEs ? 'Fecha:' : 'Date:' }}</strong> {{ new Date(a4PrintData.created_at || Date.now()).toLocaleDateString() }}</p>
         </div>
       </div>
 
       <div class="a4-parties">
         <div class="client-box">
-          <h3>客户信息</h3>
-          <p><strong>名称:</strong> {{ a4PrintData.client_name }}</p>
-          <p><strong>报价状态:</strong> 有效报价</p>
+          <h3>{{ isZh ? '客户信息' : isEs ? 'Info Cliente' : 'Client Info' }}</h3>
+          <p><strong>{{ isZh ? '名称:' : isEs ? 'Nombre:' : 'Name:' }}</strong> {{ a4PrintData.client_name }}</p>
+          <p><strong>{{ isZh ? '报价状态:' : isEs ? 'Estado de cotización:' : 'Quote Status:' }}</strong>{{ isZh ? '有效报价' : isEs ? 'Cotización válida' : 'Valid Quote' }}</p>
         </div>
       </div>
 
@@ -205,9 +203,9 @@
         <thead>
           <tr>
             <th width="5%">#</th>
-            <th width="40%">商品名称 / 描述</th>
-            <th width="20%">OEM 编号</th>
-            <th width="10%">数量</th>
+            <th width="40%">{{ isZh ? '商品名称 / 描述' : isEs ? 'Nombre / Descripción' : 'Name / Description' }}</th>
+            <th width="20%">{{ isZh ? 'OEM 编号' : isEs ? 'Código OEM' : 'OEM No.' }}</th>
+            <th width="10%">{{ isZh ? '数量' : isEs ? 'Cantidad' : 'Qty' }}</th>
             <th width="12%">单价 (USD)</th>
             <th width="13%">小计 (USD)</th>
           </tr>
@@ -226,22 +224,22 @@
 
       <div class="a4-totals">
         <div class="total-box">
-          <p>总计金额 (USD): <strong>${{ Number(a4PrintData.total_usd || 0).toFixed(2) }}</strong></p>
-          <p>总计金额 (VES): <strong>Bs. {{ Number(a4PrintData.total_bs || 0).toFixed(2) }}</strong></p>
+          <p>{{ isZh ? '总计金额 (USD):' : isEs ? 'Monto total (USD):' : 'Total amount (USD):' }}<strong>${{ Number(a4PrintData.total_usd || 0).toFixed(2) }}</strong></p>
+          <p>{{ isZh ? '总计金额 (VES):' : isEs ? 'Monto total (VES):' : 'Total (VES):' }}<strong>Bs. {{ Number(a4PrintData.total_bs || 0).toFixed(2) }}</strong></p>
         </div>
       </div>
 
       <div class="a4-footer-note">
-        <p>备注：此报价单有效期 7 天，逾期价格可能随市场/汇率波动有所调整，敬请谅解。</p>
+        <p>{{ isZh ? '备注：此报价单有效期 7 天，逾期价格可能随市场/汇率波动有所调整，敬请谅解。' : isEs ? 'Válido por 7 días. Precios sujetos a cambio.' : 'Valid for 7 days. Prices subject to change.' }}</p>
       </div>
 
       <div class="a4-signatures">
         <div class="sign-box">
-          <p>客户确认签字:</p>
+          <p>{{ isZh ? '客户确认签字:' : isEs ? 'Firma Cliente:' : 'Client Signature:' }}</p>
           <div class="sign-line"></div>
         </div>
         <div class="sign-box">
-          <p>销售员签字 / 盖章:</p>
+          <p>{{ isZh ? '销售员签字 / 盖章:' : isEs ? 'Firma / Sello Vendedor:' : 'Seller Signature / Stamp:' }}</p>
           <div class="sign-line"></div>
         </div>
       </div>

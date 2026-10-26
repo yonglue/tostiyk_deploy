@@ -8,7 +8,7 @@
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
           <span>📦</span> {{ t.inventory.title }}
         </h2>
-        <p class="text-xs text-slate-500 mt-1">管理汽车配件的入库、出库、定价及多图档案。</p>
+        <p class="text-xs text-slate-500 mt-1">{{ isZh ? '管理汽车配件的入库、出库、定价及多图档案。' : isEs ? 'Gestión de entradas, salidas y precios.' : 'Manage stock in/out, pricing, and photos.' }}</p>
       </div>
     </div>
 

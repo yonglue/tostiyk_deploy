@@ -8,7 +8,7 @@
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
           <span>👥</span> {{ t.clients.title }}
         </h2>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">管理客户资料、赊账额度以及回款核销。</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '管理客户资料、赊账额度以及回款核销。' : isEs ? 'Gestión de clientes y créditos.' : 'Manage clients and credits.' }}</p>
       </div>
     </div>
 
@@ -71,13 +71,13 @@
                   class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </th>
-              <th class="py-4 px-6 w-1/4">客户 / 店铺</th>
-              <th class="py-4 px-4 w-24">类型</th>
-              <th class="py-4 px-4 w-32">电话</th>
-              <th class="py-4 px-4 w-1/4">地址</th>
+              <th class="py-4 px-6 w-1/4">{{ isZh ? '客户 / 店铺' : isEs ? 'Cliente / Tienda' : 'Client / Store' }}</th>
+              <th class="py-4 px-4 w-24">{{ isZh ? '类型' : isEs ? 'Tipo' : 'Type' }}</th>
+              <th class="py-4 px-4 w-32">{{ isZh ? '电话' : isEs ? 'Teléfono' : 'Phone' }}</th>
+              <th class="py-4 px-4 w-1/4">{{ isZh ? '地址' : isEs ? 'Dirección' : 'Address' }}</th>
               <th class="py-4 px-4 w-32">RIF</th>
-              <th class="py-4 px-4 w-24 text-right">欠款</th>
-              <th class="py-4 px-4 w-20 text-center">操作</th>
+              <th class="py-4 px-4 w-24 text-right">{{ isZh ? '欠款' : isEs ? 'Deuda' : 'Debt' }}</th>
+              <th class="py-4 px-4 w-20 text-center">{{ isZh ? '操作' : isEs ? 'Acción' : 'Action' }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
@@ -142,7 +142,7 @@
               <!-- 操作列 -->
               <td class="py-4 px-4 text-center whitespace-nowrap" @click.stop>
                 <div class="flex items-center justify-center gap-1.5">
-                  <button @click="downloadStatement(c)" class="text-xs bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800 px-2.5 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer" title="下载对账单">
+                  <button @click="downloadStatement(c)" class="text-xs bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800 px-2.5 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer" :title="isZh ? '下载对账单' : isEs ? 'Descargar estado' : 'Download Statement'">
                     📄
                   </button>
                   <button @click="$emit('delete-client', c)" class="text-xs bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 px-2.5 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
@@ -158,12 +158,11 @@
       <!-- 🌟 第四层：分页组件 -->
       <div v-if="totalPages > 1" class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4 text-xs">
         <span class="text-slate-500 dark:text-slate-400 font-medium">
-          显示第 <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> 到 <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredClients.length) }}</strong> 条，共 <strong class="text-slate-800 dark:text-slate-200">{{ filteredClients.length }}</strong> 个客户
-        </span>
+          {{ isZh ? '显示第' : isEs ? 'Mostrando' : 'Showing' }} <strong class="text-slate-800 dark:text-slate-200">{{ (currentPage - 1) * pageSize + 1 }}</strong> {{ isZh ? '到' : isEs ? 'a' : 'to' }} <strong class="text-slate-800 dark:text-slate-200">{{ Math.min(currentPage * pageSize, filteredClients.length) }}</strong> {{ isZh ? '条，共' : isEs ? 'de' : 'of' }} <strong class="text-slate-800 dark:text-slate-200">{{ filteredClients.length }}</strong>{{ isZh ? '个客户' : isEs ? 'Clientes' : 'Clients' }}</span>
         
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1 shadow-2xs">
-            <span class="text-slate-400 text-[11px]">跳转到</span>
+            <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
             <input 
               type="number" 
               min="1" 
@@ -176,9 +175,7 @@
             <button 
               @click="handleJumpPage" 
               class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
-            >
-              跳转
-            </button>
+            >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -186,9 +183,7 @@
               @click="currentPage--" 
               :disabled="currentPage === 1"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              上一页
-            </button>
+            >{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
             <span class="px-3 py-1 font-mono font-bold text-slate-700 dark:text-slate-300">
               {{ currentPage }} / {{ totalPages }}
             </span>
@@ -196,9 +191,7 @@
               @click="currentPage++" 
               :disabled="currentPage === totalPages"
               class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              下一页
-            </button>
+            >{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
           </div>
         </div>
       </div>
@@ -239,11 +232,11 @@
 
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div v-if="currentClient?.store_name">
-              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">店铺名称</p>
+              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</p>
               <p class="font-bold text-slate-800 dark:text-slate-200">{{ currentClient?.store_name }}</p>
             </div>
             <div :class="currentClient?.store_name ? '' : 'col-span-2'">
-              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">客户名称 (联系人)</p>
+              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</p>
               <p class="font-bold text-slate-800 dark:text-slate-200">{{ currentClient?.name }}</p>
             </div>
             <div>
@@ -266,7 +259,7 @@
               <p class="text-slate-700 dark:text-slate-300">{{ currentClient?.address || '-' }}</p>
             </div>
             <div class="col-span-2" v-if="currentClient?.notes">
-              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">备注</p>
+              <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ isZh ? '备注' : isEs ? 'Notas' : 'Notes' }}</p>
               <p class="text-slate-700 dark:text-slate-300 text-xs">{{ currentClient?.notes }}</p>
             </div>
           </div>
@@ -276,11 +269,11 @@
         <div v-else-if="drawerMode === 'edit'" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">客户名称 (联系人)</label>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</label>
               <input v-model="editForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">店铺名称</label>
+              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</label>
               <input v-model="editForm.store_name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
             </div>
           </div>
@@ -406,7 +399,7 @@
             :disabled="isSavingEdit"
             class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
           >
-            {{ isSavingEdit ? '保存中...' : '保存修改' }}
+            {{ isSavingEdit ? (isZh ? '保存中...' : isEs ? 'Guardando...' : 'Saving...') : (isZh ? '保存修改' : isEs ? 'Guardar cambios' : 'Save changes') }}
           </button>
         </div>
       </template>
@@ -417,17 +410,13 @@
       <!-- 🌟 终极单排操作舱 -->
       <div class="absolute bottom-0 inset-x-0 p-3 pb-safe bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 z-50">
         <button @click="switchToEdit" class="flex-1 h-10 flex items-center justify-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs transition-colors cursor-pointer">
-          <Edit3 :size="14" /> 编辑
-        </button>
+          <Edit3 :size="14" />{{ isZh ? '编辑' : isEs ? 'Editar' : 'Edit' }}</button>
         <button @click="onDeleteFromDrawer" class="flex-1 h-10 flex items-center justify-center gap-1 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-xl font-bold text-xs transition-colors cursor-pointer">
-          <Trash2 :size="14" /> 删除
-        </button>
+          <Trash2 :size="14" />{{ isZh ? '删除' : isEs ? 'Eliminar' : 'Delete' }}</button>
         <button @click="downloadStatement(currentClient)" class="flex-1 h-10 flex items-center justify-center gap-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl font-bold text-xs border border-indigo-100 dark:border-indigo-800 transition-colors cursor-pointer">
-          <FileText :size="14" /> 对账单
-        </button>
+          <FileText :size="14" />{{ isZh ? '对账单' : isEs ? 'Estado de cuenta' : 'Statement' }}</button>
         <button v-if="(currentClient?.debt || 0) > 0" @click="switchToRepay" class="flex-[1.2] h-10 flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-md shadow-emerald-500/20 transition-colors cursor-pointer">
-          <Banknote :size="16" data-testid="btn-open-repay" /> 收款
-        </button>
+          <Banknote :size="16" data-testid="btn-open-repay" />{{ isZh ? '收款' : isEs ? 'Cobro' : 'Collection' }}</button>
       </div>
 
     </SideDrawer>
@@ -439,13 +428,11 @@
         <!-- 头部 -->
         <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 shrink-0">
           <div>
-            <h3 class="font-extrabold text-base text-slate-900 dark:text-slate-100">客户历史对账单</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">客户：{{ currentClient?.store_name || currentClient?.name }} | RIF: {{ currentClient?.rif_or_cedula || '无' }}</p>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-slate-100">{{ isZh ? '客户历史对账单' : isEs ? 'Estado de cuenta histórico' : 'Historical Statement' }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">客户：{{ currentClient?.store_name || currentClient?.name }} | RIF: {{ currentClient?.rif_or_cedula || (isZh ? '无' : isEs ? 'Ninguno' : 'None') }}</p>
           </div>
           <div class="flex items-center gap-2">
-            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">
-              🖨️ 打印对账单
-            </button>
+            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">{{ isZh ? '🖨️ 打印对账单' : isEs ? '🖨️ Imprimir estado' : '🖨️ Print Statement' }}</button>
             <button @click="statementModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg font-bold p-1 cursor-pointer">✕</button>
           </div>
         </div>
@@ -454,17 +441,17 @@
         <div class="flex-1 overflow-y-auto p-6" id="statement-print-area">
           
           <div class="text-center pb-4 border-b border-slate-200 dark:border-slate-700 mb-4">
-            <h2 class="text-xl font-black text-slate-800 dark:text-slate-200">TOSTIKYK ERP - 历史对账单</h2>
+            <h2 class="text-xl font-black text-slate-800 dark:text-slate-200">{{ isZh ? 'TOSTIKYK ERP - 历史对账单' : isEs ? 'TOSTIKYK ERP - Estado de Cuenta' : 'TOSTIKYK ERP - Statement' }}</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">生成时间: {{ new Date().toLocaleString() }}</p>
           </div>
 
           <table class="w-full text-left border-collapse text-sm">
             <thead>
               <tr class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-400">
-                <th class="py-2 px-3">日期</th>
-                <th class="py-2 px-3">单号</th>
+                <th class="py-2 px-3">{{ isZh ? '日期' : isEs ? 'Fecha' : 'Date' }}</th>
+                <th class="py-2 px-3">{{ isZh ? '单号' : isEs ? 'Nro.' : 'No.' }}</th>
                 <th class="py-2 px-3">支付方式</th>
-                <th class="py-2 px-3 text-right">发生金额</th>
+                <th class="py-2 px-3 text-right">{{ isZh ? '发生金额' : isEs ? 'Monto' : 'Amount' }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -477,7 +464,7 @@
                 </td>
               </tr>
               <tr v-if="clientStatementList.length === 0">
-                <td colspan="4" class="py-10 text-center text-slate-400 dark:text-slate-500 text-xs">该客户暂无历史交易记录</td>
+                <td colspan="4" class="py-10 text-center text-slate-400 dark:text-slate-500 text-xs">{{ isZh ? '该客户暂无历史交易记录' : isEs ? 'Sin historial de transacciones' : 'No transaction history' }}</td>
               </tr>
             </tbody>
           </table>
@@ -485,7 +472,7 @@
           <!-- 底部汇总 -->
           <div class="mt-6 pt-4 border-t-2 border-dashed border-slate-300 dark:border-slate-600 flex justify-end">
             <div class="text-right space-y-2">
-              <p class="text-sm text-slate-600 dark:text-slate-400">当前未结欠款：<span class="font-black text-rose-600 dark:text-rose-400 text-lg font-mono">$ {{ (currentClient?.debt || 0).toFixed(2) }}</span></p>
+              <p class="text-sm text-slate-600 dark:text-slate-400">{{ isZh ? '当前未结欠款：' : isEs ? 'Deuda actual:' : 'Current debt:' }}<span class="font-black text-rose-600 dark:text-rose-400 text-lg font-mono">$ {{ (currentClient?.debt || 0).toFixed(2) }}</span></p>
               <p class="text-xs text-slate-400 dark:text-slate-500 font-mono">按当前 BCV 折合: Bs. {{ ((currentClient?.debt || 0) * bcvRate).toFixed(2) }}</p>
             </div>
           </div>

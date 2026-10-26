@@ -462,17 +462,17 @@
           <p>Tel: +58 412-0000000</p>
         </div>
         <div class="document-info">
-          <h2>采购入库单</h2>
-          <p><strong>单号:</strong> {{ a4PrintData.po_no }}</p>
-          <p><strong>日期:</strong> {{ formatDate(a4PrintData.created_at) }}</p>
+          <h2>{{ isZh ? '采购入库单' : isEs ? 'Orden de Entrada' : 'Inbound Order' }}</h2>
+          <p><strong>{{ isZh ? '单号:' : isEs ? 'Nro:' : 'No:' }}</strong> {{ a4PrintData.po_no }}</p>
+          <p><strong>{{ isZh ? '日期:' : isEs ? 'Fecha:' : 'Date:' }}</strong> {{ formatDate(a4PrintData.created_at) }}</p>
         </div>
       </div>
 
       <div class="a4-parties">
         <div class="supplier-box">
-          <h3>供应商信息</h3>
-          <p><strong>名称:</strong> {{ getSupplierName(a4PrintData.supplier_id) }}</p>
-          <p><strong>状态:</strong> {{ a4PrintData.status === 'PENDING' ? '待收货' : a4PrintData.status === 'received' ? '已入库' : '已作废' }}</p>
+          <h3>{{ isZh ? '供应商信息' : isEs ? 'Info Proveedor' : 'Supplier Info' }}</h3>
+          <p><strong>{{ isZh ? '名称:' : isEs ? 'Nombre:' : 'Name:' }}</strong> {{ getSupplierName(a4PrintData.supplier_id) }}</p>
+          <p><strong>{{ isZh ? '状态:' : isEs ? 'Estado:' : 'Status:' }}</strong> {{ a4PrintData.status === 'PENDING' ? '待收货' : a4PrintData.status === 'received' ? '已入库' : '已作废' }}</p>
         </div>
       </div>
 
@@ -480,9 +480,9 @@
         <thead>
           <tr>
             <th width="5%">#</th>
-            <th width="40%">商品名称 / 描述</th>
-            <th width="20%">OEM 编号</th>
-            <th width="10%">数量</th>
+            <th width="40%">{{ isZh ? '商品名称 / 描述' : isEs ? 'Nombre / Descripción' : 'Name / Description' }}</th>
+            <th width="20%">{{ isZh ? 'OEM 编号' : isEs ? 'Código OEM' : 'OEM No.' }}</th>
+            <th width="10%">{{ isZh ? '数量' : isEs ? 'Cantidad' : 'Qty' }}</th>
             <th width="12%">单价 (USD)</th>
             <th width="13%">小计 (USD)</th>
           </tr>
@@ -501,18 +501,18 @@
 
       <div class="a4-totals">
         <div class="total-box">
-          <p>总计金额 (USD): <strong>${{ Number(a4PrintData.total_amount_usd || 0).toFixed(2) }}</strong></p>
-          <p>总计金额 (VES): <strong>Bs. {{ Number((a4PrintData.total_amount_usd || 0) * bcvRate).toFixed(2) }}</strong></p>
+          <p>{{ isZh ? '总计金额 (USD):' : isEs ? 'Monto total (USD):' : 'Total amount (USD):' }}<strong>${{ Number(a4PrintData.total_amount_usd || 0).toFixed(2) }}</strong></p>
+          <p>{{ isZh ? '总计金额 (VES):' : isEs ? 'Monto total (VES):' : 'Total (VES):' }}<strong>Bs. {{ Number((a4PrintData.total_amount_usd || 0) * bcvRate).toFixed(2) }}</strong></p>
         </div>
       </div>
 
       <div class="a4-signatures">
         <div class="sign-box">
-          <p>交货人签字:</p>
+          <p>{{ isZh ? '交货人签字:' : isEs ? 'Firma quien entrega:' : 'Deliverer Signature:' }}</p>
           <div class="sign-line"></div>
         </div>
         <div class="sign-box">
-          <p>收货人签字 / 盖章:</p>
+          <p>{{ isZh ? '收货人签字 / 盖章:' : isEs ? 'Firma / Sello receptor:' : 'Receiver Signature / Stamp:' }}</p>
           <div class="sign-line"></div>
         </div>
       </div>

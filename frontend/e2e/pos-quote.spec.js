@@ -97,7 +97,7 @@ test.describe('POS 核心业务与打印闭环', () => {
     
     // 去历史记录补打
     await page.getByRole('button', { name: /销售历史与退货|Historial/i }).click()
-    const previewBtn = page.getByRole('button', { name: /显示小票|Vista Previa/i }).first()
+    const previewBtn = page.getByRole('button', { name: /显示小票|Mostrar recibo|Show Receipt/i }).first()
     await expect(previewBtn).toBeVisible()
     await previewBtn.click()
     

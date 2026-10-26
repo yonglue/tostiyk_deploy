@@ -15,8 +15,7 @@
         <Cpu :size="48" />
       </div>
       <h1 class="text-5xl font-black text-slate-800 dark:text-white tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-slate-400">TOSTIYK ERP</h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-5 max-w-md text-center leading-relaxed text-lg font-medium">
-        全渠道汽车配件商业管理系统。<br><span class="text-sm">库存、收银、财务，一站式掌控。</span>
+      <p class="text-slate-500 dark:text-slate-400 mt-5 max-w-md text-center leading-relaxed text-lg font-medium">{{ isZh ? '全渠道汽车配件商业管理系统。' : isEs ? 'Sistema ERP Multimoneda para Autopartes.' : 'Multi-currency Auto Parts ERP.' }}<br><span class="text-sm">{{ isZh ? '库存、收银、财务，一站式掌控。' : isEs ? 'Inventario, Caja y Finanzas en un solo lugar.' : 'Inventory, POS, and Finance in one place.' }}</span>
       </p>
     </div>
 
@@ -29,22 +28,22 @@
 
         <div v-if="isChecking" class="py-16 flex flex-col items-center text-slate-400">
           <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <span class="text-xs font-mono">正在检测系统状态...</span>
+          <span class="text-xs font-mono">{{ isZh ? '正在检测系统状态...' : isEs ? 'Comprobando estado...' : 'Checking status...' }}</span>
         </div>
 
         <div v-else-if="needsSetup">
           <div class="mb-7">
-            <h2 class="text-2xl font-black text-blue-600 dark:text-blue-400">🚀 欢迎使用</h2>
-            <p class="text-xs text-slate-500 mt-1.5">这是系统的首次启动，请设置您的超级管理员账号。</p>
+            <h2 class="text-2xl font-black text-blue-600 dark:text-blue-400">{{ isZh ? '🚀 欢迎使用' : isEs ? '🚀 Bienvenido' : '🚀 Welcome' }}</h2>
+            <p class="text-xs text-slate-500 mt-1.5">{{ isZh ? '这是系统的首次启动，请设置您的超级管理员账号。' : isEs ? 'Primer inicio. Configure su super administrador.' : 'First start. Setup super admin.' }}</p>
           </div>
           <form @submit.prevent="handleSetupWrapper" class="space-y-5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">管理员账号</label>
-              <input ref="setupUsernameRef" v-model="setupForm.username" type="text" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasSetupUsernameError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" placeholder="默认使用 admin" @input="hasSetupUsernameError = false; setupError = ''" />
+              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">{{ isZh ? '管理员账号' : isEs ? 'Usuario Admin' : 'Admin Account' }}</label>
+              <input ref="setupUsernameRef" v-model="setupForm.username" type="text" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasSetupUsernameError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" placeholder="{{ isZh ? '默认使用 admin' : isEs ? 'Usar admin por defecto' : 'Default use admin' }}" @input="hasSetupUsernameError = false; setupError = ''" />
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">设置密码</label>
-              <input ref="setupPasswordRef" v-model="setupForm.password" type="password" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasSetupPasswordError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" placeholder="请输入强密码" @input="hasSetupPasswordError = false; setupError = ''" />
+              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">{{ isZh ? '设置密码' : isEs ? 'Configurar contraseña' : 'Set Password' }}</label>
+              <input ref="setupPasswordRef" v-model="setupForm.password" type="password" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasSetupPasswordError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" placeholder="{{ isZh ? '请输入强密码' : isEs ? 'Ingrese contraseña fuerte' : 'Enter strong password' }}" @input="hasSetupPasswordError = false; setupError = ''" />
             </div>
             <button type="submit" :disabled="isSubmittingSetup" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-sm shadow-xl transition-all active:scale-[0.98]">{{ isSubmittingSetup ? '正在初始化...' : '完成设置并进入系统' }}</button>
           </form>
@@ -53,18 +52,18 @@
         <div v-else>
           <div class="mb-7 sm:mb-9">
             <h2 class="text-2xl font-black text-slate-800 dark:text-white">{{ isZh ? '欢迎回来' : isEs ? 'Bienvenido' : 'Welcome Back' }}</h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">请输入您的管理员凭证进入系统</p>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">{{ isZh ? '请输入您的管理员凭证进入系统' : isEs ? 'Ingrese sus credenciales' : 'Enter your credentials' }}</p>
           </div>
           <form @submit.prevent="handleLoginWrapper" class="space-y-5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">管理员账号</label>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">{{ isZh ? '管理员账号' : isEs ? 'Usuario Admin' : 'Admin Account' }}</label>
               <input ref="usernameInputRef" v-model="loginForm.username" type="text" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasUsernameError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" @input="hasUsernameError = false; loginError = ''" />
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">密码</label>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">{{ isZh ? '密码' : isEs ? 'Contraseña' : 'Password' }}</label>
               <input ref="passwordInputRef" v-model="loginForm.password" type="password" :class="['w-full bg-slate-100/70 dark:bg-slate-950/50 border rounded-2xl px-4 py-3 text-sm outline-none transition-all duration-300 focus:ring-4', hasPasswordError ? 'input-error border-rose-500 ring-rose-500/10 animate-shake' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500/10']" @input="hasPasswordError = false; loginError = ''" />
             </div>
-            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-sm shadow-xl transition-all active:scale-[0.98]">安全登录</button>
+            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-sm shadow-xl transition-all active:scale-[0.98]">{{ isZh ? '安全登录' : isEs ? 'Iniciar Sesión' : 'Secure Login' }}</button>
           </form>
         </div>
       </div>

@@ -6,7 +6,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
     <header class="px-5 pt-6 pb-4 flex items-center justify-between">
       <div>
         <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{{ todayDate }}</p>
-        <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-0.5">TOSTIYK 驾驶舱</h1>
+        <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-0.5">{{ isZh ? 'TOSTIYK 驾驶舱' : isEs ? 'Cabina TOSTIYK' : 'TOSTIYK Cockpit' }}</h1>
       </div>
       <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/30">
         {{ userInitial }}
@@ -47,7 +47,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
               <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-blue-500/20 blur-3xl"></div>
               <div class="relative flex flex-col justify-between h-full">
                 <div>
-                  <p class="text-[11px] font-bold text-blue-300/80 uppercase tracking-widest">库存总资产 (USD)</p>
+                  <p class="text-[11px] font-bold text-blue-300/80 uppercase tracking-widest">{{ isZh ? '库存总资产 (USD)' : isEs ? 'Valor del inventario (USD)' : 'Total Inventory (USD)' }}</p>
                   <h2 class="text-4xl font-black text-white mt-1 font-mono tabular-nums tracking-tight">
                     $ {{ formatMoney(stats.totalAssetUSD) }}
                   </h2>
@@ -56,7 +56,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
                   </p>
                 </div>
                 <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-                  <span class="text-slate-400">潜在销售额</span>
+                  <span class="text-slate-400">{{ isZh ? '潜在销售额' : isEs ? 'Ventas potenciales' : 'Potential Sales' }}</span>
                   <span class="text-emerald-400 font-mono font-bold tabular-nums">$ {{ formatMoney(stats.totalRetailUSD) }}</span>
                 </div>
               </div>
@@ -75,16 +75,16 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-1.5 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">应收欠款</p>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{{ isZh ? '应收欠款' : isEs ? 'Cuentas por cobrar' : 'Receivables' }}</p>
           </div>
           <p class="text-xl font-black text-rose-600 dark:text-rose-400 font-mono tabular-nums">$ {{ formatMoney(stats.totalDebt) }}</p>
         </div>
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-1.5 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">库存预警</p>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{{ isZh ? '库存预警' : isEs ? 'Alerta de stock' : 'Stock Alert' }}</p>
           </div>
-          <p class="text-xl font-black text-amber-600 dark:text-amber-400 font-mono tabular-nums">{{ stats.lowStock }} <span class="text-xs font-medium text-slate-400">项</span></p>
+          <p class="text-xl font-black text-amber-600 dark:text-amber-400 font-mono tabular-nums">{{ stats.lowStock }} <span class="text-xs font-medium text-slate-400">{{ isZh ? '项' : isEs ? 'ítems' : 'items' }}</span></p>
         </div>
       </section>
 
@@ -95,7 +95,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
               <TrendingUp :size="18" class="text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">预估销售利润</p>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ isZh ? '预估销售利润' : isEs ? 'Beneficio estimado' : 'Estimated Profit' }}</p>
               <p class="text-base font-black text-slate-800 dark:text-slate-100 font-mono tabular-nums mt-0.5">$ {{ formatMoney(stats.totalRetailUSD - stats.totalAssetUSD) }}</p>
             </div>
           </div>
@@ -105,8 +105,8 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
 
       <section class="px-5 mt-6">
         <div class="flex items-center justify-between mb-3 ml-1">
-          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">最近动态</h3>
-          <button @click="$parent.activeTab = 'transactions'" class="text-[10px] font-bold text-blue-500">查看全部</button>
+          <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ isZh ? '最近动态' : isEs ? 'Actividad reciente' : 'Recent Activity' }}</h3>
+          <button @click="$parent.activeTab = 'transactions'" class="text-[10px] font-bold text-blue-500">{{ isZh ? '查看全部' : isEs ? 'Ver todo' : 'View All' }}</button>
         </div>
         <div class="space-y-2">
           <div v-for="tx in recentTxs" :key="tx.id" class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -125,7 +125,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
               {{ tx.type === 'IN' ? '+' : '-' }}{{ tx.quantity }}
             </p>
           </div>
-          <div v-if="recentTxs.length === 0" class="text-center py-4 text-xs text-slate-400">今日暂无动态</div>
+          <div v-if="recentTxs.length === 0" class="text-center py-4 text-xs text-slate-400">{{ isZh ? '今日暂无动态' : isEs ? 'Sin actividad hoy' : 'No activity today' }}</div>
         </div>
       </section>
     </template>
