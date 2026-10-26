@@ -42,24 +42,23 @@ test.describe('移动端主流程 (iPhone 14 Pro 模拟)', () => {
   test('产品详情页滑入与手势返回', async ({ page }) => {
     // 1. 进入产品页
     await page.locator('nav button').filter({ hasText: /产品|Productos|Products/ }).click()
-    await expect(page.getByPlaceholder(/搜索 OEM|Buscar OEM|Search OEM/)).toBeVisible()
     
-    // 2. 等待数据加载（找到商品名为 TK-12345 的卡片）
+    // 2. 找到搜索框并输入 OEM，强制过滤出我们注入的商品
+    const searchInput = page.getByPlaceholder(/搜索 OEM|Buscar OEM|Search OEM/i)
+    await expect(searchInput).toBeVisible({ timeout: 10000 })
+    await searchInput.fill('TK-12345')
+    await page.waitForTimeout(1500) // 等待防抖或接口返回
+
+    // 3. 找到商品卡片并点击（如果找不到会直接抛错红掉，而不是跳过）
     const testCard = page.locator('div').filter({ hasText: 'TK-12345' }).last()
+    await expect(testCard).toBeVisible({ timeout: 10000 })
+    await testCard.click()
+
+    // 4. 详情页断言与返回
+    const backBtn = page.locator('header button').first()
+    await expect(backBtn).toBeVisible({ timeout: 5000 })
     
-    // 如果列表里有数据，则点击并测试滑入
-    if (await testCard.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await testCard.click()
-      
-      // 3. 详情页会有一个左上角的返回按钮，我们用它来断言
-      const backBtn = page.locator('header button').first()
-      await expect(backBtn).toBeVisible({ timeout: 5000 })
-      
-      // 4. 点击返回，回到列表页
-      await backBtn.click()
-      await expect(page.getByPlaceholder(/搜索 OEM|Buscar OEM|Search OEM/)).toBeVisible()
-    } else {
-      test.skip(true, '产品列表为空，跳过测试')
-    }
+    await backBtn.click()
+    await expect(searchInput).toBeVisible()
   })
 })

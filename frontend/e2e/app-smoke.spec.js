@@ -58,7 +58,7 @@ test('主题能在 light / dark 间切换', async ({ page }) => {
   await login(page)
 
   // 现在的主题切换器只有一个按钮，我们通过 aria-label 或 class 来定位它
-  const themeBtn = page.locator('button[title*="点击切换"]')
+  const themeBtn = page.locator('[data-testid="theme-toggle"]')
   
   // 1. 强行切到深色模式
   // 因为它是循环的（Light -> Dark -> System），我们点两次确保到达 Dark

@@ -59,3 +59,15 @@ frontend/*.pem
 
 # 运行日志
 *.log
+
+# --- 清理与防呆规则 ---
+*.log
+*.bak
+frontend/test-results/
+frontend/playwright-report/
+frontend/dist/
+*.py
+!app/**/*.py
+!scripts/*.py
+!tests/*.py
+translations_*.json

@@ -1,6 +1,7 @@
 <!-- src/components/ThemeSwitcher.vue -->
 <template>
   <button
+    data-testid="theme-toggle"
     @click="toggleThemeWithTransition($event)"
     class="group relative flex items-center justify-center w-10 h-10 rounded-2xl
            border border-slate-200/80 dark:border-slate-700/60
