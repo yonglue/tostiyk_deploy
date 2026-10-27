@@ -31,27 +31,30 @@ test('admin 登录后进入主界面', async ({ page }) => {
   await login(page)
 })
 
+// 🌟 侧边栏激活态 class：跨版本兼容
+// 老版本 bg-blue-600（实心蓝），新版本 bg-blue-50/80（浅蓝）+ text-blue-700（深蓝文字）
+// 用宽松正则同时兼容，避免主题升级反复修测试
+const ACTIVE_CLASS_RE = /bg-blue-(?:600|50\/80)/
+
 test('侧边栏能切换 tab 且激活状态正确', async ({ page }) => {
   await login(page)
 
   // 初始应该在 Dashboard
   const dashboardBtn = page.locator('[data-testid="nav-dashboard"]')
-  await expect(dashboardBtn).toHaveClass(/bg-blue-600/)
+  await expect(dashboardBtn).toHaveClass(ACTIVE_CLASS_RE)
 
   // 切到商品库存 (Parts)
   const partsBtn = page.locator('[data-testid="nav-parts"]')
   await partsBtn.click()
-  
-  // 断言：Parts 按钮变为激活状态 (蓝色背景)
-  await expect(partsBtn).toHaveClass(/bg-blue-600/)
-  // 断言：原 Dashboard 按钮失去激活状态
-  await expect(dashboardBtn).not.toHaveClass(/bg-blue-600/)
+
+  await expect(partsBtn).toHaveClass(ACTIVE_CLASS_RE)
+  await expect(dashboardBtn).not.toHaveClass(ACTIVE_CLASS_RE)
 
   // 切到客户与账本 (Clients)
   const clientsBtn = page.locator('[data-testid="nav-clients"]')
   await clientsBtn.click()
-  await expect(clientsBtn).toHaveClass(/bg-blue-600/)
-  await expect(partsBtn).not.toHaveClass(/bg-blue-600/)
+  await expect(clientsBtn).toHaveClass(ACTIVE_CLASS_RE)
+  await expect(partsBtn).not.toHaveClass(ACTIVE_CLASS_RE)
 })
 
 test('主题能在 light / dark 间切换', async ({ page }) => {

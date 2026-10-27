@@ -1332,7 +1332,7 @@ const selectAndAddToCart = (part) => {
       name: part.name,
       brand: part.brand || 'GENERAL',
       price: part.price,
-      tax_rate: part.tax_rate ?? 0.16,
+      tax_rate: part.tax_rate ?? 0.16, // 🌟 确保正确读取商品档案中的税率（0.16, 0.08, 0）
       quantity: 1
     })
   }
@@ -1520,6 +1520,11 @@ const openPreviewModal = () => {
     client_rif: quoteClientRif.value || '', 
     cashier: props.currentUser?.username || 'Admin',
     exchange_rate: props.bcvRate || 0,
+    
+    // 🌟 关键补齐：把 Base Imponible 和 IVA 明确传过去
+    subtotal: totalBaseUsd.value,
+    iva: totalTaxUsd.value,
+
     change: Math.max(0, (
       (paymentSplit.value.cashUsd || 0) + 
       ((paymentSplit.value.cardPos || 0) / (props.bcvRate || 1)) + 
@@ -1532,7 +1537,8 @@ const openPreviewModal = () => {
       name: item.name,
       oem: item.oem || item.part_oem || '',
       quantity: item.quantity,
-      price: item.price
+      price: item.price,
+      tax_rate: item.tax_rate ?? 0.16 // 🌟 显式把税率带上
     })),
     base_usd: totalBaseUsd.value,
     tax_usd: totalTaxUsd.value,
@@ -1589,7 +1595,14 @@ const confirmAndPrint = async (overridePin = null) => {
       payment_reference: paymentReference.value,
       bcv_rate: props.bcvRate,
       igtf_amount: igtfAmountUsd.value,
-      items: props.cartItems.map(i => ({ oem: i.oem, name: i.name, brand: i.brand || "GENERAL", quantity: i.quantity, price: i.price }))
+      items: props.cartItems.map(i => ({ 
+        oem: i.oem, 
+        name: i.name, 
+        brand: i.brand || "GENERAL", 
+        quantity: i.quantity, 
+        price: i.price,
+        tax_rate: i.tax_rate ?? 0.16 // 🌟 确保后端数据库记录订单明细时也能拿到正确税率
+      }))
     }
 
     if (overridePin) {
@@ -1639,9 +1652,10 @@ const confirmAndPrint = async (overridePin = null) => {
       
       items: props.cartItems.map(item => ({
         name: item.name,
-        oem: item.oem || item.part_oem || '', // 确保 SKU 传递
+        oem: item.oem || '',
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        tax_rate: item.tax_rate ?? 0.16 // 🌟 让 WebSocket 代理能够按商品独立识别 8%、16% 或 0%
       })),
       
       base_usd: totalBaseUsd.value,
@@ -1652,35 +1666,40 @@ const confirmAndPrint = async (overridePin = null) => {
       reference: paymentReference.value
     }
 
-    // 🌟 2. 发送给打印机（传入刚组装好的数据）
-    await autoPrintReceipt(printData.value)
-
-    // 🌟 3. 打印完成后，再关闭弹窗、显示成功动画
+    // 🌟 2. 先关弹窗、反馈成功（不依赖打印）
+    // 修复：之前 await 打印会因后端 /api/printer/receipt 阻塞而卡住订单完成流程
+    // 生产收益：print-agent 挂掉时收银员仍能继续开单（只是没纸票）
     previewModalVisible.value = false
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
 
     showToast(`✅ ${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
 
-    const pendingQid = localStorage.getItem('pending_quotation_id')
-    if (pendingQid && data.order_id) {
-      try {
-        await apiFetch(`/api/quotations/${pendingQid}/mark-converted`, {
-          method: 'POST',
-          body: JSON.stringify({ order_id: data.order_id })
-        })
-      } catch (e) {}
-      localStorage.removeItem('pending_quotation_id')
-    }
-
-    // 🌟 4. 最后清理界面状态
+    // 🚀 立即清空购物车（双保险）：不依赖任何后续异步
+    // 历史问题：清空放在最后，pendingQid 的 await / fetchCompletedOrders 挂住就清不掉
+    props.cartItems.splice(0, props.cartItems.length)
+    emit('clear-cart')
     paymentReference.value = ''
     quoteClientName.value = ''
     quoteClientId.value = null
     quoteClientRif.value = ''
     emit('generate-quote')
-    fetchCompletedOrders()
-    emit('clear-cart')
+
+    // 后台任务（全部 fire-and-forget，失败不影响已完成的订单）
+    autoPrintReceipt(printData.value).catch(err => {
+      console.warn('打印失败（不影响订单完成）:', err)
+    })
+
+    const pendingQid = localStorage.getItem('pending_quotation_id')
+    if (pendingQid && data.order_id) {
+      apiFetch(`/api/quotations/${pendingQid}/mark-converted`, {
+        method: 'POST',
+        body: JSON.stringify({ order_id: data.order_id })
+      }).catch(() => {}).finally(() => {
+        localStorage.removeItem('pending_quotation_id')
+      })
+    }
+    fetchCompletedOrders().catch(() => {})
 
   } catch (err) { 
     showToast(err.message || tExt.value.toastCheckoutError, 'error') 
@@ -1975,13 +1994,18 @@ const autoPrintReceipt = async (receiptData) => {
       client_name: receiptData.client_name || 'Contado',
       operator: receiptData.cashier || receiptData.operator || 'Admin',
       items: receiptData.items || [],
+      
+      // 🌟 关键补齐：让 WebSocket 代理拿到准确的税额和净额
+      subtotal: receiptData.base_usd || receiptData.subtotal || 0,
+      iva: receiptData.tax_usd || receiptData.iva || 0,
+
       total_usd: receiptData.total_usd || 0,
       total_bs: receiptData.total_bs || 0,
       payment: receiptData.payment || {}
     }).then(() => console.log('✅ WebSocket 打印成功'))
       .catch(err => console.warn('WebSocket 打印失败:', err.message));
       
-    return; // 🌟 拦截后续的 iframe 浏览器打印弹窗
+    return; 
   }
 
   try {
