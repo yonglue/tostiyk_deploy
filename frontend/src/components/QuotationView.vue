@@ -26,6 +26,16 @@
         <span class="text-white text-xs px-2.5 py-1 rounded-lg font-mono font-bold shadow-2xs bg-amber-500">
           QUOTE v1.0
         </span>
+        <!-- 🖨️ 打印状态指示灯 (打印机图标版) -->
+        <div class="flex items-center justify-center p-1 cursor-pointer transition-all"
+             :title="isConnected ? '打印机已连接' : '⚠️ 打印服务离线，点击查看修复方法'"
+             @click="!isConnected && alert('⚠️ 打印服务已离线！请检查后台代理程序，或双击桌面的“一键修复打印.bat”。')">
+          <svg class="w-5 h-5 transition-colors duration-300" 
+               :class="isConnected ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500'" 
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+        </div>
         <span class="text-sm font-bold text-slate-700 dark:text-slate-300">📅 {{ currentDateTime }}</span>
         <span class="text-sm text-emerald-600 font-mono font-bold">{{ t.dashboard.bcvLabel }}: {{ bcvRate }}</span>
       </div>
@@ -281,6 +291,9 @@
 </template> <!-- 这是 template 的结束标签，只能有一个 -->
 
 <script setup>
+import { usePrintAgent } from '../composables/usePrintAgent'
+const { isConnected } = usePrintAgent()
+
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useI18n } from '../composables/useI18n'

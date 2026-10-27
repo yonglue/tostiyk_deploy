@@ -851,3 +851,37 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
 })
 </script>
+
+@media print {
+  /* 隐藏 Vue 主界面上的所有东西 */
+  body, html, #app, .fixed, main, header, footer, nav {
+    visibility: hidden !important;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* 只让打印区域显示出来 */
+  #print-section, #print-section * {
+    visibility: visible !important;
+  }
+
+  /* 强制置顶、去边距，适配 80mm 纸 */
+  #print-section {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 80mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    display: block !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 12px !important;
+    color: #000 !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0mm; 
+  }
+}

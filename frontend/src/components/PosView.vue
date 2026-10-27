@@ -26,6 +26,16 @@
         <span class="text-white text-xs px-2.5 py-1 rounded-lg font-mono font-bold shadow-2xs transition-colors bg-blue-600">
           POS v3.1
         </span>
+        <!-- 🖨️ 打印状态指示灯 (打印机图标版) -->
+        <div class="flex items-center justify-center p-1 cursor-pointer transition-all"
+             :title="isConnected ? '打印机已连接' : '⚠️ 打印服务离线，点击查看修复方法'"
+             @click="!isConnected && alert('⚠️ 打印服务已离线！请检查后台代理程序，或双击桌面的“一键修复打印.bat”。')">
+          <svg class="w-5 h-5 transition-colors duration-300" 
+               :class="isConnected ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500'" 
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+        </div>
         <span class="text-sm font-bold text-slate-700 dark:text-slate-300">📅 {{ currentDateTime }}</span>
         <span class="text-sm text-emerald-600 font-mono font-bold">{{ t.dashboard.bcvLabel }}: {{ bcvRate }}</span>
         
@@ -740,6 +750,7 @@ const isEs = computed(() => currentLang.value === 'es')
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useI18n } from '../composables/useI18n'
+import { usePrintAgent } from '../composables/usePrintAgent'
 import ConfirmDialog from './ConfirmDialog.vue'
 import PosHelpModal from './pos/PosHelpModal.vue'
 import PosHistoryModal from './pos/PosHistoryModal.vue'
@@ -1539,6 +1550,7 @@ const openPreviewModal = () => {
 }
 
 const isSubmitting = ref(false)
+const { isConnected, printReceipt } = usePrintAgent()
 const printData = ref(null)
 
 const showPinModal = ref(false)
@@ -1936,6 +1948,25 @@ const generateReceiptHtml = (receiptData) => {
 }
 
 const autoPrintReceipt = async (receiptData) => {
+  // 🚀 优先使用本地 WebSocket 代理打印
+  if (isConnected.value) {
+    printReceipt({
+      lang: 'zh',
+      companyName: 'Tostiyk ERP 官方店',
+      order_no: receiptData.order_no || '-',
+      date: new Date().toLocaleString(),
+      client_name: receiptData.client_name || 'Contado',
+      operator: receiptData.operator || 'Admin',
+      items: receiptData.items || [],
+      total_usd: receiptData.total_usd || 0,
+      total_bs: receiptData.total_bs || 0,
+      payment: receiptData.payment || {}
+    }).then(() => console.log('✅ WebSocket 打印成功'))
+      .catch(err => console.warn('WebSocket 打印失败:', err.message));
+      
+    return; // 🌟 拦截后续的 iframe 浏览器打印弹窗
+  }
+
   try {
     await apiFetch('/api/printer/receipt', {
       method: 'POST',
