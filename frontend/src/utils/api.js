@@ -83,12 +83,20 @@ const notifyAuthExpired = () => {
   }
 }
 
+// 🌟 4.3.3：离线入队钩子（由 OfflineIndicator 在 mount 时注入）
+// 用依赖注入而不用 import useOfflineQueue，避免循环依赖：
+//   useOfflineQueue.flush → apiFetch → useOfflineQueue
+let _offlineEnqueue = null
+export const setOfflineEnqueue = (fn) => { _offlineEnqueue = fn }
+
 export const apiFetch = async (url, options = {}) => {
   const token = getToken()
 
   // 新增：支持 silent 模式，例如后台轮询、心跳请求不需要全局弹窗
   const silent = options.silent || false
   delete options.silent
+  const offline = options.offline || null
+  delete options.offline
 
   // FormData 必须让浏览器自动带 multipart boundary，不能手动指定 Content-Type
   const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
@@ -113,6 +121,31 @@ export const apiFetch = async (url, options = {}) => {
       headers
     })
   } catch (error) {
+    // 🌟 4.3.3：显式要求离线入队 + 网络失败 → 入队 + 返回合成 202
+    if (offline && offline.queueOnFail && _offlineEnqueue) {
+      try {
+        let payload = {}
+        try {
+          payload = typeof options.body === 'string' ? JSON.parse(options.body) : {}
+        } catch (_) { payload = {} }
+        const queued = await _offlineEnqueue({
+          ...payload,
+          _url: url,
+          _method: options.method || 'GET',
+        })
+        return new Response(
+          JSON.stringify({
+            status: 'QUEUED',
+            local_id: queued.local_id,
+            request_id: queued.request_id,
+            order_no: `LOCAL-${String(queued.local_id).slice(0, 8)}`,
+          }),
+          { status: 202, headers: { 'Content-Type': 'application/json' } },
+        )
+      } catch (enqErr) {
+        // 入队本身失败：放行到下面的原始错误处理
+      }
+    }
     // 新增：网络断开或跨域失败
     if (!silent) {
       window.dispatchEvent(new CustomEvent('api:global-error', {

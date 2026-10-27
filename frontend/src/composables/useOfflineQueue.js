@@ -18,6 +18,22 @@ function _newLocalId() {
   return `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 }
 
+/**
+ * 模块级 enqueue：不依赖 composable 实例，可被 apiFetch 直接注入。
+ * 与 useOfflineQueue().enqueue 逻辑一致，后者只是加了 refreshCount。
+ */
+export async function enqueueToOffline(payload) {
+  const localId = payload.local_id || _newLocalId()
+  const item = {
+    ...payload,
+    local_id: localId,
+    request_id: payload.request_id || localId,
+    enqueued_at: payload.enqueued_at || new Date().toISOString(),
+  }
+  await putOrder(item)
+  return item
+}
+
 export function useOfflineQueue() {
   const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
   const pendingCount = ref(0)
@@ -39,15 +55,7 @@ export function useOfflineQueue() {
   }
 
   async function enqueue(payload) {
-    const localId = payload.local_id || _newLocalId()
-    const item = {
-      ...payload,
-      local_id: localId,
-      // 幂等键：优先用调用方传入的，否则复用 local_id（保证同步时前后端一致）
-      request_id: payload.request_id || localId,
-      enqueued_at: payload.enqueued_at || new Date().toISOString(),
-    }
-    await putOrder(item)
+    const item = await enqueueToOffline(payload)
     await refreshCount()
     return item
   }

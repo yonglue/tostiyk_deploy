@@ -17,7 +17,8 @@
 import { computed, onMounted, onUnmounted } from 'vue'
 import { Wifi, WifiOff, RefreshCw } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'
-import { useOfflineQueue } from '../composables/useOfflineQueue'
+import { useOfflineQueue, enqueueToOffline } from '../composables/useOfflineQueue'
+import { setOfflineEnqueue } from '../utils/api'
 
 const { currentLang } = useI18n()
 const isZh = computed(() => currentLang.value === 'zh')
@@ -25,7 +26,10 @@ const isEs = computed(() => currentLang.value === 'es')
 
 const { isOnline, pendingCount, syncing, flush, init, destroy } = useOfflineQueue()
 
-onMounted(() => { init() })
+onMounted(() => {
+  setOfflineEnqueue(enqueueToOffline)
+  init()
+})
 onUnmounted(() => { destroy() })
 
 const iconEl = computed(() => {
