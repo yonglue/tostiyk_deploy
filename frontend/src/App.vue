@@ -113,7 +113,7 @@
           <AuditLogsView v-else-if="activeTab === 'audit_logs' && hasPermission('users:manage')" />
           <CashRegisterView v-else-if="activeTab === 'cash_register' && hasPermission('shift:report')" />
           <PartsView 
-            v-else-if="activeTab === 'parts' && hasPermission('parts:view')"
+            v-else-if="activeTab === 'parts' && isPluginEnabled('auto_parts') && hasPermission('parts:view')"
             :partsList="partsList"
             v-model:searchQuery="searchQuery"
             v-model:selectedBrand="selectedBrand"
@@ -148,7 +148,7 @@
             @change-page="onTransactionsChangePage"
           />
           <InventoryAuditView 
-            v-else-if="activeTab === 'inventory_audit' && hasPermission('parts:manage')" 
+            v-else-if="activeTab === 'inventory_audit' && isPluginEnabled('auto_parts') && hasPermission('parts:manage')" 
           />
           
           <!-- 挂载报价单列表 -->
@@ -571,6 +571,7 @@ const InventoryAuditView = defineAsyncComponent(() => import('./components/Inven
 
 import { apiFetch, apiUrl } from './utils/api'
 import { useExports } from './composables/useExports'
+import { usePlugins } from './composables/usePlugins'
 import { useTxActions } from './composables/useTxActions'
 import { usePartActions } from './composables/usePartActions'
 import { useClientActions } from './composables/useClientActions'
@@ -620,6 +621,7 @@ const {
 const { hasPermission, getDefaultAllowedTab } = usePermissions()
 
 // 核心 Tab 状态 (依赖 getDefaultAllowedTab)
+const { isPluginEnabled } = usePlugins()
 const activeTab = ref(getDefaultAllowedTab())
 
 // 抽离的业务动作 (CRUD)
