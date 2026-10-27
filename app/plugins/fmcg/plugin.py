@@ -1,4 +1,4 @@
-"""超市/快消行业插件（阶段 1 空壳）。"""
+"""超市/快消行业插件（阶段 1 空壳，阶段 2 引入模型）。"""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -18,4 +18,5 @@ class FmcgPlugin(BasePlugin):
         return None
 
     def register_models(self) -> None:
-        return None
+        # 触发 SQLModel.metadata 注册，必须在 Alembic autogenerate 之前完成
+        from app.plugins.fmcg import models  # noqa: F401

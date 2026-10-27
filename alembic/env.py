@@ -21,6 +21,10 @@ import app.models
 from app.models import SQLModel  # 引入你的 SQLModel 基类
 from app.config import DATABASE_URL # 引入你的数据库地址
 
+# 🌟 触发所有插件模型注册到 SQLModel.metadata（必须在 target_metadata 之前）
+from app import plugins
+plugins.install_models()
+
 target_metadata = SQLModel.metadata
 
 
