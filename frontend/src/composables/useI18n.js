@@ -42,6 +42,8 @@ const translations = {
       groupWarehouse: "仓储与商品",
       groupSales: "销售与业务",
       groupSystem: "系统与管理",
+      groupFmcg: "超市快消",
+      fmcgWallet: "找零钱包",
       dashboard: "数据看板",
       financial: "财务利润",
       expenses: "日常开支", // 🌟 新增
@@ -230,6 +232,8 @@ const translations = {
       groupWarehouse: "Almacén y Repuestos",
       groupSales: "Ventas y Negocio",
       groupSystem: "Sistema y Gestión",
+      groupFmcg: "FMCG / Supermercado",
+      fmcgWallet: "Monedero",
       dashboard: "Panel General",
       financial: "Reporte Financiero",
       expenses: "Gastos Diarios", // 🌟 新增
@@ -414,6 +418,8 @@ const translations = {
       groupWarehouse: "Warehouse & Parts",
       groupSales: "Sales & Business",
       groupSystem: "System & Management",
+      groupFmcg: "FMCG / Retail",
+      fmcgWallet: "Change Wallet",
       dashboard: "Dashboard",
       financial: "Financial Report",
       expenses: "Daily Expenses", // 🌟 新增

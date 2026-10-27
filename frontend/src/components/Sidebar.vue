@@ -115,7 +115,7 @@ import { usePlugins } from '../composables/usePlugins'
 import { getDesktopTabGroups } from '../plugins/registry'
 import { 
   Cpu, LayoutDashboard, TrendingUp, TrendingDown, Package, ShieldCheck, 
-  Users, ShoppingCart, History, Calculator, FileText, Database, ShieldAlert, ClipboardList 
+  Users, ShoppingCart, History, Calculator, FileText, Database, ShieldAlert, ClipboardList, Wallet 
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -172,6 +172,7 @@ const ICON_MAP = {
   ShieldCheck,
   ShieldAlert,
   Database,
+  Wallet,
 }
 
 const groupedMenuItems = computed(() => {

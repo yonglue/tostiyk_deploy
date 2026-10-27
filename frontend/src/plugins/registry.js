@@ -25,8 +25,7 @@ export const PLUGINS = Object.freeze({
     code: 'fmcg',
     label: '超市/快消',
     description: '多包装单位、称重码、组合包、找零钱包',
-    // 🚧 阶段 4.2 完成 POS 前端集成后翻 true
-    enabled: false,
+    enabled: true,
   },
 })
 
@@ -85,6 +84,13 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
       { key: 'staff', iconName: 'ShieldCheck', requiredPerm: 'users:manage' },
       { key: 'audit_logs', labelKey: 'auditLogs', iconName: 'ShieldAlert', requiredPerm: 'users:manage' },
       { key: 'backup', iconName: 'Database', requiredPerm: 'settings:manage' },
+    ],
+  },
+  {
+    plugin: 'fmcg',
+    titleKey: 'groupFmcg',
+    items: [
+      { key: 'fmcg_wallet', labelKey: 'fmcgWallet', iconName: 'Wallet', requiredPerm: 'financial:view' },
     ],
   },
 ])

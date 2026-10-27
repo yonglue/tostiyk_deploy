@@ -199,6 +199,11 @@
             @export-clients="exportClientsExcel"
             @download-db="downloadDatabaseBackup"
           />
+
+          <!-- 🌟 FMCG 找零钱包 -->
+          <FmcgWalletView 
+            v-else-if="activeTab === 'fmcg_wallet' && isPluginEnabled('fmcg') && hasPermission('financial:view')"
+          />
         </main>
 
         <!-- 智能悬浮按钮 -->
@@ -544,6 +549,7 @@ window.addEventListener('resize', () => {
 
 import StaffManagementView from './components/StaffManagementView.vue'
 import CashRegisterView from './components/CashRegisterView.vue'
+import FmcgWalletView from './components/FmcgWalletView.vue'
 import { useI18n } from './composables/useI18n'
 
 import Sidebar from './components/Sidebar.vue'
