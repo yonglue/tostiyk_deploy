@@ -71,3 +71,4 @@ frontend/dist/
 !scripts/*.py
 !tests/*.py
 translations_*.json
+.archive/

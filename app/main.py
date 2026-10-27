@@ -62,6 +62,13 @@ from app.routers import printer
 
 def bootstrap() -> None:
     """建表 + 首次启动的账号与演示数据播种 + 安全自检。"""
+
+    # 🌟 插件模型注册：必须在 Alembic 之前完成，保证 autogenerate 能看到插件表
+    from app import plugins  # noqa: F401  触发所有插件注册
+    plugins.install_models()
+
+    # 🌟 核心修改 1：自动执行 Alembic 迁移
+    """建表 + 首次启动的账号与演示数据播种 + 安全自检。"""
     
     # 🌟 核心修改 1：自动执行 Alembic 迁移
     try:

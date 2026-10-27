@@ -1,0 +1,27 @@
+# E2E Baseline Failures（大段 1 结束时记录）
+
+记录时间：2026-10-27（大段 1 插件骨架完成后）
+后端：9 passed / 0 failed
+E2E：12 passed / 3 failed
+
+## 失败清单（前端 selector 漂移，非逻辑 bug）
+
+1. `app-smoke.spec.js:34` — 侧边栏激活态
+   - 断言: `toHaveClass(/bg-blue-600/)`
+   - 实际: `bg-blue-50/80 text-blue-700`
+   - 原因: Tailwind 配色升级为深色模式友好
+   - 修法（大段 4 一并处理）: 改测试为 `/bg-blue-(50\/80|600)/`
+
+2. `pos-quote.spec.js:35` — 结账后购物车为空文案
+   - 断言: `/购物车为空|Carrito vacío|Cart is empty/`
+   - 原因: UI 文案或结构变化
+   - 修法（大段 4 一并处理）: 重写 PosCart 空状态组件时同步 selector
+
+3. `pos-quote.spec.js:76` — 历史补打弹窗
+   - 现象: 45s 超时
+   - 疑似: print-agent 未在测试环境启动 / PosHistoryModal selector 漂移
+   - 修法（大段 4 一并处理）: E2E fixture 里启动 print-agent，或改 selector
+
+## 不在本次修复的原因
+
+大段 4/5 会重写前端路由、组件、selector，现在修会被推翻。
