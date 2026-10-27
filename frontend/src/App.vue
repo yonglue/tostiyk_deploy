@@ -86,7 +86,10 @@
               </div>
               <span class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-default">{{ currentUserObj.username }}</span>
             </div>
-            
+
+            <!-- 🌟 离线队列状态指示器 -->
+            <OfflineIndicator />
+
           </div>
         </header>
 
@@ -550,6 +553,7 @@ window.addEventListener('resize', () => {
 import StaffManagementView from './components/StaffManagementView.vue'
 import CashRegisterView from './components/CashRegisterView.vue'
 import FmcgWalletView from './components/FmcgWalletView.vue'
+import OfflineIndicator from './components/OfflineIndicator.vue'
 import { useI18n } from './composables/useI18n'
 
 import Sidebar from './components/Sidebar.vue'
