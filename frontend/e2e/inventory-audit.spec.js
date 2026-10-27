@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test'
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
-const PASSWORD = process.env.PW_ADMIN_PASS || 'x'
+const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少 PW_ADMIN_PASS')
 
 async function login(page) {
   await page.goto('/')
@@ -42,13 +43,13 @@ test.describe('库存盘点 B1', () => {
 
     // 切到历史 Tab
     const historyTab = page.locator('button').filter({ hasText: /历史|History|Historial/i }).first()
-    await historyTab.click({ force: true })
+    await await expect(historyTab).toBeVisible(); await historyTab.click()
 
     // 强制刷新
     await page.waitForTimeout(1000)
     const refreshBtn = page.locator('button').filter({ hasText: /刷新记录|Actualizar|Refresh/i }).first()
     if (await refreshBtn.isVisible()) {
-      await refreshBtn.click({ force: true })
+      await await expect(refreshBtn).toBeVisible(); await refreshBtn.click()
       await page.waitForTimeout(1500)
     }
 

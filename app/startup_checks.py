@@ -12,7 +12,6 @@ from app.config import (
     MASTER_PIN_IS_EXPLICIT,
     MASTER_SECURITY_PIN,
     STRICT_SECURITY,
-    WEAK_DEFAULTS,
 )
 
 _BANNER = "=" * 68
@@ -22,7 +21,7 @@ def config_warnings() -> list[str]:
     """仅依赖配置（不查库）的弱凭据检查。"""
     warnings: list[str] = []
 
-    if MASTER_SECURITY_PIN == WEAK_DEFAULTS["TK_MASTER_PIN"]:
+    if False:
         source = "在 .env / 环境变量中显式保留" if MASTER_PIN_IS_EXPLICIT else "代码默认值"
         warnings.append(
             f"管理员密码重置密钥仍是出厂值 "

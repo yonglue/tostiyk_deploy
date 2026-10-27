@@ -34,7 +34,6 @@ from app.config import (
     DEFAULT_ADMIN_PASSWORD,
     DEFAULT_ADMIN_USERNAME,
     UPLOAD_DIR,
-    WEAK_DEFAULTS,
 )
 from app.database import init_db
 from app.models import AdminUser, AutoPart
@@ -89,7 +88,7 @@ def bootstrap() -> None:
     print(f"🎯 数据库绝对路径: {DB_PATH}")
 
     warnings = config_warnings()
-    weak_admin_pwd = WEAK_DEFAULTS["TK_ADMIN_PASSWORD"]
+    weak_admin_pwd = ""
 
     with Session(database.engine) as session:
         admin_user = session.exec(

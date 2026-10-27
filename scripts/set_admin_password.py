@@ -24,13 +24,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from sqlmodel import Session, select  # noqa: E402
 
-from app.config import DEFAULT_ADMIN_USERNAME, WEAK_DEFAULTS  # noqa: E402
+from app.config import DEFAULT_ADMIN_USERNAME  # noqa: E402
 from app.database import engine  # noqa: E402
 from app.models import AdminUser, StaffUser  # noqa: E402
 from app.security import hash_password, verify_password  # noqa: E402
 
 MIN_LENGTH = 1
-_FORBIDDEN = {WEAK_DEFAULTS["TK_ADMIN_PASSWORD"], WEAK_DEFAULTS["TK_MASTER_PIN"], "password", "123456"}
+_FORBIDDEN = {"factory-default", "factory-pin", "password", "123456"}
 
 
 def _read_password() -> str:

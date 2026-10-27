@@ -57,13 +57,7 @@ test.describe('进销存流水分页', () => {
   })
 
   test('翻页功能：点下一页数据变化（仅当有 2+ 页）', async ({ page }) => {
-    const totalText = await page.locator('[data-testid="tx-total"]').innerText()
-    const total = parseInt(totalText.replace(/[^\d]/g, ''), 10) || 0
-    if (total <= 20) {
-      test.skip(true, `只有 ${total} 条流水，不足一页翻页测试，跳过`)
-      return
-    }
-
+    // 因为 global-setup 已经注入了 25+ 条数据，这里必须有 2 页
     const firstRowBefore = await page.locator('table tbody tr').first().innerText()
     await page.locator('[data-testid="tx-page-next"]').click()
     await page.waitForTimeout(800)

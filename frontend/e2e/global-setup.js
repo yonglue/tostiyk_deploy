@@ -1,8 +1,24 @@
+
+const fetchWithTimeout = async (url, options = {}, timeout = 5000) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    if (error.name === 'AbortError') throw new Error(`请求超时 (5s): ${url}`);
+    throw error;
+  }
+};
+
 export default async function globalSetup() {
   console.log('\n🛠️  [GlobalSetup] 开始重置测试数据...')
   const API_BASE = process.env.PW_API_BASE || 'http://127.0.0.1:8000'
   const ADMIN_USER = process.env.PW_ADMIN_USER || 'admin'
-  const ADMIN_PASS = process.env.PW_ADMIN_PASS || 'x'
+  const ADMIN_PASS = process.env.PW_ADMIN_PASS
+if (!ADMIN_PASS) throw new Error('❌ 缺少环境变量 PW_ADMIN_PASS，拒绝运行测试！')
 
   // 1. 尝试 setup（admin 已存在会返回 4xx，忽略）
   try {
@@ -73,6 +89,40 @@ export default async function globalSetup() {
       throw new Error(`[GlobalSetup] 客户创建失败 HTTP ${clientRes.status}: ${text}`)
     }
     console.log('✅ [GlobalSetup] 客户 elias 已创建')
+  }
+
+    // 5. 批量生成入库流水（确保分页测试有 2 页以上数据）
+  console.log('⏳ [GlobalSetup] 正在生成分页测试流水...')
+  
+  // 先查询 TK-12345 的 part_id
+  const partsRes = await fetchWithTimeout(`${API_BASE}/api/parts`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+  const partsData = await partsRes.json()
+  const parts = Array.isArray(partsData) ? partsData : (partsData.items || partsData.data || [])
+  const tkPart = parts.find(p => p.oem === 'TK-12345')
+  
+  if (!tkPart) {
+    console.warn('⚠️ [GlobalSetup] 没找到 TK-12345，无法生成流水')
+  } else {
+    // 兼容不同的字段命名
+    const pId = tkPart.id || tkPart.part_id || tkPart.ID
+    if (!pId) {
+      console.error('❌ [GlobalSetup] 商品找不到 ID 字段，原始数据:', tkPart)
+    } else {
+      for (let i = 0; i < 25; i++) {
+        const stockRes = await fetchWithTimeout(`${API_BASE}/api/inventory/stock-in`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: [{ part_id: pId, quantity: 1 }] })
+        })
+        if (!stockRes.ok) {
+          const errData = await stockRes.json().catch(() => ({}))
+          console.error(`[GlobalSetup] 流水报错 ${stockRes.status}:`, errData)
+        }
+      }
+      console.log('✅ [GlobalSetup] 分页流水注入完毕')
+    }
   }
 
   console.log('✅ [GlobalSetup] 测试数据准备完毕\n')

@@ -7,7 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const USERNAME = process.env.PW_ADMIN_USER || 'admin'
-const PASSWORD = process.env.PW_ADMIN_PASS || 'x'
+const PASSWORD = process.env.PW_ADMIN_PASS
+if (!PASSWORD) throw new Error('缺少 PW_ADMIN_PASS')
 const API_BASE = 'http://localhost:8000'
 
 async function login(page) {
@@ -51,13 +52,13 @@ test('财务 - 供应商付款核销', async ({ page, request }) => {
 
   // 4. 点击“供应商管理” Tab
   const supplierTab = page.locator('button').filter({ hasText: /供应商管理|Proveedores|Suppliers/i }).first()
-  await supplierTab.click({ force: true })
+  await await expect(supplierTab).toBeVisible(); await supplierTab.click()
   await page.waitForTimeout(1000)
 
   // 5. 强制刷新按钮
   const refreshBtn = page.locator('button').filter({ hasText: /🔄 刷新|🔄 Actualizar|🔄 Refresh/i }).first()
   if (await refreshBtn.isVisible()) {
-    await refreshBtn.click({ force: true })
+    await await expect(refreshBtn).toBeVisible(); await refreshBtn.click()
     await page.waitForTimeout(1500)
   }
 
@@ -72,7 +73,7 @@ test('财务 - 供应商付款核销', async ({ page, request }) => {
 
   // 8. 点击付款按钮
   const payBtn = supRow.locator('button').filter({ hasText: /付款|Pagar|Pay/i }).first()
-  await payBtn.click({ force: true })
+  await await expect(payBtn).toBeVisible(); await payBtn.click()
 
   // 9. 填金额并确认
   await page.waitForTimeout(1000)
@@ -82,7 +83,7 @@ test('财务 - 供应商付款核销', async ({ page, request }) => {
   await page.waitForTimeout(500)
   
   const confirmBtn = page.locator('button').filter({ hasText: /确认付款|Confirmar pago|Confirm Payment/i }).first()
-  await confirmBtn.click({ force: true })
+  await await expect(confirmBtn).toBeVisible(); await confirmBtn.click()
 
   // 10. 验证扣款
   await page.waitForTimeout(1500)
