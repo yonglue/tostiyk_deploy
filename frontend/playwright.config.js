@@ -12,6 +12,10 @@ export default defineConfig({
   use: {
     // 换到 5175，避开开发时占用的 5173
     baseURL: 'http://localhost:5175',
+    // 🌟 阻断 Service Worker：SW 会绕过 page.route/context.route 直接发起网络请求，
+    // 导致 E2E 里所有 route 拦截（断网模拟、离线入队等）失效。
+    // Playwright 官方推荐：需要 hermetic 网络拦截的测试必须在 config 层阻断 SW。
+    serviceWorkers: 'block',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

@@ -1609,8 +1609,35 @@ const confirmAndPrint = async (overridePin = null) => {
       payload.force_override_pin = overridePin
     }
 
-    const res = await apiFetch('/api/pos/orders', { method: 'POST', body: JSON.stringify(payload) })
+    const res = await apiFetch('/api/pos/orders', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      offline: { queueOnFail: true },
+    })
     
+    // 🌟 4.4：离线入队（202）——网络断时订单已进 IndexedDB，UI 按"成功"处理
+    if (res.status === 202) {
+      const offlineData = await res.json()
+      const offlineMsg = isZh.value
+        ? '已离线入队，联网后自动同步'
+        : isEs.value
+          ? 'En cola offline, se sincronizará al reconectar'
+          : 'Queued offline, will sync when online'
+      previewModalVisible.value = false
+      props.cartItems.splice(0, props.cartItems.length)
+      emit('clear-cart')
+      paymentReference.value = ''
+      quoteClientName.value = ''
+      quoteClientId.value = null
+      quoteClientRif.value = ''
+      emit('generate-quote')
+      checkoutSuccessVisible.value = true
+      setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
+      showToast(`📴 ${offlineMsg} ${offlineData.order_no || ''}`, 'success')
+      // 不打印：离线订单无真实 order_no
+      return
+    }
+
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
       if (!overridePin && res.status === 400 && errorData.detail && errorData.detail.includes('超出客户信用额度')) {

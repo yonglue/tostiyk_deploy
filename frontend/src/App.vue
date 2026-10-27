@@ -554,6 +554,11 @@ import StaffManagementView from './components/StaffManagementView.vue'
 import CashRegisterView from './components/CashRegisterView.vue'
 import FmcgWalletView from './components/FmcgWalletView.vue'
 import OfflineIndicator from './components/OfflineIndicator.vue'
+import { setOfflineEnqueue } from './utils/api'
+import { enqueueToOffline } from './composables/useOfflineQueue'
+
+// 🌟 4.4：应用级注入离线入队钩子（不依赖 OfflineIndicator 挂载）
+setOfflineEnqueue(enqueueToOffline)
 import { useI18n } from './composables/useI18n'
 
 import Sidebar from './components/Sidebar.vue'
