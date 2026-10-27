@@ -166,6 +166,11 @@ app.include_router(expenses.router)
 app.include_router(backup.router)
 app.include_router(printer.router)  # 🌟 注册备份路由
 
+# 🌟 插件路由挂载（放在核心路由之后）
+from app import plugins as _plugin_registry
+_plugin_registry.install_routes(app)
+  # 🌟 注册备份路由
+
 
 
 @app.get("/")

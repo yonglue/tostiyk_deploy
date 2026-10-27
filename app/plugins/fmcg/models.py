@@ -86,6 +86,9 @@ class WalletLedger(SQLModel, table=True):
     __tablename__ = "fmcg_wallet_ledger"
     __table_args__ = (
         Index("ix_fmcg_ledger_wallet_ts", "wallet_id", "created_at"),
+        # 幂等键：同一 (ref_type, ref_id) 只允许一条流水；
+        # SQLite 允许多个 NULL ref_id，所以手工调整类流水不受限
+        Index("uq_fmcg_ledger_ref", "ref_type", "ref_id", unique=True),
     )
 
     id: Optional[int] = Field(default=None, primary_key=True)

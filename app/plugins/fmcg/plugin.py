@@ -15,7 +15,8 @@ class FmcgPlugin(BasePlugin):
     permissions: list[str] = []
 
     def register_routes(self, app: "FastAPI") -> None:
-        return None
+        from app.plugins.fmcg.routers import wallet as wallet_router
+        app.include_router(wallet_router.router)
 
     def register_models(self) -> None:
         # 触发 SQLModel.metadata 注册，必须在 Alembic autogenerate 之前完成

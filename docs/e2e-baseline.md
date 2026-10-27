@@ -25,3 +25,18 @@ E2E：12 passed / 3 failed
 ## 不在本次修复的原因
 
 大段 4/5 会重写前端路由、组件、selector，现在修会被推翻。
+
+
+---
+
+## 已知框架陷阱（FastAPI 0.143.0）
+
+- `app.include_router(...)` 不再平铺子路由到 `app.routes`，而是包成 `_IncludedRouter`。
+- 检查 app 路由存在性请用 `app.openapi()["paths"]`，不要遍历 `app.routes`。
+- 所有"路由数量 / 路径存在性"的新测试已按此约定编写，见 `tests/test_wallet_api.py`。
+
+## 待清理的技术债（不阻塞当前阶段）
+
+- `staff.py` 有 Duplicate Operation ID 警告，疑似路由被注册两次或函数命名冲突
+- `AUTO_CREATE_TABLES=1` 会掩盖 Alembic 问题（大段 2 已改用 autogenerate 绕过）
+- E2E 3 项 selector 漂移（见上文）
