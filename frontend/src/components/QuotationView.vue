@@ -183,9 +183,16 @@
           </div>
 
           <div class="p-3 bg-white dark:bg-slate-800/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 shrink-0 flex flex-col gap-2">
-            <button @click="generateQuotationPDF" :disabled="cartItems.length === 0 || isSubmitting" class="w-full py-3 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-md shadow-amber-500/30 transition-all cursor-pointer flex items-center justify-center gap-1.5">
-              <span>💾 {{ isSubmitting ? tExt.savingQuote : tExt.saveQuoteBtn }}</span>
-            </button>
+            <div class="flex gap-2 w-full mt-2">
+              <button @click="generateQuotationPDF" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                PDF
+              </button>
+              <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                打印
+              </button>
+            </div>
             <button data-testid="quote-credit-btn" @click="submitOrderAsCredit()" :disabled="!quoteClientId || cartItems.length === 0 || isSubmitting" class="w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-md shadow-rose-500/30 transition-all cursor-pointer flex items-center justify-center gap-1.5">
               <span>{{ isZh ? '📝 确认全单挂账 (Fiado)' : isEs ? '📝 Confirmar fiado completo' : '📝 Confirm Entire Credit' }}</span>
             </button>
@@ -292,7 +299,7 @@
 
 <script setup>
 import { usePrintAgent } from '../composables/usePrintAgent'
-const { isConnected } = usePrintAgent()
+const { isConnected, printReceipt } = usePrintAgent()
 
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
@@ -588,9 +595,66 @@ const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos'
 
 const isSubmitting = ref(false)
 
+
+
+const printQuotationReceipt = async () => {
+  if (props.cartItems.length === 0) return
+  if (!isConnected.value) {
+    alert('⚠️ 打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。')
+    return
+  }
+  
+  isSubmitting.value = true
+  
+  try {
+    // 🌟 1. 先在后台静默保存到数据库
+    const payload = {
+      client_name: quoteClientName.value || "Cliente General",
+      payment_method: "quotation",
+      lang: currentLang.value,
+      items: props.cartItems.map(i => ({ 
+        oem: i.oem, name: i.name, brand: i.brand || "GENERAL", 
+        quantity: i.quantity, price: i.price 
+      }))
+    }
+    // 发送保存请求（不处理返回值，以免触发下载）
+    await apiFetch('/api/quotations/generate', { method: 'POST', body: JSON.stringify(payload) })
+
+    // 🌟 2. 再调用本地打印机出纸
+    await printReceipt({
+      lang: currentLang.value === 'zh' ? 'zh' : currentLang.value === 'es' ? 'es' : 'en',
+      companyName: 'Tostiyk ERP (COTIZACIÓN)',
+      order_no: 'COT-' + new Date().getTime().toString().slice(-6),
+      date: new Date().toLocaleString(),
+      client_name: quoteClientName.value || 'Cliente General',
+      operator: 'Admin',
+      items: props.cartItems.map(i => ({
+        name: i.name,
+        qty: i.quantity,
+        price: i.price
+      })),
+      total_usd: totalUsd.value,
+      total_bs: 0,
+      payment: {}
+    })
+    
+    console.log('✅ 报价单已保存并打印成功')
+    // 如果你希望打印后自动清空购物车，放开下面两行
+    // props.cartItems.splice(0, props.cartItems.length)
+    // quoteClientName.value = ''
+
+  } catch (err) {
+    console.error(err)
+    alert('保存或打印失败，请重试。')
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
 const generateQuotationPDF = async () => {
   if (props.cartItems.length === 0) return
   isSubmitting.value = true
+
   
   try {
     const payload = {

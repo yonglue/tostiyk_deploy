@@ -1951,7 +1951,7 @@ const autoPrintReceipt = async (receiptData) => {
   // 🚀 优先使用本地 WebSocket 代理打印
   if (isConnected.value) {
     printReceipt({
-      lang: 'zh',
+      lang: isZh.value ? 'zh' : isEs.value ? 'es' : 'en',
       companyName: 'Tostiyk ERP 官方店',
       order_no: receiptData.order_no || '-',
       date: new Date().toLocaleString(),
