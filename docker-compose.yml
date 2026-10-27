@@ -8,10 +8,13 @@ services:
       - ./uploads:/app/uploads
       - ./backups:/app/backups
     environment:
-      - TK_AUTO_CREATE_TABLES=1
-      - TK_STRICT_MIGRATION=0
-      - TK_STRICT_SECURITY=0
-      - TK_ADMIN_PASSWORD=
+      # 🌟 生产环境安全加固：禁止自动建表，强依赖 Alembic 迁移
+      - TK_AUTO_CREATE_TABLES=0
+      - TK_STRICT_MIGRATION=1
+      # 🌟 生产环境开启严格安全检查（若发现弱配置则拒绝启动）
+      - TK_STRICT_SECURITY=1
+      # 🌟 移除 TK_ADMIN_PASSWORD，配合前端的 setup-status 首次启动向导
+      - TK_ADMIN_USER=admin
     expose:
       - "8000"
 

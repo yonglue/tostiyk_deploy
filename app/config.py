@@ -66,21 +66,17 @@ CORS_ORIGINS: list[str] = [
 ]
 
 # ─────────────────────── 安全凭据 ───────────────────────
-# 代码里保留的"出厂弱默认值"。启动自检会检测它们是否仍在使用，
-# 详见 app/startup_checks.py。
-DEV_JWT_SECRET: str = "dev-only-change-me"
-WEAK_DEFAULTS: dict[str, str] = {
-    "TK_MASTER_PIN": "TK-PIN-2026",
-    "TK_ADMIN_PASSWORD": "tostiyk2026",
-}
+# 🛡️ 安全加固：废弃所有硬编码弱默认值。如果未显式配置环境变量，系统将自动生成随机高熵密钥。
+_rand_jwt = secrets.token_hex(32)
+_rand_pin = secrets.token_hex(4).upper()  # 例如 A1B2C3D4
+_rand_admin_pass = secrets.token_urlsafe(16)
 
-MASTER_SECURITY_PIN: str = os.getenv("TK_MASTER_PIN", WEAK_DEFAULTS["TK_MASTER_PIN"])
+DEV_JWT_SECRET: str = os.getenv("TK_JWT_SECRET", _rand_jwt)
+
+MASTER_SECURITY_PIN: str = os.getenv("TK_MASTER_PIN", _rand_pin)
 DEFAULT_ADMIN_USERNAME: str = os.getenv("TK_ADMIN_USER", "admin")
-DEFAULT_ADMIN_PASSWORD: str = os.getenv(
-    "TK_ADMIN_PASSWORD", WEAK_DEFAULTS["TK_ADMIN_PASSWORD"]
-)
+DEFAULT_ADMIN_PASSWORD: str = os.getenv("TK_ADMIN_PASSWORD", _rand_admin_pass)
 
-# `TK_ADMIN_PASSWORD` / `TK_MASTER_PIN` 是否由运维显式配置（而非走代码默认值）
 ADMIN_PASSWORD_IS_EXPLICIT: bool = "TK_ADMIN_PASSWORD" in os.environ
 MASTER_PIN_IS_EXPLICIT: bool = "TK_MASTER_PIN" in os.environ
 

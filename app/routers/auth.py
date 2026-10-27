@@ -12,7 +12,6 @@ from app.config import (
     DEFAULT_ADMIN_USERNAME,
     MASTER_SECURITY_PIN,
     TRUST_PROXY,
-    WEAK_DEFAULTS,
 )
 from app.database import get_session
 from app.deps import Actor, get_current_actor, require_admin # 🌟 引入 require_admin
@@ -73,7 +72,6 @@ def login_user(
             session.commit()
 
         login_limiter.reset(rate_key)
-        _warn_if_weak_password(user)
         
         # 🌟 核心修复：解析并返回权限数组
         permissions_list = []
@@ -102,13 +100,7 @@ def login_user(
     raise HTTPException(status_code=401, detail=detail)
 
 
-def _warn_if_weak_password(user) -> None:
-    weak = WEAK_DEFAULTS["TK_ADMIN_PASSWORD"]
-    if user.username == DEFAULT_ADMIN_USERNAME and verify_password(weak, user.password_hash):
-        logger.warning(
-            f"⚠️ 安全告警：管理员 {user.username!r} 仍在使用出厂默认密码，"
-            "请执行 .venv/bin/python scripts/set_admin_password.py 修改。"
-        )
+# 已废弃弱密码警告函数，依赖 setup 向导
 
 
 @router.post("/api/auth/reset-admin")
