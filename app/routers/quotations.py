@@ -2,7 +2,7 @@
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 from typing import List, Optional
 
@@ -81,6 +81,9 @@ def generate_and_save_quotation(
         session.add(client_obj)
         session.flush()
 
+    # 获取客户的 RIF / 身份证信息以供热敏打印使用
+    client_rif = getattr(client_obj, "rif", None) or getattr(client_obj, "ci", None) or "V-00000000"
+
     pay_method = str(payload.payment_method).lower()
     is_fiado = any(keyword in pay_method for keyword in ["fiado", "debt", "赊账", "挂账", "credit"])
 
@@ -136,10 +139,37 @@ def generate_and_save_quotation(
         lang=lang,
     )
 
+    # 🌟 核心增强：在返回给前端的响应中，直接打包好符合热敏代理标准的 printPayload
+    # 这样前端在收到生成报价单成功后，可以直接把 printData 发给 WebSocket 代理打印 42 列精美小票！
+    print_payload = {
+        "companyName": "MUNDO REPUESTOS C.A",
+        "companyRif": "J-307219955",
+        "companyAddress": "Valencia, Carabobo, Venezuela",
+        "companyPhone": "+58 412-0000000",
+        "order_no": quotation_no, # 报价单号作为单据编号打印
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "client_name": client_name,
+        "client_rif": client_rif,
+        "operator": actor.username,
+        "tasa": float(bcv_rate),
+        "items": [
+            {
+                "name": item.name,
+                "quantity": item.quantity,
+                "price": item.price,
+                "total": float(Decimal(str(item.price)) * item.quantity)
+            } for item in payload.items
+        ],
+        "total_usd": total_usd,
+        "total_bs": total_bs,
+        "payment_method": "PRESUPUESTO / COTIZACION"
+    }
+
     return {
         "status": "success",
         "quotation_no": quotation_no,
         "pdf_url": f"{PUBLIC_BASE_URL}/api/quotation/pdf/download?quotation_no={quotation_no}",
+        "printData": print_payload  # 👈 前端拿到这个对象后直接 websocket 发送即可实现一模一样的 42 列打印
     }
 
 
@@ -230,7 +260,6 @@ def download_existing_pdf(
     raise HTTPException(status_code=404, detail="PDF 文件不存在")
 
 
-from datetime import datetime, timezone
 @router.post("/api/quotations/{quotation_id}/mark-converted")
 def mark_quotation_converted(
     quotation_id: int,

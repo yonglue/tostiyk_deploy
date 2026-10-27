@@ -7,15 +7,11 @@ const iconv = require('iconv-lite');
 const PORT = 8899;
 const PRINTER_NAME = "Printer_POS_80"; 
 
-// ==========================================
-// 🌟 标准 42 字符满宽居中网格系统
-// ==========================================
 const LINE_WIDTH = 42;
-const LEFT_PAD = "  "; // 2个空格的左边距
+const LEFT_PAD = "  ";
 
 const print_divider = (char = "-") => LEFT_PAD + char.repeat(LINE_WIDTH) + "\n";
 
-// 修复变量声明问题的两端对齐函数
 const print_row = (left_text, right_text) => {
     let r_str = String(right_text || '');
     let l_str = String(left_text || '');
@@ -34,7 +30,6 @@ const print_row = (left_text, right_text) => {
     return `${LEFT_PAD}${l_str}${spaces}${r_str}\n`;
 };
 
-// 单行居中对齐函数
 const center_text = (str) => {
     let s = String(str || '').trim();
     if (!s) return '\n';
@@ -49,16 +44,19 @@ const center_text = (str) => {
     return result;
 };
 
-// 普通左对齐带边距
 const left_line = (str) => `${LEFT_PAD}${str}\n`;
 
 const wss = new WebSocketServer({ port: PORT });
-console.log(`🚀 Tostiyk ERP 打印代理已启动 (42列完美修复版): ws://127.0.0.1:${PORT}`);
+console.log(`🚀 Tostiyk ERP 打印代理已启动 (防切头完美版): ws://127.0.0.1:${PORT}`);
 
 wss.on('connection', (ws) => {
   ws.on('message', (raw) => {
     let msg;
-    try { msg = JSON.parse(raw); } catch { return; }
+    try { 
+        msg = JSON.parse(raw); 
+    } catch (e) { 
+        return; 
+    }
 
     if (msg.type === 'ping') return ws.send(JSON.stringify({ type: 'pong' }));
 
@@ -67,21 +65,18 @@ wss.on('connection', (ws) => {
       
       try {
         let s = '';
-        // ================= 1. 硬件初始化与防吞头预热（终极稳定版） =================
-        s += '\x1B\x40';         // 初始化打印机
-        s += '\x1B\x74\x02';     // CP850 编码
-        s += '\x1B\x33\x30';     // 稍微加大行间距，防止文字黏连
-        s += '\n\n\n';           // 强制预热走纸 3 行，让打印头彻底离开切刀物理盲区，无论长短绝不切头！
-        s += '\x1B\x61\x00';     // 左对齐
+        s += '\x1B\x40';
+        s += '\x1B\x74\x02';
+        s += '\x1B\x33\x30';
+        s += '\n\n\n\n';
+        s += '\x1B\x61\x00';
 
-        // ================= 2. 头部信息 (居中) =================
         s += center_text(data.companyName || 'MUNDO REPUESTOS C.A');
         s += center_text(`RIF: ${data.companyRif || 'J-307219955'}`);
         s += center_text(data.companyAddress || 'Valencia, Carabobo, Venezuela');
         s += center_text(`TEL: ${data.companyPhone || '+58 412-0000000'}`);
         s += print_divider("=");
 
-        // ================= 3. 数据解析 =================
         let calcTotalUsd = 0;
         let totalItemsCount = 0;
 
@@ -107,7 +102,6 @@ wss.on('connection', (ws) => {
         
         const totalBs = totalBsInput > 0 ? totalBsInput : (totalUsd * tasaVal);
 
-        // ================= 4. 单据基础信息 =================
         s += left_line(`Factura:  ${data.order_no || data.orderId || '-'}`);
         s += left_line(`Fecha:    ${data.date || data.time || '-'}`);
         s += left_line(`Cliente:  ${data.client_name || data.clientName || 'Cliente General'}`);
@@ -119,7 +113,6 @@ wss.on('connection', (ws) => {
         s += left_line(`Tasa Ref: Bs. ${tasaVal.toFixed(2)} / USD`);
         s += print_divider("-");
 
-        // ================= 5. 商品明细 (42列宽度) =================
         (data.items || []).forEach(item => {
           const qty = Number(item.quantity || item.qty || 1);
           const price = Number(item.price || item.price_usd || 0);
@@ -148,12 +141,9 @@ wss.on('connection', (ws) => {
         });
 
         s += print_divider("-");
-
-        // 商品总件数统计
         s += print_row("CANT. PRODUCTOS:", `${totalItemsCount}`);
         s += print_divider("-");
 
-        // ================= 6. 财务汇总 =================
         const exentoVal = Number(data.exento || 0);
         const ivaVal = Number(data.iva || data.taxAmountUsd || 0);
         s += print_row("EXENTO", `$${exentoVal.toFixed(2)}`);
@@ -161,14 +151,12 @@ wss.on('connection', (ws) => {
         s += print_row("IVA (16%)", `$${ivaVal.toFixed(2)}`);
         s += print_divider("-");
         
-        // ================= 7. 总计金额 (加粗) =================
         s += '\x1B\x45\x01'; 
         s += print_row("TOTAL USD", `$${totalUsd.toFixed(2)}`);
         s += print_row("TOTAL BS", `Bs.${totalBs.toFixed(2)}`);
         s += '\x1B\x45\x00'; 
         s += print_divider("=");
 
-        // ================= 8. 页脚与支付方式 =================
         s += center_text('Forma de Pago:');
         if (data.payment) {
           if (data.payment.cardPos > 0) s += center_text(`Tarjeta: Bs. ${Number(data.payment.cardPos).toFixed(2)}`);
@@ -180,7 +168,6 @@ wss.on('connection', (ws) => {
         s += '\n';
         s += center_text('Gracias por su compra!');
         
-        // ================= 9. 切纸 =================
         s += '\n\n\n\n'; 
         s += '\x1D\x56\x41\x00'; 
 
@@ -193,7 +180,7 @@ wss.on('connection', (ws) => {
           try {
             execSync('/usr/bin/cancel -a || true', { timeout: 3000 });
             execSync(`/usr/bin/lp -d "${PRINTER_NAME}" -o raw "${tmpFile}"`, { timeout: 5000 });
-            console.log("✅ 42列全宽小票打印成功！");
+            console.log("✅ 小票打印成功！");
             ws.send(JSON.stringify({ type: 'print_result', success: true }));
           } catch (err) {
             console.error("❌ 打印失败:", err.message);
