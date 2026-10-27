@@ -111,6 +111,8 @@
 import { ref, computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import { useAuth } from '../composables/useAuth'
+import { usePlugins } from '../composables/usePlugins'
+import { getDesktopTabGroups } from '../plugins/registry'
 import { 
   Cpu, LayoutDashboard, TrendingUp, TrendingDown, Package, ShieldCheck, 
   Users, ShoppingCart, History, Calculator, FileText, Database, ShieldAlert, ClipboardList 
@@ -133,6 +135,7 @@ const emit = defineEmits([
 
 const { t } = useI18n()
 const { currentUserObj } = useAuth()
+const { isPluginEnabled } = usePlugins()
 
 const handleMenuClick = (key) => {
   emit('update:activeTab', key)
@@ -154,44 +157,34 @@ const toggleGroup = (index) => {
   }
 }
 
+// 🌟 4.1.2：tab 分组从 manifest 读取（icons 保留在 Sidebar 侧，避免 lucide 耦合到 registry）
+const ICON_MAP = {
+  LayoutDashboard,
+  TrendingUp,
+  TrendingDown,
+  Package,
+  ClipboardList,
+  Users,
+  ShoppingCart,
+  History,
+  Calculator,
+  FileText,
+  ShieldCheck,
+  ShieldAlert,
+  Database,
+}
+
 const groupedMenuItems = computed(() => {
-  const groups = [
-    {
-      title: t.value.menu.groupCore,
-      items: [
-        { key: 'dashboard', icon: LayoutDashboard },
-        { key: 'financial', icon: TrendingUp, requiredPerm: 'financial:view' },
-        { key: 'expenses', icon: TrendingDown, requiredPerm: 'financial:view' },
-      ]
-    },
-    {
-      title: t.value.menu.groupWarehouse,
-      items: [
-        { key: 'parts', icon: Package, requiredPerm: 'parts:view' },
-        { key: 'inventory_audit', labelKey: 'inventoryAudit', icon: ClipboardList, requiredPerm: 'parts:manage' },
-      ]
-    },
-    {
-      title: t.value.menu.groupSales,
-      items: [
-        { key: 'clients', icon: Users, requiredPerm: 'clients:view' },
-        { key: 'procurement', icon: ShoppingCart, requiredPerm: 'procurement:view' },
-        { key: 'transactions', icon: History, requiredPerm: 'transactions:history' },
-        { key: 'pos', icon: Calculator, requiredPerm: 'pos:access' },
-        { key: 'quotation', labelKey: 'quotation', icon: FileText, requiredPerm: 'pos:access' },
-        { key: 'quotations', labelKey: 'quotations', icon: History, requiredPerm: 'pos:access' },
-        { key: 'cash_register', labelKey: 'cashRegister', icon: FileText, requiredPerm: 'shift:report' },
-      ]
-    },
-    {
-      title: t.value.menu.groupSystem,
-      items: [
-        { key: 'staff', icon: ShieldCheck, requiredPerm: 'users:manage' },
-        { key: 'audit_logs', labelKey: 'auditLogs', icon: ShieldAlert, requiredPerm: 'users:manage' },
-        { key: 'backup', icon: Database, requiredPerm: 'settings:manage' },
-      ]
-    }
-  ]
+  const groups = getDesktopTabGroups(isPluginEnabled).map((g) => ({
+    title: t.value.menu[g.titleKey],
+    items: g.items.map((item) => {
+      // 显式构造：输出对象结构与原硬编码完全一致（不含 iconName 残留）
+      const mapped = { key: item.key, icon: ICON_MAP[item.iconName] }
+      if (item.labelKey) mapped.labelKey = item.labelKey
+      if (item.requiredPerm) mapped.requiredPerm = item.requiredPerm
+      return mapped
+    }),
+  }))
 
   const role = currentUserObj.value?.role || 'staff'
   const userPerms = currentUserObj.value?.permissions || []
