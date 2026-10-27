@@ -44,7 +44,11 @@ wss.on('connection', (ws) => {
         printer.font('a').align('ct').style('b').size(1, 1)
           .text(data.companyName || 'Tostiyk ERP')
           .style('normal').size(0, 0)
-          .text('--------------------------------')
+        if (data.companyRif) printer.text(`RIF: ${data.companyRif}`)
+        if (data.companyAddress) printer.text(data.companyAddress)
+        if (data.companyPhone) printer.text(`TEL: ${data.companyPhone}`)
+        
+        printer.text('--------------------------------')
           .align('lt')
           .text(`单号 No: ${data.order_no || '-'}`)
           .text(`日期 Date: ${data.date || new Date().toLocaleString()}`)

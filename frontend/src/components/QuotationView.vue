@@ -623,7 +623,10 @@ const printQuotationReceipt = async () => {
     // 🌟 2. 再调用本地打印机出纸
     await printReceipt({
       lang: currentLang.value === 'zh' ? 'zh' : currentLang.value === 'es' ? 'es' : 'en',
-      companyName: 'Tostiyk ERP (COTIZACIÓN)',
+      companyName: systemConfig.value?.company_name || 'Tostiyk ERP',
+      companyRif: systemConfig.value?.rif || '',
+      companyAddress: systemConfig.value?.address || '',
+      companyPhone: systemConfig.value?.phone || '',
       order_no: 'COT-' + new Date().getTime().toString().slice(-6),
       date: new Date().toLocaleString(),
       client_name: quoteClientName.value || 'Cliente General',

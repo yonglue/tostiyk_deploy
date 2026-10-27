@@ -43,6 +43,9 @@ wss.on('connection', (ws) => {
         printer.bold(true);
         printer.println(data.companyName || 'Tostiyk ERP');
         printer.bold(false);
+        if (data.companyRif) printer.println(`RIF: ${data.companyRif}`);
+        if (data.companyAddress) printer.println(data.companyAddress);
+        if (data.companyPhone) printer.println(`TEL: ${data.companyPhone}`);
         printer.drawLine();
         
         printer.alignLeft();
