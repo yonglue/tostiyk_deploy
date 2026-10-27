@@ -91,3 +91,11 @@ def resolve_to_base_int(
     d = resolve_to_base(session, product_id, unit_code, qty)
     # 4 位小数 → 整数，四舍五入到个位
     return int(d.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def has_any_units(session: Session, product_id: int) -> bool:
+    """该商品是否定义了任何单位（纯汽配老数据返回 False）。"""
+    row = session.exec(
+        select(ProductUnit).where(ProductUnit.product_id == product_id).limit(1)
+    ).first()
+    return row is not None

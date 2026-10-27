@@ -24,6 +24,8 @@ from app.models import (
 from app.schemas import HeldOrderCreatePayload, POSOrderCreatePayload, ShiftHandoverPayload
 from app.services.numbering import make_order_no
 from app.services.audit import log_action
+from app.plugins.fmcg.services import unit as unit_service
+from app.plugins.fmcg.services.exceptions import FmcgError
 import json
 
 router = APIRouter(tags=["POS 收银"])
@@ -51,6 +53,26 @@ def _resolve_part(session: Session, oem: str, brand: Optional[str]) -> AutoPart:
                 detail=f"OEM {oem} 存在多个品牌，请在明细中指定正确的 brand",
             )
     return matches[0]
+
+
+def _resolve_base_qty(session: Session, part: AutoPart, item) -> int:
+    """把 (unit_code, quantity) 换算成库存扣减的 base 数量。
+
+    规则：
+    * unit_code 为空 → 恒等（老路径）
+    * 商品未定义任何 unit（纯汽配老数据）→ 恒等，不报错
+    * unit_code 存在 → 用 unit_service.resolve_to_base_int 换算
+    * code 不存在 → 400
+    """
+    code = (item.unit_code or "").strip()
+    if not code:
+        return item.quantity
+    if not unit_service.has_any_units(session, part.id):
+        return item.quantity
+    try:
+        return unit_service.resolve_to_base_int(session, part.id, code, item.quantity)
+    except FmcgError as e:
+        raise HTTPException(status_code=400, detail=f"单位换算失败: {e}")
 
 
 def _idempotent_response(session: Session, request_id: Optional[str]):
@@ -100,10 +122,12 @@ def create_pos_order(
 
     merged_items_map = {}
     for item in payload.items:
+        unit_key = (item.unit_code or "").strip().lower() or None
         merge_key = (
             item.oem,
             (item.brand or "GENERAL").strip(),
             str(_money(item.price)),
+            unit_key,
         )
         if merge_key in merged_items_map:
             merged_items_map[merge_key].quantity += item.quantity
@@ -113,7 +137,8 @@ def create_pos_order(
                 name=item.name,
                 brand=merge_key[1],
                 price=item.price,
-                quantity=item.quantity
+                quantity=item.quantity,
+                unit_code=item.unit_code,
             )
     deduped_items = list(merged_items_map.values())
 
@@ -131,6 +156,9 @@ def create_pos_order(
         part = _resolve_part(session, item.oem, item.brand)
         part_id = part.id
         part_name = part.name
+
+        # 🌟 大段3.A：销售单位 → base 单位库存扣减量
+        base_qty = _resolve_base_qty(session, part, item)
         
 
         # 🌟 新增：从数据库获取真实进价
@@ -138,8 +166,8 @@ def create_pos_order(
 
         result = session.exec(
             update(AutoPart)
-            .where(AutoPart.id == part_id, AutoPart.stock >= item.quantity)
-            .values(stock=AutoPart.stock - item.quantity)
+            .where(AutoPart.id == part_id, AutoPart.stock >= base_qty)
+            .values(stock=AutoPart.stock - base_qty)
         )
         if result.rowcount != 1:
             session.rollback()
@@ -158,7 +186,7 @@ def create_pos_order(
             part_oem=item.oem,
             part_name=item.name,
             type="OUT",
-            quantity=item.quantity,
+            quantity=base_qty,  # 库存流水记录真实移动量
             unit_price=float(d_price),
             total_amount=float(line_total),
             customer_or_supplier=client_name,
@@ -181,6 +209,8 @@ def create_pos_order(
             "oem": item.oem,
             "name": item.name,
             "quantity": item.quantity,
+            "base_quantity": base_qty,
+            "unit_code": (item.unit_code or None),
             "price_usd": float(d_price),
             "subtotal_usd": float(line_total),
             "cost_price_usd": float(part_cost_price), # 🌟 新增：把进价带上
@@ -262,6 +292,8 @@ def create_pos_order(
             oem=oi["oem"],
             name=oi["name"],
             quantity=oi["quantity"],
+            base_quantity=oi["base_quantity"],
+            unit_code=oi["unit_code"],
             price_usd=oi["price_usd"],
             subtotal_usd=oi["subtotal_usd"],
             cost_price_usd=oi["cost_price_usd"], # 🌟 新增：把进价写入数据库

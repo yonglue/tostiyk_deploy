@@ -161,3 +161,45 @@ def debit(session, phone, currency, amount, ref_type, ref_id=None, note=None):
         raise WalletError(f"扣减失败（DB 冲突）: {e}") from e
     session.refresh(ledger)
     return ledger
+
+
+def credit_change_short(
+    session: Session,
+    order_no: str,
+    phone: str,
+    currency: str,
+    amount,
+    note: Optional[str] = None,
+) -> WalletLedger:
+    """找零不足时把差额入账客户钱包。
+
+    校验：order 存在 → 状态 COMPLETED → amount <= 订单总额（按币种）。
+    幂等：ref_type='change_short', ref_id=order_no。
+    """
+    from app.models import Order
+
+    order = session.exec(select(Order).where(Order.order_no == order_no)).first()
+    if order is None:
+        raise WalletError(f"订单不存在: {order_no}")
+    if order.status != "COMPLETED":
+        raise WalletError(f"订单 {order_no} 状态非 COMPLETED: {order.status}")
+
+    amt = _to_decimal(amount)
+    if amt <= _ZERO:
+        raise WalletError(f"找零金额必须 > 0，收到 {amt}")
+
+    cap = _to_decimal(order.total_bs if currency == "VES" else order.total_usd)
+    if amt > cap:
+        raise WalletError(
+            f"找零金额 {amt} 超过订单 {order_no} 总额 {cap}"
+        )
+
+    return credit(
+        session,
+        phone=phone,
+        currency=currency,
+        amount=amt,
+        ref_type="change_short",
+        ref_id=order_no,
+        note=note,
+    )

@@ -50,6 +50,14 @@ class DebitPayload(CreditPayload):
     pass
 
 
+class ChangeShortPayload(BaseModel):
+    order_no: str = Field(min_length=1, max_length=64)
+    phone: str = Field(min_length=3, max_length=32)
+    currency: str = Field(default="USD", max_length=8)
+    amount: Decimal
+    note: Optional[str] = Field(default=None, max_length=255)
+
+
 def _ledger_to_dict(r) -> dict:
     return {
         "id": r.id,
@@ -102,6 +110,27 @@ def debit_wallet(
         )
     except InsufficientBalance as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except WalletError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return _ledger_to_dict(ledger)
+
+
+@router.post("/change-short")
+def credit_change_short_endpoint(
+    payload: ChangeShortPayload,
+    actor: Actor = Depends(_perm_credit),
+    session: Session = Depends(get_session),
+):
+    """找零不足时把差额入账客户钱包（幂等：同一 order_no 只入账一次）。"""
+    try:
+        ledger = ws.credit_change_short(
+            session,
+            order_no=payload.order_no,
+            phone=payload.phone,
+            currency=payload.currency,
+            amount=payload.amount,
+            note=payload.note,
+        )
     except WalletError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return _ledger_to_dict(ledger)

@@ -99,6 +99,7 @@ class POSItemPayload(BaseModel):
     brand: Optional[str] = "GENERAL"
     quantity: int = Field(gt=0)  # 0 / 负数直接 422
     price: PositiveMoney  # 单价必须 > 0，负数/0 元单直接 422
+    unit_code: Optional[str] = None  # None = 主单位；非主单位时按 unit 折算库存
 
 
 class POSOrderCreatePayload(BaseModel):

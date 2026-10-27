@@ -181,6 +181,12 @@ class OrderItem(SQLModel, table=True):
     base_subtotal_usd: float = Field(default=0.0)
     tax_subtotal_usd: float = Field(default=0.0)
 
+    # 🌟 大段3.A：多单位支持
+    # unit_code: 销售单位；None = 主单位，见 fmcg_product_unit
+    # base_quantity: 实际扣库存的 base 单位数量；老订单恒等于 quantity
+    unit_code: Optional[str] = Field(default=None, max_length=32)
+    base_quantity: int = Field(default=0)
+
     order: Optional[Order] = Relationship(back_populates="items")
 
 
