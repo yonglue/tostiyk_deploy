@@ -5,7 +5,7 @@
       <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">{{ isZh ? '库存产品' : isEs ? 'Productos en stock' : 'Products in Stock' }}</h1>
       <div class="relative">
         <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
-        <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
+        <input v-model="searchQuery" type="text" :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
       </div>
     </div>
 
@@ -40,7 +40,7 @@
       </div>
 
       <div v-if="filteredParts.length === 0" class="text-center py-20">
-        <span class="text-4xl">📭</span>
+        
         <p class="text-sm text-slate-400 mt-3">{{ isZh ? '没有找到相关产品' : isEs ? 'Sin productos relacionados' : 'No products found' }}</p>
       </div>
     </div>

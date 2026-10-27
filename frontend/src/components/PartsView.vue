@@ -34,28 +34,32 @@
           <select 
             :value="selectedBrand" 
             @change="$emit('update:selectedBrand',$event.target.value)"
-            class="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-4 py-2.5 pr-8 outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer appearance-none"
+            class="bg-white border border-slate-200 text-sm font-bold text-slate-700 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 hover:border-slate-300 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
           >
-            <option value="ALL">🏷️ {{ tExt.allBrands }}</option>
+            <option value="ALL">{{ tExt.allBrands }}</option>
             <option v-for="b in brandsList.filter(item => item !== 'ALL')" :key="b" :value="b">
               {{ b }}
             </option>
           </select>
-          <div class="absolute right-3 top-3.5 pointer-events-none text-slate-400 text-xs">▼</div>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
         </div>
 
         <!-- 分类下拉 -->
         <div class="relative">
           <select 
             v-model="selectedCategory" 
-            class="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-4 py-2.5 pr-8 outline-none focus:border-blue-500 focus:bg-white transition-all cursor-pointer appearance-none"
+            class="bg-white border border-slate-200 text-sm font-bold text-slate-700 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 hover:border-slate-300 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
           >
-            <option value="ALL">📂 {{ tExt.allCategories }}</option>
+            <option value="ALL">{{ tExt.allCategories }}</option>
             <option v-for="cat in categoriesList.filter(item => item !== 'ALL')" :key="cat" :value="cat">
               {{ cat }}
             </option>
           </select>
-          <div class="absolute right-3 top-3.5 pointer-events-none text-slate-400 text-xs">▼</div>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
         </div>
       </div>
 

@@ -145,7 +145,7 @@
             </tr>
             <tr v-if="staffList.length === 0">
               <td colspan="6" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500">
-                <span class="text-3xl block mb-2">📭</span>
+                
                 {{ t.staff.empty }}
               </td>
             </tr>

@@ -50,7 +50,7 @@
             <input 
               v-model="searchQuery" 
               type="text" 
-              placeholder="{{ isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...' }}" 
+              :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" 
               class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 dark:text-white"
             />
           </div>
@@ -113,7 +113,7 @@
                   v-model.number="auditForm[item.id]" 
                   type="number" 
                   min="0"
-                  placeholder="{{ isZh ? '未盘' : isEs ? 'No auditado' : 'Not audited' }}"
+                  :placeholder="isZh ? '未盘' : isEs ? 'No auditado' : 'Not audited'"
                   class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                 />
               </td>
@@ -127,14 +127,14 @@
                 <input 
                   v-model="reasons[item.id]" 
                   type="text" 
-                  placeholder="{{ isZh ? '例如：破损、丢失...' : isEs ? 'Ej: Dañado, perdido...' : 'Ex: Damaged, lost...' }}"
+                  :placeholder="isZh ? '例如：破损、丢失...' : isEs ? 'Ej: Dañado, perdido...' : 'Ex: Damaged, lost...'"
                   class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-blue-500 dark:text-white disabled:opacity-50 dark:disabled:bg-slate-800"
                   :disabled="auditForm[item.id] === null || auditForm[item.id] === '' || getDiff(item) === 0"
                 />
               </td>
             </tr>
             <tr v-if="paginatedParts.length === 0">
-              <td colspan="5" class="py-16 text-center text-slate-400 dark:text-slate-500 text-sm font-bold">{{ isZh ? '📭 没有找到符合条件的商品' : isEs ? '📭 Sin productos coincidentes' : '📭 No matching products' }}</td>
+              <td colspan="5" class="py-16 text-center text-slate-400 dark:text-slate-500 text-sm font-bold"><ClipboardList :size="40" class="mx-auto text-slate-300 dark:text-slate-600 mb-3" stroke-width="1.5" />{{ isZh ? '没有找到符合条件的商品' : isEs ? 'Sin productos coincidentes' : 'No matching products' }}</td>
             </tr>
           </tbody>
         </table>
@@ -200,7 +200,7 @@
               <td colspan="5" class="py-10 text-slate-400 text-xs">{{ isZh ? '加载中...' : isEs ? 'Cargando...' : 'Loading...' }}</td>
             </tr>
             <tr v-else-if="historyList.length === 0" class="text-center">
-              <td colspan="5" class="py-16 text-slate-400 text-xs font-bold">{{ isZh ? '📭 暂无历史盘点记录' : isEs ? '📭 Sin historial de inventario' : '📭 No inventory history' }}</td>
+              <td colspan="5" class="py-16 text-slate-400 text-xs font-bold"><ClipboardList :size="40" class="mx-auto text-slate-300 dark:text-slate-600 mb-3" stroke-width="1.5" />{{ isZh ? '暂无历史盘点记录' : isEs ? 'Sin historial de inventario' : 'No inventory history' }}</td>
             </tr>
             <tr v-for="tx in historyList" :key="tx.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="py-4 px-6">
@@ -241,7 +241,7 @@ const isEs = computed(() => currentLang.value === 'es')
 
 
 import { ref, computed, onMounted, reactive, watch } from 'vue'
-import { Search } from 'lucide-vue-next'
+import { Search, ClipboardList } from 'lucide-vue-next'
 import { apiFetch } from '../utils/api'
 import { useNotifications } from '../composables/useNotifications'
 

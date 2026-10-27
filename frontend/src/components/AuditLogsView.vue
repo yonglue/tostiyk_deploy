@@ -99,7 +99,7 @@
             </tr>
             <tr v-if="paginatedLogs.length === 0 && !loading">
               <td colspan="6" class="px-6 py-16 text-center text-slate-400 dark:text-slate-500 font-bold">
-                <span class="text-3xl block mb-2">📭</span>
+                
                 {{ tExt.emptyData }}
               </td>
             </tr>

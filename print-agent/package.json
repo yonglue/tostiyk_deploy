@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "escpos": "^3.0.0-alpha.6",
+    "iconv-lite": "^0.7.3",
     "ws": "^8.22.0"
   }
 }

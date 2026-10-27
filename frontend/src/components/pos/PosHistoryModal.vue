@@ -50,7 +50,7 @@
         </div>
 
         <div v-if="filteredOrders.length === 0" class="flex flex-col items-center justify-center py-20 text-slate-400">
-          <span class="text-5xl mb-3">📭</span>
+          
           <span class="text-sm font-bold">{{ filterDate ? `${filterDate} ${tExt.emptyDateMsg}` : tExt.emptyAllMsg }}</span>
         </div>
       </div>

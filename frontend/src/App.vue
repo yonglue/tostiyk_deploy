@@ -13,11 +13,13 @@
     <div class="flex flex-col md:flex-row h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       
       <Sidebar 
+        v-model:is-collapsed="isSidebarCollapsed"
         v-if="activeTab !== 'pos'"
         :activeTab="activeTab" 
         :mobileMenuOpen="mobileMenuOpen"
         :currentDateTime="currentDateTime"
-        :isCollapsed="isSidebarCollapsed"
+        @update:isCollapsed="isSidebarCollapsed = $event"
+        @update:is-collapsed="isSidebarCollapsed = $event"
         @update:activeTab="activeTab = $event"
         @update:mobileMenuOpen="mobileMenuOpen = $event"
         @menu-click="handleMenuClick"
@@ -26,53 +28,65 @@
       <!-- 右侧主工作区 -->
       <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
         
-        <header v-if="activeTab !== 'pos'" class="h-16 bg-white/75 dark:bg-slate-900/75 backdrop-blur-xl border-b border-white/60 dark:border-slate-800 px-6 flex items-center justify-between shrink-0 shadow-xs transition-all">
+        <header v-if="activeTab !== 'pos'" class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 px-6 flex items-center justify-between shrink-0 z-10 transition-all">
           <div class="flex items-center space-x-4">
             <!-- 移动端菜单按钮 (保留) -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-blue-50/90 rounded-2xl transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            <!-- 🌟 新增：桌面端侧边栏折叠按钮 -->
-            <button @click="isSidebarCollapsed = !isSidebarCollapsed" class="hidden md:flex p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer items-center justify-center" :title="isZh ? '折叠/展开侧边栏' : isEs ? 'Colapsar/Expandir' : 'Collapse/Expand sidebar'">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-              </svg>
-            </button>
+            
           </div>
 
-          <div class="flex items-center space-x-3">
-            <!-- 1. BCV 官方汇率胶囊 (保留炫酷动态，不可点击) -->
-            <div class="hidden sm:flex items-center space-x-2 bg-white/70 hover:bg-blue-50/90 border border-slate-200/80 hover:border-blue-300 px-4 py-2 rounded-2xl text-xs font-mono shadow-2xs transition-all duration-200 backdrop-blur-md hover:scale-[1.02] hover:shadow-md">
-              <span class="text-slate-500 font-bold">BCV =</span>
-              <span class="font-black text-blue-600">{{ bcvRate }}</span>
+          <div class="flex items-center gap-3 h-full">
+            
+            <!-- 1. BCV 汇率 (极度克制，纯文本) -->
+            <div class="hidden sm:flex items-center gap-1.5 px-2">
+              <span class="text-slate-400 text-[11px] font-bold tracking-wider uppercase">BCV</span>
+              <span class="text-slate-700 dark:text-slate-200 font-bold font-mono text-sm">{{ bcvRate }}</span>
             </div>
 
-            <!-- 2. 语言切换胶囊 -->
-            <select id="app-language-select" name="app-language" v-model="currentLang" class="bg-white/70 hover:bg-blue-500/10 border border-slate-200/80 hover:border-blue-300 text-xs rounded-2xl px-3.5 py-2 outline-none font-semibold text-slate-700 hover:text-blue-700 cursor-pointer shadow-2xs transition-all duration-200 backdrop-blur-md hover:scale-[1.02]">
-              <option value="es">🇪🇸 ES</option>
-              <option value="zh">🇨🇳 中文</option>
-              <option value="en">🇺🇸 EN</option>
-            </select>
+            <!-- 分割线 -->
+            <div class="h-4 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
 
-            <ThemeSwitcher />
-
-            <!-- 用户与登出区域 -->
-            <div class="flex items-center gap-3 pl-3 border-l border-slate-200/60">
-              <div class="flex items-center gap-2.5 bg-white/70 hover:bg-blue-50/90 border border-slate-200/80 hover:border-blue-300 pl-2 pr-4 py-1.5 rounded-2xl shadow-2xs transition-all duration-200 backdrop-blur-md cursor-pointer hover:scale-[1.02]">
-                <div class="relative flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/20 uppercase shrink-0">
-                  {{ currentUserObj.username ? currentUserObj.username.charAt(0) : 'U' }}
-                  <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
-                </div>
-                <div class="text-left">
-                  <span class="text-[9px] text-slate-400 block uppercase font-extrabold tracking-wider leading-none">{{ currentUserObj.role }}</span>
-                  <span class="text-xs font-bold text-slate-800 tracking-tight leading-tight mt-0.5 block">{{ currentUserObj.username }}</span>
-                </div>
+            <!-- 2. 纯图标操作组 -->
+            <div class="flex items-center gap-1.5">
+              
+              <!-- 语言切换 (原生Select覆盖在地球图标上，实现纯图标交互) -->
+              <div class="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" title="Language">
+                <svg class="w-4 h-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <select id="app-language-select" name="app-language" v-model="currentLang" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  <option value="es">ES</option>
+                  <option value="zh">中文</option>
+                  <option value="en">EN</option>
+                </select>
               </div>
 
-              <button @click="handleLogout" class="px-4 py-2 bg-white/70 hover:bg-rose-500/15 border border-slate-200/80 hover:border-rose-300 text-rose-600 rounded-2xl text-xs font-bold shadow-2xs transition-all duration-200 cursor-pointer backdrop-blur-md hover:scale-[1.02]">
-                {{ t.common.logout }}
+              <!-- 主题切换 (强制限制外层尺寸并去除内部组件自带大背景) -->
+              <div class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 [&>button]:!w-full [&>button]:!h-full [&>button]:!p-0 [&>button]:!bg-transparent [&>button]:!border-0 [&>button]:!shadow-none [&>button>svg]:!w-4 [&>button>svg]:!h-4" title="Theme">
+                <ThemeSwitcher />
+              </div>
+
+              <!-- 退出登录 (纯图标) -->
+              <button @click="handleLogout" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer" title="Logout">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             </div>
+
+            <!-- 3. 用户信息 (只留头像和名字) -->
+            <div class="flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-slate-700 h-5">
+              <div class="relative flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs uppercase shadow-sm cursor-default" title="User">
+                {{ currentUserObj.username ? currentUserObj.username.charAt(0) : 'U' }}
+                <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 rounded-full"></span>
+              </div>
+              <span class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-default">{{ currentUserObj.username }}</span>
+            </div>
+            
           </div>
         </header>
 
@@ -200,9 +214,9 @@
     </div>
 
     <!-- 🌟 新增：手工录入进销存单据弹窗 -->
-    <div v-if="txDialogVisible" @click.self="txDialogVisible = false" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-all">
-      <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 p-6 space-y-5">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div v-if="txDialogVisible" @click.self="txDialogVisible = false" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all">
+      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
             <span class="text-xl">📝</span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddTxTitle }}</h3>
@@ -210,7 +224,7 @@
           <button @click="txDialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
         </div>
 
-        <form @submit.prevent="handleAddTx" class="space-y-4">
+        <form @submit.prevent="handleAddTx" class="space-y-4 px-6 py-5 overflow-y-auto max-h-[70vh]">
           <!-- 类型选择 -->
           <div class="flex gap-4">
             <label class="flex-1 cursor-pointer">
@@ -254,7 +268,7 @@
             <input v-model="newTx.customer_or_supplier" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-blue-500" />
           </div>
 
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/20">
             <button type="button" @click="txDialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }}
             </button>
@@ -270,10 +284,10 @@
     <div 
       v-if="dialogVisible" 
       @click.self="dialogVisible = false" 
-      class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-all"
+      class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all"
     >
-      <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-100 p-6 space-y-5">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
             <span class="text-xl">➕</span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddPartTitle }}</h3>
@@ -281,7 +295,7 @@
           <button @click="dialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
         </div>
 
-        <form @submit.prevent="handleAddPart" class="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+        <form @submit.prevent="handleAddPart" class="space-y-4 max-h-[70vh] overflow-y-auto px-6 py-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colOem }}</label>
@@ -350,7 +364,7 @@
             <input type="file" @change="handleFileChange" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1.5" />
           </div>
 
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/20">
             <button type="button" @click="dialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }} (ESC)
             </button>
@@ -363,7 +377,7 @@
     </div>
 
     <!-- 🌟 新增客户弹窗 (拆分店铺与联系人) -->
-    <div v-if="clientDialogVisible" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    <div v-if="clientDialogVisible" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4">
       <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 dark:border-slate-700">
         <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700">
           <h3 class="font-bold text-base text-slate-800 dark:text-slate-200">{{ t.clients.addBtn }}</h3>
@@ -423,8 +437,8 @@
       </div>
     </div>
 
-    <div v-if="resetModalVisible" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100 p-6 space-y-5">
+    <div v-if="resetModalVisible" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4">
+      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="text-center space-y-1.5">
           <div class="w-12 h-12 rounded-xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
             🔒

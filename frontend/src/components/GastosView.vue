@@ -85,7 +85,7 @@
             </tr>
             <tr v-if="filteredExpenses.length === 0">
               <td colspan="8" class="py-16 text-center text-slate-400 text-sm">
-                <span class="text-4xl block mb-3">📭</span>
+                
                 {{ tExt.empty }}
               </td>
             </tr>

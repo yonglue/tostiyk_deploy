@@ -2,15 +2,11 @@
 <template>
   <div class="space-y-6 max-w-11xl mx-auto">
     
-    <!-- 欢迎横幅与系统概览 -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-500/15 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <!-- 欢迎横幅与系统概览 (恢复蓝底，移除汇率) -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-500/15 flex flex-col justify-center">
       <div>
         <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight">{{ t.dashboard.title }}</h1>
         <p class="text-blue-100 text-xs sm:text-sm mt-1">{{ t.dashboard.subtitle }}</p>
-      </div>
-      <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/20 text-xs sm:text-sm shadow-sm">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>{{ t.dashboard.bcvLabel }} <strong class="font-mono text-white text-base">{{ bcvRate }}</strong></span>
       </div>
     </div>
 
@@ -121,7 +117,7 @@
         <button 
           @click="$emit('navigate', 'financial')" 
           :title="tExt.btnFinancial"
-          class="bg-emerald-50/60 dark:bg-emerald-900/20 hover:bg-emerald-600 dark:hover:bg-emerald-600 hover:text-white text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-emerald-50/60 dark:bg-emerald-900/20 hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white text-emerald-800 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">📈</span>
           <span>{{ tExt.btnFinancial }}</span>
@@ -141,7 +137,7 @@
         <button 
           @click="$emit('navigate', 'clients')" 
           :title="tExt.btnClients"
-          class="bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-600 dark:hover:bg-purple-600 hover:text-white text-purple-700 dark:text-purple-400 border border-purple-200/80 dark:border-purple-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-500 dark:hover:bg-purple-500 hover:text-white text-purple-800 dark:text-purple-400 border border-purple-200/80 dark:border-purple-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">👥</span>
           <span>{{ tExt.btnClients }}</span>

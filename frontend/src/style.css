@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    --background: 210 40% 98%; /* #FAF2E0 米黄色背景 */
     --foreground: 222.2 84% 4.9%;
     --border: 214.3 31.8% 91.4%;
   }
@@ -149,3 +149,258 @@ html.view-transition-active, html.view-transition-active body { overflow: hidden
 .animate-shake { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
 .input-error { border-color: #f43f5e !important; box-shadow: 0 0 0 1px #f43f5e !important; }
 .dark .input-error { border-color: #fb7185 !important; box-shadow: 0 0 0 1px #fb7185 !important; }
+
+
+/* =========================================
+   🚀 V3 商业级 SaaS UI 质感增强补丁
+   无需修改组件代码，全局生效
+   ========================================= */
+
+/* 1. 全局字体渲染优化 */
+body {
+  letter-spacing: -0.011em;
+}
+
+/* 2. 统一卡片质感：多层级弥散阴影 + 柔滑过渡 */
+.bg-white, .dark .bg-slate-800\/80, .dark .bg-slate-800, .dark .bg-slate-900 {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.bg-white.rounded-xl, .bg-white.rounded-2xl {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+}
+.bg-white.rounded-xl:hover, .bg-white.rounded-2xl:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+/* 3. 表格全面美化 (极简呼吸感) */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+th {
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.75rem !important;
+  color: #64748b !important;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+.dark th {
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #334155 !important;
+}
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+.dark tbody tr:hover {
+  background-color: #1e293b !important;
+}
+td {
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-top: 0.875rem !important;
+  padding-bottom: 0.875rem !important;
+}
+.dark td {
+  border-bottom: 1px solid #1e293b !important;
+}
+
+/* 4. 按钮点击微交互反馈 */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 5. 输入框聚焦高级感 */
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  border-color: #3b82f6 !important;
+}
+
+/* 6. 侧边栏活动项左侧高亮条 (假设你使用了路由或特定类名) */
+.sidebar-active {
+  position: relative;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 100%);
+  color: #2563eb !important;
+}
+.sidebar-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  height: 80%;
+  width: 4px;
+  background-color: #3b82f6;
+  border-radius: 0 4px 4px 0;
+}
+
+
+/* =========================================
+   🚀 V4 商业级 UI 增强补丁：弹窗与表格
+   ========================================= */
+
+/* 1. 弹窗入场微动画 (苹果风) */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.erp-modal-content {
+  animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 2. 弹窗遮罩加深与高级毛玻璃 */
+.erp-modal-overlay {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* 3. 表格全局呼吸感与深色模式适配 */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+th {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #64748b !important;
+  padding: 1rem 1.5rem !important;
+  background-color: #f8fafc !important; /* 淡淡的灰 */
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+.dark th {
+  color: #94a3b8 !important;
+  background-color: #0f172a !important; /* 深色表头 */
+  border-bottom: 1px solid #1e293b !important;
+}
+td {
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  transition: background-color 0.2s ease !important;
+}
+.dark td {
+  border-bottom: 1px solid #1e293b !important;
+}
+tbody tr:hover td {
+  background-color: #f8fafc !important;
+}
+.dark tbody tr:hover td {
+  background-color: #1e293b !important;
+}
+tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+
+/* =========================================
+   🚀 V5 商业级 UI 增强补丁：表单与按钮极致打磨
+   ========================================= */
+
+/* 1. 输入框、下拉框、文本域的高级质感 */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), 
+select, 
+textarea {
+  background-color: #f8fafc !important; /* 极浅的冷灰底色 */
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.5rem !important; /* 统一的微圆角 */
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  padding-right: 0.75rem !important;
+    font-size: 0.875rem !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: #1e293b !important;
+}
+
+/* 深色模式下的输入框 */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), 
+.dark select, 
+.dark textarea {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* 悬浮与聚焦时的光晕动效 */
+input:hover:not(:disabled):not(:focus), 
+select:hover:not(:disabled):not(:focus), 
+textarea:hover:not(:disabled):not(:focus) {
+  border-color: #cbd5e1 !important;
+}
+.dark input:hover:not(:disabled):not(:focus), 
+.dark select:hover:not(:disabled):not(:focus), 
+.dark textarea:hover:not(:disabled):not(:focus) {
+  border-color: #475569 !important;
+}
+
+input:focus, 
+select:focus, 
+textarea:focus {
+  outline: none !important;
+  background-color: #ffffff !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important; /* 柔和的蓝光 */
+}
+.dark input:focus, 
+.dark select:focus, 
+.dark textarea:focus {
+  background-color: #1e293b !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* 2. 按钮的物理微反馈 */
+button:not(:disabled) {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+button:active:not(:disabled) {
+  transform: scale(0.96) !important; /* 点击时微微下压 */
+}
+
+
+/* =========================================
+   🚀 V7 修复搜索框图标与文字重叠
+   ========================================= */
+
+/* 针对带图标的搜索框，强制增加左侧内边距 */
+input[type="text"]:has(+ svg), 
+input[type="text"]:has(+ .icon) {
+  padding-left: 2.5rem !important;
+}
+
+/* 兼容 Vue 中常见的包含图标的搜索框结构 */
+.relative > input[type="text"],
+.relative > input[type="search"] {
+  padding-left: 2.5rem !important;
+}
+
+/* 针对下拉框（带图标的），增加左侧内边距 */
+
+
+
+/* 搜索框留白修复 */
+.relative > input[type='text'] { padding-left: 2.5rem !important; }
+
+/* =========================================
+   🚀 终极修复：原生 Select 箭头重叠与美化
+   ========================================= */
+
+/* 强制干掉所有浏览器的原生箭头 */
+
+
+/* =========================================
+   🚀 终极修复：原生 Select 箭头重叠与美化
+   ========================================= */
+
+
+
+
+

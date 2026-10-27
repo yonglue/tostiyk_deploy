@@ -1854,13 +1854,20 @@ const generateReceiptHtml = (receiptData) => {
     displayOrderNo = 'PRE-VENTA'
   }
 
+  // 兼容不同字段名，确保金额不为 0
+  const baseUsd = receiptData.base_usd || receiptData.baseAmountUsd || 0
+  const taxUsd = receiptData.tax_usd || receiptData.taxAmountUsd || 0
+  const totalUsd = receiptData.total_usd || receiptData.totalAmountUsd || receiptData.total || 0
+  const totalBs = receiptData.total_bs || receiptData.totalAmountBs || 0
+  const exchangeRate = receiptData.exchange_rate || receiptData.bcvRate || 0
+
   let itemsHtml = ''
   ;(receiptData.items || []).forEach(it => {
     let oemStr = it.oem ? ` [${it.oem}]` : ''
     itemsHtml += `
-      <div style="margin-top: 4px; word-break: break-word;">${it.name}</div>
-      <div style="display: flex; justify-content: space-between;">
-        <span>x${it.quantity} @ ${it.price.toFixed(2)}${oemStr}</span>
+      <div style="margin-top: 6px; word-break: break-word;">${it.name}</div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+        <span>  ${it.quantity} x ${it.price.toFixed(2)}${oemStr}</span>
         <span>$${(it.price * it.quantity).toFixed(2)}</span>
       </div>
     `
@@ -1869,20 +1876,14 @@ const generateReceiptHtml = (receiptData) => {
   let paymentHtml = ''
   if (receiptData.payment) {
     const p = receiptData.payment
-    if (p.cardPos > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> - Punto</span><span>Bs.${p.cardPos.toFixed(2)}</span></div>`
-    if (p.pagoMovil > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> - Pago Movil</span><span>Bs.${p.pagoMovil.toFixed(2)}</span></div>`
-    if (p.cashUsd > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> - Efectivo USD</span><span>$${p.cashUsd.toFixed(2)}</span></div>`
-    if (p.cashBs > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> - Efectivo Bs</span><span>Bs.${p.cashBs.toFixed(2)}</span></div>`
+    if (p.cardPos > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> Tarjeta</span><span>Bs.${p.cardPos.toFixed(2)}</span></div>`
+    if (p.pagoMovil > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> Pago Movil</span><span>Bs.${p.pagoMovil.toFixed(2)}</span></div>`
+    if (p.cashUsd > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> Efectivo USD</span><span>$${p.cashUsd.toFixed(2)}</span></div>`
+    if (p.cashBs > 0) paymentHtml += `<div style="display: flex; justify-content: space-between;"><span> Efectivo Bs</span><span>Bs.${p.cashBs.toFixed(2)}</span></div>`
   }
 
   const cleanNo = (receiptData.order_no || '').replace(/[^A-Za-z0-9]/g, '')
   const barcodeStr = cleanNo.length > 12 ? cleanNo.slice(-12) : cleanNo
-
-  let dateStr = String(receiptData.date || '').trim()
-  let timeStr = String(receiptData.print_time || '').trim()
-  if (timeStr === dateStr || timeStr.includes(dateStr) || dateStr.includes(timeStr)) {
-    timeStr = ''
-  }
 
   return `
     <html>
@@ -1890,56 +1891,69 @@ const generateReceiptHtml = (receiptData) => {
         <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
         <style>
           @page { size: 80mm auto; margin: 0; }
-          body { margin: 0; padding: 5px 10px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; width: 70mm; line-height: 1.2; }
+          body { 
+            margin: 0; 
+            padding: 5px 8px; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            font-size: 12px; 
+            color: #000; 
+            width: 68mm; 
+            line-height: 1.3; 
+          }
           .center { text-align: center; }
           .bold { font-weight: bold; }
-          .divider-dash { border-top: 1px dashed #000; margin: 5px 0; }
-          .divider-eq { border-top: 2px dashed #000; margin: 5px 0; }
-          .header-title { font-size: 16px; font-weight: bold; margin-bottom: 2px; }
-          .row { display: flex; justify-content: space-between; }
-          #barcode { width: 100%; height: 22px; margin-top: 8px; }
+          .divider-dash { border-top: 1px dashed #000; margin: 6px 0; }
+          .header-title { font-size: 15px; font-weight: bold; margin-bottom: 4px; letter-spacing: 0.5px; }
+          .header-info { font-size: 11px; margin-bottom: 2px; }
+          .meta-info { font-size: 11px; font-family: 'Courier New', Courier, monospace; }
+          .row { display: flex; justify-content: space-between; font-family: 'Courier New', Courier, monospace; font-size: 12px; }
+          .row.bold { font-weight: bold; font-size: 13px; margin-top: 4px; margin-bottom: 4px; }
+          #barcode { width: 100%; height: 30px; margin-top: 10px; }
         </style>
       </head>
       <body>
         <div class="center">
           <div class="header-title">${receiptData.company_name || 'TOSTIYK ERP'}</div>
-          ${receiptData.address ? `<div>${receiptData.address}</div>` : ''}
-          <div>RIF: ${receiptData.rif || 'J-00000000-0'}</div>
+          <div class="header-info">${receiptData.address || ''}</div>
+          <div class="header-info">RIF: ${receiptData.rif || 'J-00000000-0'}</div>
+          <div class="header-info" style="margin-bottom: 5px;">TEL: ${receiptData.phone || '-'}</div>
         </div>
-        <div class="divider-eq"></div>
         
-        <div>Numero Factura: ${displayOrderNo}</div>
-        <div>Fecha  : ${dateStr}</div>
-        ${timeStr ? `<div>Hora   : ${timeStr}</div>` : ''}
-        <div>Cliente: ${receiptData.client_name || 'Cliente General'}</div>
-        ${receiptData.client_rif ? `<div>RIF    : ${receiptData.client_rif}</div>` : ''}
-        <div>Cajero : ${receiptData.cashier || 'Admin'}</div>
+        <div class="divider-dash"></div>
+        
+        <div class="meta-info">
+          <div class="row"><span>Factura:</span><span>${displayOrderNo}</span></div>
+          <div class="row"><span>Fecha:</span><span>${(receiptData.date || '').split(' ')[0]}</span></div>
+          <div class="row"><span>Hora:</span><span>${(receiptData.date || '').split(' ')[1] || ''}</span></div>
+          <div class="row"><span>Cliente:</span><span>${receiptData.client_name || 'Contado'}</span></div>
+          ${receiptData.client_rif ? `<div class="row"><span>RIF:</span><span>${receiptData.client_rif}</span></div>` : ''}
+          <div class="row"><span>Cajero:</span><span>${receiptData.cashier || receiptData.operator || 'Admin'}</span></div>
+        </div>
         
         <div class="divider-dash"></div>
         ${itemsHtml}
         <div class="divider-dash"></div>
         
-        <div class="row"><span>Subtotal:</span> <span>$${(receiptData.base_usd || 0).toFixed(2)}</span></div>
-        <div class="row"><span>IVA:</span> <span>$${(receiptData.tax_usd || 0).toFixed(2)}</span></div>
-        <div class="row bold"><span>Total $:</span> <span>$${(receiptData.total_usd || 0).toFixed(2)}</span></div>
-        <div class="row"><span>Total Bs:</span> <span>Bs.${(receiptData.total_bs || 0).toFixed(2)}</span></div>
-        <div class="row"><span>Tasa:</span> <span>${(receiptData.exchange_rate || 0).toFixed(2)} Bs/$</span></div>
+        <div class="row"><span>Subtotal:</span> <span>$${baseUsd.toFixed(2)}</span></div>
+        <div class="row"><span>IVA:</span> <span>$${taxUsd.toFixed(2)}</span></div>
+        <div class="row bold"><span>TOTAL USD:</span> <span>$${totalUsd.toFixed(2)}</span></div>
+        <div class="row"><span>TOTAL BS:</span> <span>Bs.${totalBs.toFixed(2)}</span></div>
+        <div class="row"><span>Tasa BCV:</span> <span>${exchangeRate.toFixed(2)}</span></div>
         
         <div class="divider-dash"></div>
-        <div>Pagos:</div>
-        ${paymentHtml}
+        <div class="bold" style="margin-bottom: 4px;">PAGOS:</div>
+        ${paymentHtml || '<div class="center" style="font-size:11px;">- Sin detalles -</div>'}
         
         <div class="divider-dash"></div>
-        <div class="center" style="margin-top: 5px;">¡Gracias por su compra!</div>
-        ${receiptData.phone ? `<div class="center">Comunique: ${receiptData.phone}</div>` : ''}
-        <div class="center">Tostiyk (TK) ERP</div>
+        <div class="center" style="margin-top: 8px; font-size:11px;">¡Gracias por su compra!</div>
+        <div class="center" style="font-size:10px; margin-top: 2px;">Tostiyk ERP System</div>
         
         <div style="text-align: center;">
           <svg id="barcode"></svg>
         </div>
         <script>
           if ("${barcodeStr}") {
-            try { JsBarcode("#barcode", "${barcodeStr}", { format: "CODE128", displayValue: false, margin: 0, width: 1.5 }); } catch(e) {}
+            try { JsBarcode("#barcode", "${barcodeStr}", { format: "CODE128", displayValue: true, fontSize: 10, textMargin: 0, margin: 0, width: 1.2 }); } catch(e) {}
           }
         <\/script>
       </body>
@@ -1952,11 +1966,14 @@ const autoPrintReceipt = async (receiptData) => {
   if (isConnected.value) {
     printReceipt({
       lang: isZh.value ? 'zh' : isEs.value ? 'es' : 'en',
-      companyName: 'Tostiyk ERP 官方店',
+      companyName: receiptData.company_name || systemConfig.value?.company_name || 'Tostiyk ERP',
+      companyRif: receiptData.rif || systemConfig.value?.rif || '',
+      companyAddress: receiptData.address || systemConfig.value?.address || '',
+      companyPhone: receiptData.phone || systemConfig.value?.phone || '',
       order_no: receiptData.order_no || '-',
-      date: new Date().toLocaleString(),
+      date: receiptData.date || new Date().toLocaleString(),
       client_name: receiptData.client_name || 'Contado',
-      operator: receiptData.operator || 'Admin',
+      operator: receiptData.cashier || receiptData.operator || 'Admin',
       items: receiptData.items || [],
       total_usd: receiptData.total_usd || 0,
       total_bs: receiptData.total_bs || 0,
@@ -2010,11 +2027,12 @@ const previewOrderTicket = (order) => {
     cashier: order.operator || 'Admin',
     exchange_rate: systemConfig.value?.bcv_rate || 0,
     items: order.items || [],
-    base_usd: order.base_usd || 0,
-    tax_usd: order.tax_usd || 0,
-    total_usd: order.total || order.total_usd || 0,
-    total_bs: order.total_bs || 0,
-    payment: order.payment || { cashUsd: order.total || 0 }
+    base_usd: order.base_usd || order.baseAmountUsd || 0,
+    tax_usd: order.tax_usd || order.taxAmountUsd || 0,
+    total_usd: order.total || order.total_usd || order.totalAmountUsd || 0,
+    total_bs: order.total_bs || order.totalAmountBs || 0,
+    exchange_rate: order.exchange_rate || order.bcvRate || systemConfig.value?.bcv_rate || 0,
+    payment: order.payment || order.paymentSplit || { cashUsd: order.total || 0 }
   }
   
   const html = generateReceiptHtml(receiptData)
@@ -2053,11 +2071,12 @@ const reprintOrderTicket = (order) => {
     cashier: order.operator || 'Admin',
     exchange_rate: systemConfig.value?.bcv_rate || 0,
     items: order.items || [],
-    base_usd: order.base_usd || 0,
-    tax_usd: order.tax_usd || 0,
-    total_usd: order.total || order.total_usd || 0,
-    total_bs: order.total_bs || 0,
-    payment: order.payment || { cashUsd: order.total || 0 }
+    base_usd: order.base_usd || order.baseAmountUsd || 0,
+    tax_usd: order.tax_usd || order.taxAmountUsd || 0,
+    total_usd: order.total || order.total_usd || order.totalAmountUsd || 0,
+    total_bs: order.total_bs || order.totalAmountBs || 0,
+    exchange_rate: order.exchange_rate || order.bcvRate || systemConfig.value?.bcv_rate || 0,
+    payment: order.payment || order.paymentSplit || { cashUsd: order.total || 0 }
   }
   
   autoPrintReceipt(receiptData)

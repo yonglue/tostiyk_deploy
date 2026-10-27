@@ -86,7 +86,7 @@ const isEs = computed(() => currentLang.value === 'es')
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
             <tr v-if="paginatedClients.length === 0">
               <td colspan="8" class="text-center py-16 text-slate-400 dark:text-slate-500 text-xs font-bold">
-                <span class="text-4xl block mb-3">📭</span>
+                
                 {{ t.clients.empty }}
               </td>
             </tr>

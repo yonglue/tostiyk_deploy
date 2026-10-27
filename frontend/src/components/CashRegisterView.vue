@@ -114,7 +114,7 @@
             </tr>
             <tr v-if="shiftRecords.length === 0">
               <td colspan="7" class="py-16 text-center text-slate-400 text-xs font-bold">
-                <span class="text-3xl block mb-2">📭</span>
+                
                 {{ tExt.emptyRecords }}
               </td>
             </tr>

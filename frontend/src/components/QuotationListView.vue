@@ -69,7 +69,7 @@
             </tr>
             <tr v-if="quotations.length === 0">
               <td colspan="5" class="text-center py-20 text-slate-400 font-bold">
-                <span class="text-4xl block mb-3">📭</span>
+                
                 {{ tExt.emptyData }}
               </td>
             </tr>
