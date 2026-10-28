@@ -141,65 +141,17 @@
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-2.5">
-          <table data-testid="cart-table" class="w-full text-left border-collapse">
-
-            <thead>
-              <tr class="border-b-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-extrabold uppercase bg-slate-100 dark:bg-slate-800/50">
-                <th class="py-3 px-3">{{ tExt.cartOem }}</th>
-                <th class="py-3 px-3">{{ tExt.cartName }}</th>
-                <th class="py-3 px-3 text-right">{{ tExt.cartPrice }}</th>
-                <th class="py-3 px-3 text-center">{{ tExt.cartQty }}</th>
-                <th class="py-3 px-3 text-right">{{ tExt.cartSubtotal }}</th>
-                <th class="py-3 px-3 text-center">{{ tExt.cartAction }}</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm font-medium">
-              <tr 
-                v-for="(item, index) in cartItems" 
-                :key="item.oem" 
-                @click="selectedCartIndex = index"
-                :class="[
-                  selectedCartIndex === index ? 'bg-blue-500/15 border-blue-400 ring-1 ring-blue-400' : (index % 2 === 0 ? 'bg-white dark:bg-slate-800/80' : 'bg-slate-50 dark:bg-slate-900/70'),
-                  'border-b border-slate-200 dark:border-slate-700/70 hover:bg-blue-50/50 transition-all shadow-2xs cursor-pointer'
-                ]"
-              >
-                <td class="py-3 px-3 font-mono font-black text-blue-600 text-sm">{{ item.oem }}</td>
-                <td class="py-3 px-3 text-slate-900 dark:text-white font-bold">{{ item.name }}</td>
-                <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold">
-                  <div>${{ item.price.toFixed(2) }}</div>
-                  <div class="text-xs text-slate-400 font-normal">Bs. {{ (item.price * bcvRate).toFixed(2) }}</div>
-                </td>
-                <td class="py-3 px-3 text-center" @click.stop>
-                  <div class="inline-flex items-center border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden bg-white dark:bg-slate-800 shadow-2xs focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
-                    <button @click="item.quantity > 1 ? item.quantity-- : null" class="px-2.5 py-1 text-slate-600 dark:text-slate-400 hover:bg-slate-200 font-bold text-sm">-</button>
-                    <input 
-                      v-model="itemInputQuantities[index]" 
-                      @focus="$event.target.select()"
-                      @blur="applyMultiplierQuantity(index)"
-                      @keydown.enter="applyMultiplierQuantity(index)"
-                      type="text" 
-                      class="w-12 text-center bg-transparent text-slate-900 dark:text-white text-sm font-mono outline-none font-black" 
-                    />
-                    <button @click="item.quantity++; itemInputQuantities[index] = item.quantity" class="px-2.5 py-1 text-slate-600 dark:text-slate-400 hover:bg-slate-200 font-bold text-sm">+</button>
-                  </div>
-                </td>
-                <td class="py-3 px-3 text-right font-mono font-black text-emerald-600">
-                  <div>${{ (item.price * item.quantity).toFixed(2) }}</div>
-                  <div class="text-xs text-emerald-700/80 font-normal">Bs. {{ (item.price * item.quantity * bcvRate).toFixed(2) }}</div>
-                </td>
-                <td class="py-3 px-3 text-center" @click.stop>
-                  <button @click="cartItems.splice(index, 1)" class="text-rose-600 text-xs font-bold px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg transition-all cursor-pointer shadow-2xs">{{ t.common.delete }}</button>
-                </td>
-              </tr>
-              <tr v-if="cartItems.length === 0">
-                <td colspan="6" class="text-center py-20 text-slate-400 text-sm font-bold">
-                  <div class="flex flex-col items-center gap-2 text-slate-400"><ShoppingCart :size="48" class="opacity-20 mb-2" /> {{ tExt.cartEmpty }}</div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <PosCartTable 
+          :cartItems="cartItems" 
+          :itemInputQuantities="itemInputQuantities" 
+          :selectedCartIndex="selectedCartIndex" 
+          :bcvRate="bcvRate" 
+          :tExt="tExt"
+          @select-item="index => selectedCartIndex = index"
+          @update-qty="(i, q) => itemInputQuantities[i] = q"
+          @apply-qty="applyMultiplierQuantity"
+          @remove-item="index => cartItems.splice(index, 1)"
+        />
       </div>
 
       <!-- 右侧面板容器：收银区 -->
@@ -762,6 +714,7 @@ import { CreditCard, Zap, Banknote, DollarSign, Trash2, ShoppingCart, Plus, Minu
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
+const paymentPanelRef = ref(null)
 
 
 
@@ -769,6 +722,7 @@ const isEs = computed(() => currentLang.value === 'es')
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useI18n } from '../composables/useI18n'
+import PosCartTable from './pos/PosCartTable.vue'
 import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 import ConfirmDialog from './ConfirmDialog.vue'
 import PosHelpModal from './pos/PosHelpModal.vue'
@@ -1044,12 +998,17 @@ const handlePaymentKeydown = (e, channelKey) => {
   }
 }
 
-const focusPaymentChannel = (key) => {
-  if (key === 'cardPos' && cardPosInputRef.value) cardPosInputRef.value.focus()
-  else if (key === 'pagoMovil' && pagoMovilInputRef.value) pagoMovilInputRef.value.focus()
-  else if (key === 'cashBs' && cashBsInputRef.value) cashBsInputRef.value.focus()
-  else if (key === 'cashUsd' && cashUsdInputRef.value) cashUsdInputRef.value.focus()
-  else if (key === 'reference' && referenceInputRef.value) referenceInputRef.value.focus()
+const focusPaymentChannel = (channel) => {
+  if (!paymentPanelRef.value) return
+  const refs = {
+    cardPos: paymentPanelRef.value.cardPosInputRef,
+    pagoMovil: paymentPanelRef.value.pagoMovilInputRef,
+    cashBs: paymentPanelRef.value.cashBsInputRef,
+    cashUsd: paymentPanelRef.value.cashUsdInputRef
+  }
+  if (refs[channel] && refs[channel].value) {
+    refs[channel].value.focus()
+  }
 }
 
 watch(goodsTotalUsd, (newVal) => {
@@ -1730,124 +1689,60 @@ const confirmAndPrint = async (overridePin = null) => {
 }
 
 const handleGlobalKeydown = (e) => {
-  if (previewModalVisible.value || newClientModalVisible.value) {
-    if (e.key === 'Enter') { 
-      e.preventDefault() 
-      e.stopPropagation() 
-      if (previewModalVisible.value && isPreviewReady.value && !isSubmitting.value) { 
-        confirmAndPrint() 
-      } else if (newClientModalVisible.value) {
-        saveNewClient()
-      }
-      return 
-    }
-    if (e.key === 'Escape') { 
-      e.preventDefault() 
-      e.stopPropagation()
-       
-      newClientModalVisible.value = false
-      return 
-    }
+  const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
+  
+  // 🔍 搜索聚焦: / 
+  if (e.key === '/' && !isInput) {
+    e.preventDefault()
+    searchInputRef.value?.focus()
     return
   }
 
-  if (e.ctrlKey && e.key === 'Enter') {
+  // 👤 选客户: F3
+  if (e.key === 'F3') {
     e.preventDefault()
-    e.stopPropagation()
-    if (isFullyPaid.value && props.cartItems.length > 0 && !previewModalVisible.value && !isSubmitting.value) {
+    clientModalVisible.value = true
+    setTimeout(() => { clientModalInputRef.value?.focus() }, 100)
+    return
+  }
+
+  // 💳 支付通道切换: F4 - F7
+  if (e.key === 'F4') { e.preventDefault(); focusPaymentChannel('cardPos'); return; }
+  if (e.key === 'F5') { e.preventDefault(); focusPaymentChannel('pagoMovil'); return; }
+  if (e.key === 'F6') { e.preventDefault(); focusPaymentChannel('cashBs'); return; }
+  if (e.key === 'F7') { e.preventDefault(); focusPaymentChannel('cashUsd'); return; }
+
+  // 📦 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
+  if (e.key === 'F8') {
+    e.preventDefault()
+    if (typeof saveHeldOrder === 'function') saveHeldOrder()
+    else if (typeof holdOrder === 'function') holdOrder()
+    return
+  }
+
+  // 💰 结账: F12 或 Ctrl+Enter
+  if (e.key === 'F12' || (e.ctrlKey && e.key === 'Enter')) {
+    e.preventDefault()
+    if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
       handleDirectCheckout()
     }
     return
   }
 
-  if (clientModalVisible.value || helpModalVisible.value || recallModalVisible.value || shiftReportModalVisible.value || historyModalVisible.value || exitConfirmVisible.value) {
-    if (e.key === 'Escape') {
+  // 🗑️ 删除: Delete 删末项，Alt+Delete 清空
+  if (e.key === 'Delete') {
+    if (e.altKey) {
       e.preventDefault()
-      e.stopPropagation()
-      if (exitConfirmVisible.value) {
-        exitConfirmVisible.value = false
-      } else {
-        clientModalVisible.value = false
-        helpModalVisible.value = false
-        recallModalVisible.value = false
-        shiftReportModalVisible.value = false
-        historyModalVisible.value = false
+      if (props.cartItems.length > 0) {
+        props.cartItems.splice(0, props.cartItems.length)
+        emit('clear-cart')
       }
-      return
-    }
-    if (exitConfirmVisible.value && e.key === 'Enter') {
+    } else if (!isInput && props.cartItems.length > 0) {
       e.preventDefault()
-      e.stopPropagation()
-      executeExitPos()
-      return
+      props.cartItems.pop()
     }
     return
   }
-
-  if (e.key === 'Escape') {
-    e.preventDefault()
-    confirmExitPos()
-    return
-  }
-
-  const activeEl = document.activeElement
-  const isInputActive = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')
-  const isSearchFocused = activeEl === searchInputRef.value
-  const hasSearchQuery = deskSearchQuery.value.trim().length > 0
-
-  if (isSearchFocused && hasSearchQuery && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
-    return
-  }
-
-  if (!isInputActive && props.cartItems.length > 0) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      selectedCartIndex.value = (selectedCartIndex.value + 1) % props.cartItems.length
-      return
-    }
-    if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      selectedCartIndex.value = (selectedCartIndex.value - 1 + props.cartItems.length) % props.cartItems.length
-      return
-    }
-    if (e.key === '+' || e.key === '=' || e.code === 'NumpadAdd') {
-      e.preventDefault()
-      if (props.cartItems[selectedCartIndex.value]) {
-        props.cartItems[selectedCartIndex.value].quantity++
-        itemInputQuantities.value[selectedCartIndex.value] = String(props.cartItems[selectedCartIndex.value].quantity)
-      }
-      return
-    }
-    if (e.key === '-' || e.code === 'NumpadSubtract') {
-      e.preventDefault()
-      if (props.cartItems[selectedCartIndex.value] && props.cartItems[selectedCartIndex.value].quantity > 1) {
-        props.cartItems[selectedCartIndex.value].quantity--
-        itemInputQuantities.value[selectedCartIndex.value] = String(props.cartItems[selectedCartIndex.value].quantity)
-      }
-      return
-    }
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      e.preventDefault()
-      if (props.cartItems[selectedCartIndex.value]) {
-        props.cartItems.splice(selectedCartIndex.value, 1)
-        if (selectedCartIndex.value >= props.cartItems.length) {
-          selectedCartIndex.value = Math.max(0, props.cartItems.length - 1)
-        }
-      }
-      return
-    }
-  }
-
-  if (e.key === 'F4') { e.preventDefault(); if (cardPosInputRef.value) cardPosInputRef.value.focus(); return }
-  if (e.key === 'F5') { e.preventDefault(); if (pagoMovilInputRef.value) pagoMovilInputRef.value.focus(); return }
-  if (e.key === 'F6') { e.preventDefault(); if (cashBsInputRef.value) cashBsInputRef.value.focus(); return }
-  if (e.key === 'F7') { e.preventDefault(); if (cashUsdInputRef.value) cashUsdInputRef.value.focus(); return }
-
-  if (e.key === '/' && document.activeElement !== searchInputRef.value) { e.preventDefault(); focusSearch(); return }
-  if (e.ctrlKey && e.key.toLowerCase() === 'f') { e.preventDefault(); openClientSearchModal(); return }
-  if (e.ctrlKey && e.key.toLowerCase() === 'h') { e.preventDefault(); holdCurrentOrder(); return }
-  if (e.ctrlKey && e.key.toLowerCase() === 'r') { e.preventDefault(); openRecallModal(); return }
-  if (e.ctrlKey && e.key.toLowerCase() === 'b') { e.preventDefault(); emit('clear-cart'); return }
 }
 
 
