@@ -2,6 +2,23 @@
 <template>
   <div class="fixed inset-0 bg-slate-950/25 backdrop-blur-md z-40 flex flex-col overflow-hidden text-slate-900 dark:text-white font-sans transition-all">
     
+    
+    <!-- 🌟 正在出单的进度条遮罩层 -->
+    <Teleport to="body">
+      <div v-if="isProcessingCheckout" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center">
+        <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4 border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-200">
+          <!-- 旋转圈圈 -->
+          <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <!-- 提示文字 -->
+          <div class="text-slate-900 dark:text-white font-black text-lg">正在打印发票...</div>
+          <!-- 进度条 -->
+          <div class="w-56 h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
+            <div class="h-full bg-emerald-500 rounded-full animate-progress"></div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- 结账成功的全屏绿色对勾遮罩 -->
     <div v-if="checkoutSuccessVisible" class="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center flex-col transition-all duration-300">
       <div class="w-40 h-40 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(16,185,129,0.6)] animate-pop-in">
@@ -312,14 +329,14 @@
             </div>
           </div>
 
-          <div class="p-3 bg-white dark:bg-slate-800/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 shrink-0">
+          <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shrink-0">
             <button
               data-testid="pos-checkout-btn"  
-              @click="openPreviewModal"
+              @click="handleDirectCheckout"
               :disabled="!isFullyPaid || cartItems.length === 0"
-              class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-md shadow-emerald-600/30 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              class="w-full h-14 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 text-white rounded-lg font-black text-base shadow-lg shadow-emerald-600/20 transition-all cursor-pointer flex items-center justify-center active:scale-[0.98]"
             >
-              <span>🚀 {{ t.pos.checkoutBtn }} [Ctrl+Enter]</span>
+              <span>结账</span>
             </button>
           </div>
         </div>
@@ -961,7 +978,7 @@ const handlePaymentKeydown = (e, channelKey) => {
     e.preventDefault()
     e.stopPropagation()
     if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value) {
-      openPreviewModal()
+      handleDirectCheckout()
     }
     return
   }
@@ -1015,7 +1032,7 @@ const handlePaymentKeydown = (e, channelKey) => {
   if (e.key === 'Enter') {
     e.preventDefault()
     if (isFullyPaid.value && !isSubmitting.value) {
-      openPreviewModal()
+      handleDirectCheckout()
       return
     }
     if (currentIndex !== -1 && currentIndex < orderSequence.length - 1) {
@@ -1165,6 +1182,7 @@ const helpModalVisible = ref(false)
 const toastMessage = ref('')
 const toastType = ref('success')
 const checkoutSuccessVisible = ref(false)
+
 let toastTimer = null
 
 const showToast = (msg, type = 'error') => {
@@ -1504,58 +1522,30 @@ const processReturnOrder = async (dbId) => {
 const confirmExitPos = () => { exitConfirmVisible.value = true }
 const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos') }
 
-const openPreviewModal = () => { 
-  if (props.cartItems.length === 0 || !isFullyPaid.value || isSubmitting.value) return
+const handleDirectCheckout = async () => {
+  if (props.cartItems.length === 0 || !isFullyPaid.value || isSubmitting.value || isProcessingCheckout.value) return
   if (!pendingRequestId.value) pendingRequestId.value = makeRequestId()
-  // 提前组装预览数据，防止 previewModalVisible 为 true 时 printData 为 null 报错
-  printData.value = {
-    company_name: systemConfig.value?.company_name || 'TOSTIYK (TK)',
-    rif: systemConfig.value?.rif || '',
-    address: systemConfig.value?.address || '',
-    phone: systemConfig.value?.phone || '',
-    order_no: pendingRequestId.value || 'PENDING',
-    date: new Date().toLocaleString(),
-    print_time: new Date().toLocaleString(),
-    client_name: quoteClientName.value || 'Cliente General',
-    client_rif: quoteClientRif.value || '', 
-    cashier: props.currentUser?.username || 'Admin',
-    exchange_rate: props.bcvRate || 0,
-    
-    // 🌟 关键补齐：把 Base Imponible 和 IVA 明确传过去
-    subtotal: totalBaseUsd.value,
-    iva: totalTaxUsd.value,
 
-    change: Math.max(0, (
-      (paymentSplit.value.cashUsd || 0) + 
-      ((paymentSplit.value.cardPos || 0) / (props.bcvRate || 1)) + 
-      ((paymentSplit.value.pagoMovil || 0) / (props.bcvRate || 1)) + 
-      ((paymentSplit.value.cashBs || 0) / (props.bcvRate || 1)) + 
-      (paymentSplit.value.zelle || 0) + 
-      (paymentSplit.value.usdt || 0)
-    ) - totalUsd.value),
-    items: props.cartItems.map(item => ({
-      name: item.name,
-      oem: item.oem || item.part_oem || '',
-      quantity: item.quantity,
-      price: item.price,
-      tax_rate: item.tax_rate ?? 0.16 // 🌟 显式把税率带上
-    })),
-    base_usd: totalBaseUsd.value,
-    tax_usd: totalTaxUsd.value,
-    total_usd: totalUsd.value,
-    total_bs: totalUsd.value * (props.bcvRate || 0),
-    payment: { ...paymentSplit.value },
-    reference: paymentReference.value
-  }
+  // 🌟 1. 开启全屏进度条
+  isProcessingCheckout.value = true
   
-  previewModalVisible.value = true
-  isPreviewReady.value = false
-  setTimeout(() => {
-    isPreviewReady.value = true
-  }, 300)
+  // 🌟 2. 强制平滑等待 1000ms（保证动画质感，同时允许后台提交）
+  const delay = new Promise(resolve => setTimeout(resolve, 1400))
+
+  try {
+    // 🌟 3. 在动画进行的同时，发起真实的后端提交
+    await confirmAndPrint()
+  } catch (error) {
+    console.error("Checkout error:", error)
+  } finally {
+    // 🌟 4. 动画走完（或发生错误时），关闭进度条
+    await delay 
+    isProcessingCheckout.value = false
+  }
 }
 
 const isSubmitting = ref(false)
+const isProcessingCheckout = ref(false)
 const { isConnected, printReceipt } = usePrintAgent()
 const printData = ref(null)
 
@@ -1623,7 +1613,7 @@ const confirmAndPrint = async (overridePin = null) => {
         : isEs.value
           ? 'En cola offline, se sincronizará al reconectar'
           : 'Queued offline, will sync when online'
-      previewModalVisible.value = false
+      
       props.cartItems.splice(0, props.cartItems.length)
       emit('clear-cart')
       paymentReference.value = ''
@@ -1696,7 +1686,7 @@ const confirmAndPrint = async (overridePin = null) => {
     // 🌟 2. 先关弹窗、反馈成功（不依赖打印）
     // 修复：之前 await 打印会因后端 /api/printer/receipt 阻塞而卡住订单完成流程
     // 生产收益：print-agent 挂掉时收银员仍能继续开单（只是没纸票）
-    previewModalVisible.value = false
+    
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
 
@@ -1752,7 +1742,7 @@ const handleGlobalKeydown = (e) => {
     if (e.key === 'Escape') { 
       e.preventDefault() 
       e.stopPropagation()
-      previewModalVisible.value = false 
+       
       newClientModalVisible.value = false
       return 
     }
@@ -1763,7 +1753,7 @@ const handleGlobalKeydown = (e) => {
     e.preventDefault()
     e.stopPropagation()
     if (isFullyPaid.value && props.cartItems.length > 0 && !previewModalVisible.value && !isSubmitting.value) {
-      openPreviewModal()
+      handleDirectCheckout()
     }
     return
   }

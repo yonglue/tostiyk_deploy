@@ -404,3 +404,349 @@ input[type="text"]:has(+ .icon) {
 
 
 
+
+/* ============================================
+ * TOSTIYK ERP — 主题基础层 v1（2026-10-28）
+ * 目标：C 提效率 + A 工业灰 + 高密度
+ * 原则：L1 严格 —— 不改 .vue，只做全局基础 + Vant 变量
+ * 回滚：cp .archive/theme-backup/style.css.bak frontend/src/style.css
+ * ============================================ */
+
+/* ----- 1. 语义 CSS 变量（供未来 L2 使用，兼容三种 dark 挂载方式） ----- */
+:root {
+  --color-surface: #ffffff;
+  --color-surface-raised: #f8fafc;
+  --color-surface-sunken: #f1f5f9;
+  --color-content-primary: #0f172a;
+  --color-content-secondary: #475569;
+  --color-content-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-brand: #1e40af;
+  --color-brand-hover: #1e3a8a;
+  --color-status-success: #059669;
+  --color-status-warning: #d97706;
+  --color-status-danger: #dc2626;
+  --color-status-info: #0284c7;
+  --radius-table: 6px;
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --row-height: 32px;
+  --control-height: 36px;
+}
+
+.dark,
+html.dark,
+body.dark,
+[data-theme="dark"] {
+  --color-surface: #0f172a;
+  --color-surface-raised: #1e293b;
+  --color-surface-sunken: #020617;
+  --color-content-primary: #f1f5f9;
+  --color-content-secondary: #cbd5e1;
+  --color-content-muted: #94a3b8;
+  --color-border: #334155;
+  --color-border-strong: #475569;
+  --color-brand: #3b82f6;
+  --color-brand-hover: #60a5fa;
+}
+
+/* ----- 2. 全局数字对齐（效率关键：金额/编号/数量等宽） ----- */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+
+table,
+.tabular-money,
+.tabular-qty,
+.tabular-id,
+.font-mono,
+time,
+input[type="number"],
+input[type="text"],
+input[type="search"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----- 3. 表格高密度（32px 行高，ERP 标准） ----- */
+table tbody tr {
+  height: var(--row-height);
+  min-height: var(--row-height);
+}
+
+table th,
+table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: middle;
+}
+
+table thead th {
+  color: #475569;
+  font-weight: 600;
+}
+
+.dark table thead th,
+html.dark table thead th,
+body.dark table thead th,
+[data-theme="dark"] table thead th {
+  color: #cbd5e1;
+}
+
+/* ----- 4. 对比度修正（WCAG AA） ----- */
+.text-slate-400 { color: #64748b; }
+.dark .text-slate-400,
+html.dark .text-slate-400,
+body.dark .text-slate-400,
+[data-theme="dark"] .text-slate-400 { color: #94a3b8; }
+
+/* ----- 5. Vant 变量统一（移动端对齐工业灰） ----- */
+:root {
+  --van-primary-color: #1e40af;
+  --van-success-color: #059669;
+  --van-danger-color: #dc2626;
+  --van-warning-color: #d97706;
+  --van-text-color: #0f172a;
+  --van-text-color-2: #475569;
+  --van-text-color-3: #64748b;
+  --van-border-color: #e2e8f0;
+  --van-active-color: #f1f5f9;
+  --van-background: #ffffff;
+  --van-background-2: #f8fafc;
+  --van-radius-sm: 4px;
+  --van-radius-md: 8px;
+  --van-radius-lg: 10px;
+  --van-font-size-sm: 12px;
+  --van-font-size-md: 13px;
+  --van-font-size-lg: 14px;
+  --van-cell-vertical-padding: 10px;
+  --van-cell-font-size: 13px;
+}
+
+.dark,
+html.dark,
+body.dark,
+[data-theme="dark"] {
+  --van-primary-color: #3b82f6;
+  --van-success-color: #10b981;
+  --van-danger-color: #ef4444;
+  --van-warning-color: #f59e0b;
+  --van-text-color: #f1f5f9;
+  --van-text-color-2: #cbd5e1;
+  --van-text-color-3: #94a3b8;
+  --van-border-color: #334155;
+  --van-active-color: #1e293b;
+  --van-background: #0f172a;
+  --van-background-2: #1e293b;
+}
+
+/* ----- 6. 焦点可见性（键盘操作） ----- */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ----- 7. 触摸目标保底 ----- */
+button,
+[role="button"] {
+  min-height: 32px;
+}
+
+/* ----- 8. 减少动画（效率场景：减弱视觉噪音） ----- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
+
+/* ============================================
+ * TOSTIYK ERP — L1 补充修正 v1.5（工业灰收敛）
+ * 目标：强压大圆角、修复暗色模式白底刺眼、强化弹窗层级
+ * ============================================ */
+
+/* ----- 1. 强行收敛 Tailwind 的大圆角（ERP 不需要那么软） ----- */
+/* 强制把 xl (12px) 降到 8px，2xl (16px) 降到 10px */
+.rounded-xl { border-radius: 8px !important; }
+.rounded-2xl { border-radius: 10px !important; }
+.rounded-3xl { border-radius: 12px !important; }
+/* 按钮内部的小圆角稍微收紧 */
+.rounded-lg { border-radius: 6px !important; }
+
+/* ----- 2. 修复暗色模式下的刺眼白底/黑字（拦截硬编码类名） ----- */
+.dark .bg-white,
+html.dark .bg-white,
+body.dark .bg-white,
+[data-theme="dark"] .bg-white {
+  background-color: var(--color-surface-raised) !important; /* 变成深蓝灰 */
+  color: var(--color-content-primary) !important;
+}
+
+.dark .text-slate-900,
+.dark .text-black,
+html.dark .text-slate-900,
+html.dark .text-black {
+  color: var(--color-content-primary) !important;
+}
+
+/* 修复暗色模式下输入框的背景 */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea {
+  background-color: var(--color-surface-sunken) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-content-primary) !important;
+}
+
+/* ----- 3. 强化弹窗（Modal）的层级与边界 ----- */
+/* 加深遮罩层，让弹窗更聚焦 */
+.bg-black\/50, .bg-slate-900\/50, .bg-black\/80 {
+  background-color: rgba(2, 6, 23, 0.75) !important;
+}
+
+/* 给暗色模式的弹窗加个清晰的边框，防止和背景融为一体 */
+.dark .bg-slate-800.border,
+.dark .bg-slate-900.border {
+  border-color: var(--color-border-strong) !important;
+}
+/* 如果没有 border 类的弹窗，加轻微阴影 */
+.dark .shadow-xl,
+.dark .shadow-2xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ----- 4. 列表卡片（如截图中的 TK-9193）收紧间距和描边 ----- */
+.dark .border-slate-700 {
+  border-color: var(--color-border) !important;
+}
+
+/* ----- 5. 提升主要操作按钮的对比度（防止浅色背景看不清） ----- */
+.bg-blue-600 {
+  background-color: var(--color-brand) !important;
+  color: #ffffff !important;
+}
+.hover\:bg-blue-500:hover {
+  background-color: var(--color-brand-hover) !important;
+}
+
+/* ============================================
+ * TOSTIYK ERP — 暗色模式终极反杀 v3.0
+ * 目标：暴力抹平所有写死浅色背景（包含透明度和嵌套）
+ * ============================================ */
+
+/* 1. 干掉所有类型的白底（包括 bg-white/90 等带透明度的白） */
+.dark .bg-white,
+.dark [class*="bg-white/"] {
+  background-color: var(--color-surface-raised) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* 2. 干掉所有浅灰、浅蓝、浅紫色的卡片/输入框/标签底色 */
+.dark .bg-slate-50, .dark [class*="bg-slate-50/"],
+.dark .bg-slate-100, .dark [class*="bg-slate-100/"],
+.dark .bg-gray-50, .dark .bg-gray-100,
+.dark .bg-blue-50, .dark [class*="bg-blue-50/"],
+.dark .bg-indigo-50, .dark .bg-rose-50, .dark .bg-emerald-50, .dark .bg-amber-50 {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 3. 所有的深色文字，全部变成亮灰白 */
+.dark .text-slate-900,
+.dark .text-black,
+.dark .text-slate-800 {
+  color: var(--color-content-primary) !important;
+}
+
+/* 4. 边框统一降级 */
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
+.dark .border-white\/80 {
+  border-color: var(--color-border) !important;
+}
+
+/* 5. 弹窗背景（很多弹窗是 bg-white/90 加 backdrop-blur） */
+.dark .backdrop-blur-2xl,
+.dark .backdrop-blur-xl,
+.dark .backdrop-blur-md {
+  background-color: rgba(15, 23, 42, 0.95) !important; /* 深蓝灰底色，不透明 */
+}
+
+/* 6. 特殊修复：打印小票预览区（那个必须保留白底黑字，模拟真实小票） */
+.dark .bg-white.text-black,
+.dark [class*="bg-white"][class*="text-black"],
+.dark .w-\[80mm\] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+.dark .bg-white.text-black .text-slate-900,
+.dark [class*="bg-white"][class*="text-black"] .text-slate-900 {
+  color: #000000 !important;
+}
+
+/* ============================================
+ * TOSTIYK ERP — L2 提效：表单与表格高密度化
+ * ============================================ */
+
+/* 1. 输入框瘦身：统一高度，减小内边距 */
+input[type="text"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  min-height: 34px;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  font-size: 13px !important; /* 稍微缩小字体 */
+  border-radius: 6px !important; /* 强制使用 6px 小圆角 */
+}
+
+/* 2. 表格高密度：强制行高 32px，消除臃肿感 */
+table {
+  border-collapse: collapse;
+}
+table thead th {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.5px;
+  background-color: var(--color-surface-sunken) !important;
+}
+table tbody td {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  font-size: 13px !important;
+}
+table tbody tr {
+  height: 32px !important;
+  transition: background-color 0.1s;
+}
+
+/* 3. 暗色模式下的输入框背景强制修正 */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: rgba(0, 0, 0, 0.2) !important; /* 更深一点，区分卡片底色 */
+  border-color: var(--color-border-strong) !important;
+  color: var(--color-content-primary) !important;
+}
+
+/* 正在出单进度条动画（步进 + 末尾卡顿） */
+@keyframes progress-fill {
+  0% { width: 0%; }
+  70% { width: 90%; }  /* 前 70% 的时间迅速跑到 90% */
+  85% { width: 90%; }  /* 在 90% 处硬生生停顿卡住 (模拟切纸前摇) */
+  100% { width: 100%; } /* 最后 15% 的时间补满剩余 10% */
+}
+.animate-progress {
+  /* 时长 1.4s，分 10 步跳完，视觉上就是一段段地“咔咔”前进 */
+  animation: progress-fill 1.4s steps(10, end) forwards !important;
+}

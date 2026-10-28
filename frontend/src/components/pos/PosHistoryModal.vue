@@ -20,8 +20,8 @@
         
         <div class="flex items-center gap-2">
           <input type="date" v-model="filterDate" class="bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs outline-none focus:border-blue-500 font-mono font-bold text-slate-700" />
-          <button @click="filterDate = todayStr" class="bg-blue-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm cursor-pointer hover:bg-blue-700 transition-colors">{{ tExt.todayBtn }}</button>
-          <button @click="filterDate = ''" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-colors">{{ tExt.allBtn }}</button>
+          <AppButton variant="primary" @click="filterDate = todayStr">{{ tExt.todayBtn }}</AppButton>
+          <AppButton variant="secondary" @click="filterDate = ''">{{ tExt.allBtn }}</AppButton>
         </div>
       </div>
 
@@ -42,9 +42,9 @@
               <div class="text-[10px] text-slate-500 font-bold uppercase">{{ getPaymentMethodLabel(order.paymentMethod) }}</div>
             </div>
             <div class="flex items-center gap-2">
-              <button @click="$emit('preview', order)" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ isZh ? '显示小票' : isEs ? 'Mostrar recibo' : 'Show Receipt' }}</button>
-<button @click="$emit('reprint', order)" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnReprint }}</button>
-              <button @click="openReturnModal(order.dbId)" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 rounded-lg text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnReturn }}</button>
+              <AppButton variant="ghost" size="sm" @click="$emit('preview', order)">{{ isZh ? '显示小票' : isEs ? 'Mostrar recibo' : 'Show Receipt' }}</AppButton>
+<AppButton variant="ghost" size="sm" @click="$emit('reprint', order)">{{ tExt.btnReprint }}</AppButton>
+              <AppButton variant="danger" size="sm" @click="openReturnModal(order.dbId)">{{ tExt.btnReturn }}</AppButton>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
       <!-- 底部 -->
       <div class="p-5 bg-white/80 border-t border-slate-200/60 flex items-center justify-between shrink-0">
         <span class="text-xs text-slate-500 font-bold">{{ tExt.found }} <strong class="text-slate-900">{{ filteredOrders.length }}</strong> {{ tExt.orders }}</span>
-        <button @click="$emit('close')" class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnClose }}</button>
+        <AppButton variant="secondary" @click="$emit('close')">{{ tExt.btnClose }}</AppButton>
       </div>
 
     </div>
@@ -161,4 +161,5 @@ const executeReturn = () => {
   returnModalVisible.value = false
   targetReturnId.value = null
 }
+import AppButton from '../ui/AppButton.vue'
 </script>
