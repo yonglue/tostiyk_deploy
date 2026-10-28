@@ -298,7 +298,7 @@
 </template> <!-- 这是 template 的结束标签，只能有一个 -->
 
 <script setup>
-import { usePrintAgent } from '../composables/usePrintAgent'
+import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 const { isConnected, printReceipt } = usePrintAgent()
 
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
@@ -598,6 +598,7 @@ const isSubmitting = ref(false)
 
 
 const printQuotationReceipt = async () => {
+  if (!PRINT_ENABLED) return  // 🚫 打印功能已暂停，恢复时移除此行
   if (props.cartItems.length === 0) return
   if (!isConnected.value) {
     alert('⚠️ 打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。')

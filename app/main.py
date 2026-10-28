@@ -53,7 +53,7 @@ from app.routers import (
 from app.security import hash_password, verify_password
 from app.startup_checks import config_warnings, report
 from app.routers import expenses
-from app.routers import printer
+# from app.routers import printer
 
 
 
@@ -162,7 +162,7 @@ app.include_router(pos.router)
 app.include_router(settings.router)
 app.include_router(expenses.router)
 app.include_router(backup.router)
-app.include_router(printer.router)  # 🌟 注册备份路由
+# app.include_router(printer.router)  # 🌟 注册备份路由
 
 # 🌟 插件路由挂载（放在核心路由之后）
 from app import plugins as _plugin_registry

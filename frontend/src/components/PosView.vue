@@ -750,7 +750,7 @@ const isEs = computed(() => currentLang.value === 'es')
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useI18n } from '../composables/useI18n'
-import { usePrintAgent } from '../composables/usePrintAgent'
+import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 import ConfirmDialog from './ConfirmDialog.vue'
 import PosHelpModal from './pos/PosHelpModal.vue'
 import PosHistoryModal from './pos/PosHistoryModal.vue'
@@ -2008,6 +2008,7 @@ const generateReceiptHtml = (receiptData) => {
 }
 
 const autoPrintReceipt = async (receiptData) => {
+  if (!PRINT_ENABLED) return  // 🚫 打印功能已暂停，恢复时移除此行
   // 🚀 优先使用本地 WebSocket 代理打印
   if (isConnected.value) {
     printReceipt({

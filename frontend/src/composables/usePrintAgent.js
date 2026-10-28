@@ -1,5 +1,10 @@
 import { ref } from 'vue';
 
+// 🚫 打印功能开关：暂停时改为 false（print-agent 归档于 .archive/print-agent/）
+// 恢复步骤：① .archive/print-agent/ 移回 print-agent/ ② app/main.py 两行取消注释
+//          ③ 本常量改为 true ④ PosView/QuotationView 的 autoPrintReceipt 移除早返回
+export const PRINT_ENABLED = false;
+
 // 全局单例状态
 const isConnected = ref(false);
 const isPrinting = ref(false);
@@ -13,6 +18,7 @@ let isInitialized = false;
 const WS_URL = 'ws://127.0.0.1:8899';
 
 const connect = () => {
+  if (!PRINT_ENABLED) return;  // 🚫 停用时不连 ws，避免每 5 秒重连噪音
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
 
   ws = new WebSocket(WS_URL);
@@ -57,6 +63,9 @@ export function usePrintAgent() {
   }
 
   const printReceipt = (orderData) => {
+    if (!PRINT_ENABLED) {
+      return Promise.resolve({ success: false, disabled: true });  // resolve 避免 unhandled rejection
+    }
     return new Promise((resolve, reject) => {
       if (!isConnected.value) return reject(new Error('代理未运行'));
       isPrinting.value = true;
