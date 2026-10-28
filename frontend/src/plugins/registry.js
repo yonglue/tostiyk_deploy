@@ -104,3 +104,25 @@ export function getDesktopTabGroups(isPluginEnabled) {
     .filter((g) => isPluginEnabled(g.plugin))
     .map((g) => ({ titleKey: g.titleKey, items: g.items }))
 }
+
+
+/**
+ * 移动端底部 tab 清单。
+ *
+ * 约束：
+ * - 顺序、key、labelKey 必须与 MobileLayout.vue 原硬编码完全一致
+ * - iconName / componentKey 由 MobileLayout.vue 侧维护映射表
+ *   （icon / View 依赖不进 registry，避免 lucide 与 View 耦合到 manifest）
+ * - plugin 字段决定该 tab 是否需要插件启用
+ */
+export const MOBILE_TAB_GROUPS = Object.freeze([
+  { plugin: 'core',       key: 'home',         labelKey: 'home',         iconName: 'Home',           componentKey: 'MobileDashboardView' },
+  { plugin: 'auto_parts', key: 'products',     labelKey: 'products',     iconName: 'Package',        componentKey: 'MobileProductsView' },
+  { plugin: 'core',       key: 'transactions', labelKey: 'transactions', iconName: 'ArrowRightLeft', componentKey: 'MobileTransactionsView' },
+  { plugin: 'core',       key: 'clients',      labelKey: 'clients',      iconName: 'Users',          componentKey: 'MobileClientsView' },
+  { plugin: 'core',       key: 'mine',         labelKey: 'mine',         iconName: 'Settings',       componentKey: 'MobileSettingsView' },
+])
+
+export function getMobileTabs(isPluginEnabled) {
+  return MOBILE_TAB_GROUPS.filter((t) => isPluginEnabled(t.plugin))
+}

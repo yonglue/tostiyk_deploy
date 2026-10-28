@@ -10,6 +10,7 @@ import {
   PLUGINS,
   isPluginEnabled,
   listEnabledPlugins,
+  getMobileTabs,
 } from '../plugins/registry'
 
 export function usePlugins() {
@@ -21,5 +22,6 @@ export function usePlugins() {
     enabledPlugins,
     enabledCodes,
     isPluginEnabled,
+    getMobileTabs: () => getMobileTabs(isPluginEnabled),
   }
 }

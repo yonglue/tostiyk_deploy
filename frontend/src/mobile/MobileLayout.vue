@@ -7,11 +7,7 @@
       <Transition name="fade-slide" mode="out-in">
         <!-- 🌟 修复：给顶部加上 pt-safe，避免内容顶进状态栏 -->
         <div :key="activeTab" class="absolute inset-0 overflow-y-auto pb-[calc(68px+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)]">
-          <MobileDashboardView v-if="activeTab === 'home'" />
-          <MobileProductsView v-else-if="activeTab === 'products'" />
-          <MobileTransactionsView v-else-if="activeTab === 'transactions'" />
-          <MobileClientsView v-else-if="activeTab === 'clients'" />
-          <MobileSettingsView v-else-if="activeTab === 'mine'" />
+          <component :is="currentView" v-if="currentView" />
         </div>
       </Transition>
     </main>
@@ -34,13 +30,11 @@
 </template>
 
 <script setup>
-const isZh = computed(() => currentLang.value === 'zh')
-const isEs = computed(() => currentLang.value === 'es')
-
 import { ref, computed } from 'vue'
 import { Home, Package, ArrowRightLeft, Users, Settings } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'
 import { useTheme } from '../composables/useTheme'
+import { usePlugins } from '../composables/usePlugins'
 
 import MobileDashboardView from './MobileDashboardView.vue'
 import MobileProductsView from './MobileProductsView.vue'
@@ -51,18 +45,49 @@ import MobileSettingsView from './MobileSettingsView.vue'
 useTheme()
 
 const { currentLang } = useI18n()
+const { getMobileTabs } = usePlugins()
 const activeTab = ref('home')
 
+// icon 组件表（lucide 依赖保持在 MobileLayout 内，不进 registry）
+const ICON_MAP = {
+  Home,
+  Package,
+  ArrowRightLeft,
+  Users,
+  Settings,
+}
+
+// 视图组件表
+const VIEW_MAP = {
+  MobileDashboardView,
+  MobileProductsView,
+  MobileTransactionsView,
+  MobileClientsView,
+  MobileSettingsView,
+}
+
+// label 多语言映射（与 Sidebar 的 ICON_MAP 同构：数据在 manifest，映射表在组件）
+const MOBILE_LABELS = {
+  home:         { zh: '首页', es: 'Inicio',      en: 'Home' },
+  products:     { zh: '产品', es: 'Productos',   en: 'Products' },
+  transactions: { zh: '流水', es: 'Movimientos', en: 'History' },
+  clients:      { zh: '客户', es: 'Clientes',    en: 'Clients' },
+  mine:         { zh: '我的', es: 'Mi Perfil',   en: 'Me' },
+}
+
 const tabs = computed(() => {
-  const isZh = currentLang.value === 'zh'
-  const isEs = currentLang.value === 'es'
-  return [
-    { key: 'home', label: isZh ? '首页' : isEs ? 'Inicio' : 'Home', icon: Home },
-    { key: 'products', label: isZh ? '产品' : isEs ? 'Productos' : 'Products', icon: Package },
-    { key: 'transactions', label: isZh ? '流水' : isEs ? 'Movimientos' : 'History', icon: ArrowRightLeft },
-    { key: 'clients', label: isZh ? '客户' : isEs ? 'Clientes' : 'Clients', icon: Users },
-    { key: 'mine', label: isZh ? '我的' : isEs ? 'Mi Perfil' : 'Me', icon: Settings }
-  ]
+  const lang = currentLang.value === 'zh' ? 'zh' : currentLang.value === 'es' ? 'es' : 'en'
+  return getMobileTabs().map((t) => ({
+    key: t.key,
+    label: MOBILE_LABELS[t.labelKey]?.[lang] || t.labelKey,
+    icon: ICON_MAP[t.iconName],
+    componentKey: t.componentKey,
+  }))
+})
+
+const currentView = computed(() => {
+  const tab = tabs.value.find((t) => t.key === activeTab.value)
+  return tab ? VIEW_MAP[tab.componentKey] : null
 })
 </script>
 
