@@ -36,38 +36,38 @@
 
     <!-- 第三层：操作工具栏 -->
     <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl">
+      <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
         <button
           data-testid="tx-tab-all"
           @click="switchTab('ALL')"
-          :class="currentTab === 'ALL' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-          class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
+          :class="currentTab === 'ALL' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabAll }}
         </button>
         <button
           data-testid="tx-tab-out"
           @click="switchTab('OUT')"
-          :class="currentTab === 'OUT' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-          class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
+          :class="currentTab === 'OUT' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabOut }}
         </button>
         <button
           data-testid="tx-tab-in"
           @click="switchTab('IN')"
-          :class="currentTab === 'IN' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-          class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
+          :class="currentTab === 'IN' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabIn }}
         </button>
       </div>
 
       <div class="flex gap-3">
-        <button @click="$emit('export-transactions')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer">
+        <button @click="$emit('export-transactions')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-md text-sm font-bold shadow-xs transition-all cursor-pointer">
           📥 {{ tExt.exportExcel }}
         </button>
-        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
           ➕ {{ tExt.newTx }}
         </button>
       </div>
@@ -79,29 +79,29 @@
         <table class="w-full text-left border-collapse min-w-[900px]">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              <th class="py-4 px-6 w-12 text-center">
+              <th class="py-2 px-3 w-12 text-center">
                 <input type="checkbox" class="rounded border-slate-300 text-blue-600 w-4 h-4 pointer-events-none" />
               </th>
-              <th class="py-4 px-6">{{ tExt.colTime }}</th>
-              <th class="py-4 px-6">{{ tExt.colOem }}</th>
-              <th class="py-4 px-6">{{ tExt.colName }}</th>
-              <th class="py-4 px-6">{{ tExt.colType }}</th>
-              <th class="py-4 px-6">{{ tExt.colQty }}</th>
-              <th class="py-4 px-6">{{ tExt.colPrice }}</th>
-              <th class="py-4 px-6">{{ tExt.colTotal }}</th>
-              <th class="py-4 px-6">{{ tExt.colTarget }}</th>
-              <th class="py-4 px-6 text-center">{{ tExt.colActions }}</th>
+              <th class="py-2 px-3">{{ tExt.colTime }}</th>
+              <th class="py-2 px-3">{{ tExt.colOem }}</th>
+              <th class="py-2 px-3">{{ tExt.colName }}</th>
+              <th class="py-2 px-3">{{ tExt.colType }}</th>
+              <th class="py-2 px-3">{{ tExt.colQty }}</th>
+              <th class="py-2 px-3">{{ tExt.colPrice }}</th>
+              <th class="py-2 px-3">{{ tExt.colTotal }}</th>
+              <th class="py-2 px-3">{{ tExt.colTarget }}</th>
+              <th class="py-2 px-3 text-center">{{ tExt.colActions }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
             <tr v-for="tx in transactionsList" :key="tx.id" class="hover:bg-blue-50/30 transition-colors cursor-pointer group" @click="openDetailDrawer(tx)">
-              <td class="py-4 px-6 text-center" @click.stop>
+              <td class="py-2 px-3 text-center" @click.stop>
                 <input type="checkbox" class="rounded border-slate-300 text-blue-600 w-4 h-4" />
               </td>
-              <td class="py-4 px-6 text-xs text-slate-500 font-mono">{{ tx.timestamp }}</td>
-              <td class="py-4 px-6 font-mono font-bold text-blue-600">{{ tx.part_oem }}</td>
-              <td class="py-4 px-6 font-bold text-slate-800">{{ tx.part_name }}</td>
-              <td class="py-4 px-6">
+              <td class="py-2 px-3 text-xs text-slate-500 dark:text-slate-400 font-mono">{{ tx.timestamp }}</td>
+              <td class="py-2 px-3 font-mono font-bold text-blue-600">{{ tx.part_oem }}</td>
+              <td class="py-2 px-3 font-bold text-slate-800">{{ tx.part_name }}</td>
+              <td class="py-2 px-3">
                 <span
                   class="px-2.5 py-1 rounded-md text-xs font-bold border"
                   :class="[
@@ -112,11 +112,11 @@
                   {{ tx.type === 'IN' ? tExt.typeIn : tx.type === 'REFUND' ? tExt.typeRefund : tExt.typeOut }}
                 </span>
               </td>
-              <td class="py-4 px-6 font-mono font-bold">{{ tx.quantity }}</td>
-              <td class="py-4 px-6 font-mono text-slate-600">$ {{ Number(tx.unit_price || 0).toFixed(2) }}</td>
-              <td class="py-4 px-6 font-mono font-bold text-slate-900">$ {{ Number(tx.total_amount || 0).toFixed(2) }}</td>
-              <td class="py-4 px-6 text-slate-600">{{ tx.customer_or_supplier || '-' }}</td>
-              <td class="py-4 px-6 text-center" @click.stop>
+              <td class="py-2 px-3 font-mono font-bold">{{ tx.quantity }}</td>
+              <td class="py-2 px-3 font-mono text-slate-600">$ {{ Number(tx.unit_price || 0).toFixed(2) }}</td>
+              <td class="py-2 px-3 font-mono font-bold text-slate-900">$ {{ Number(tx.total_amount || 0).toFixed(2) }}</td>
+              <td class="py-2 px-3 text-slate-600">{{ tx.customer_or_supplier || '-' }}</td>
+              <td class="py-2 px-3 text-center" @click.stop>
                 <button v-if="tx.type !== 'REFUND'" @click="$emit('delete-tx', tx)" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer">
                   {{ tExt.btnDelete }}
                 </button>
@@ -148,7 +148,7 @@
             :key="p"
             :data-testid="`tx-page-${p}`"
             @click="gotoPage(p)"
-            :class="p === (meta.page || 1) ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'"
+            :class="p === (meta.page || 1) ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-500 dark:border-blue-500 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'"
             class="min-w-[34px] px-2 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer"
           >
             {{ p }}

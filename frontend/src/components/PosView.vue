@@ -226,8 +226,8 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                   <span class="text-slate-400 font-bold text-xs">Bs.</span>
-                  <div class="w-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 shadow-inner focus-within:border-blue-500 transition-colors">
-                    <input ref="cardPosInputRef" v-model.number="paymentSplit.cardPos" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-sm no-spinner" />
+                  <div class="w-32 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 transition-all">
+                    <input ref="cardPosInputRef" v-model.number="paymentSplit.cardPos" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-xl no-spinner" />
                   </div>
                 </div>
               </div>
@@ -239,8 +239,8 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                   <span class="text-slate-400 font-bold text-xs">Bs.</span>
-                  <div class="w-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 shadow-inner focus-within:border-blue-500 transition-colors">
-                    <input ref="pagoMovilInputRef" v-model.number="paymentSplit.pagoMovil" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-sm no-spinner" />
+                  <div class="w-32 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 transition-all">
+                    <input ref="pagoMovilInputRef" v-model.number="paymentSplit.pagoMovil" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-xl no-spinner" />
                   </div>
                 </div>
               </div>
@@ -252,8 +252,8 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                   <span class="text-slate-400 font-bold text-xs">Bs.</span>
-                  <div class="w-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 shadow-inner focus-within:border-blue-500 transition-colors">
-                    <input ref="cashBsInputRef" v-model.number="paymentSplit.cashBs" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-sm no-spinner" />
+                  <div class="w-32 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 transition-all">
+                    <input ref="cashBsInputRef" v-model.number="paymentSplit.cashBs" type="number" step="10" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-xl no-spinner" />
                   </div>
                 </div>
               </div>
@@ -265,8 +265,8 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                   <span class="text-slate-400 font-bold text-xs">$</span>
-                  <div class="w-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 shadow-inner focus-within:border-blue-500 transition-colors">
-                    <input data-testid="pay-cash-usd" ref="cashUsdInputRef" v-model.number="paymentSplit.cashUsd" type="number" step="0.5" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-sm no-spinner" />
+                  <div class="w-32 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 transition-all">
+                    <input data-testid="pay-cash-usd" ref="cashUsdInputRef" v-model.number="paymentSplit.cashUsd" type="number" step="0.5" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-slate-900 dark:text-white outline-none text-xl no-spinner" />
                   </div>
                 </div>
               </div>
@@ -317,11 +317,11 @@
               </div>
 
               <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex justify-between items-start">
-                <span class="text-sm font-black pt-0.5" :class="balanceRemaining > 0 ? 'text-rose-600' : 'text-emerald-600'">
+                <span class="text-base font-black pt-0.5" :class="balanceRemaining > 0 ? 'text-rose-600' : 'text-emerald-600'">
                   {{ balanceRemaining > 0 ? '🔴 ' + t.pos.balanceDue + ':' : '🟢 ' + t.pos.changeDue + ':' }}
                 </span>
                 <div class="text-right">
-                  <div class="text-xl font-black font-mono leading-tight" :class="balanceRemaining > 0 ? 'text-rose-600' : 'text-emerald-600'">
+                  <div class="text-3xl font-black font-mono leading-tight" :class="balanceRemaining > 0 ? 'text-rose-600' : 'text-emerald-600'">
                     {{ primaryCurrency === 'USD' ? `$${Math.abs(balanceRemaining).toFixed(2)}` : `Bs. ${(Math.abs(balanceRemaining) * bcvRate).toFixed(2)}` }}
                   </div>
                 </div>

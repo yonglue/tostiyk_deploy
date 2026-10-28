@@ -25,7 +25,7 @@
             @input="$emit('update:searchQuery',$event.target.value)"
             type="text"
             :placeholder="t.inventory.searchPlaceholder"
-            class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 focus:bg-white transition-all font-bold"
+            class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm rounded-md pl-10 pr-4 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white transition-all font-bold"
           />
         </div>
 
@@ -34,7 +34,7 @@
           <select 
             :value="selectedBrand" 
             @change="$emit('update:selectedBrand',$event.target.value)"
-            class="bg-white border border-slate-200 text-sm font-bold text-slate-700 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 hover:border-slate-300 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
+            class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 rounded-md pl-4 pr-10 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:border-slate-400 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
           >
             <option value="ALL">{{ tExt.allBrands }}</option>
             <option v-for="b in brandsList.filter(item => item !== 'ALL')" :key="b" :value="b">
@@ -50,7 +50,7 @@
         <div class="relative">
           <select 
             v-model="selectedCategory" 
-            class="bg-white border border-slate-200 text-sm font-bold text-slate-700 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 hover:border-slate-300 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
+            class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 rounded-md pl-4 pr-10 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:border-slate-400 transition-all cursor-pointer appearance-none shadow-sm min-w-[140px]"
           >
             <option value="ALL">{{ tExt.allCategories }}</option>
             <option v-for="cat in categoriesList.filter(item => item !== 'ALL')" :key="cat" :value="cat">
@@ -89,8 +89,8 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse min-w-[900px]">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              <th class="py-4 px-4 w-12 text-center">
+            <tr class="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <th class="py-2.5 px-3 w-12 text-center">
                 <input 
                   type="checkbox" 
                   :checked="isAllSelected" 
@@ -98,26 +98,26 @@
                   class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </th>
-              <th class="py-4 px-4">{{ t.inventory.colImage }}</th>
-              <th class="py-4 px-4">{{ t.inventory.colOem }}</th>
-              <th class="py-4 px-4">{{ t.inventory.colName }}</th>
-              <th class="py-4 px-4">📍 {{ t.inventory.colBin }}</th>
-              <th class="py-4 px-4">{{ t.inventory.colStock }}</th>
-              <th class="py-4 px-4">{{ t.inventory.colPriceUsd }}</th>
-              <th class="py-4 px-4 text-amber-600">{{ t.inventory.costPrice }}</th>
-              <th class="py-4 px-4 text-emerald-600">{{ t.inventory.profit }}</th>
-              <th class="py-4 px-4 text-center">{{ t.common.actions }}</th>
+              <th class="py-2.5 px-3">{{ t.inventory.colImage }}</th>
+              <th class="py-2.5 px-3">{{ t.inventory.colOem }}</th>
+              <th class="py-2.5 px-3">{{ t.inventory.colName }}</th>
+              <th class="py-2.5 px-3">📍 {{ t.inventory.colBin }}</th>
+              <th class="py-2.5 px-3">{{ t.inventory.colStock }}</th>
+              <th class="py-2.5 px-3">{{ t.inventory.colPriceUsd }}</th>
+              <th class="py-2.5 px-3 text-amber-600">{{ t.inventory.costPrice }}</th>
+              <th class="py-2.5 px-3 text-emerald-600">{{ t.inventory.profit }}</th>
+              <th class="py-2.5 px-3 text-center">{{ t.common.actions }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
             <tr 
               v-for="item in paginatedParts" 
               :key="item.id || item.oem" 
-              class="hover:bg-blue-50/30 transition-colors cursor-pointer group"
+              class="hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer group border-b border-slate-100 dark:border-slate-800"
               @click="openDetailDrawer(item)"
             >
               <!-- 多选框 -->
-              <td class="py-4 px-4 text-center" @click.stop>
+              <td class="py-2.5 px-3 text-center" @click.stop>
                 <input 
                   type="checkbox" 
                   :checked="selectedIds.includes(item.id)" 
@@ -127,7 +127,7 @@
               </td>
 
               <!-- 实物多图 -->
-              <td class="py-4 px-4" @click.stop>
+              <td class="py-2.5 px-3" @click.stop>
                 <div class="flex items-center gap-1.5">
                   <template v-if="parseImages(item.image_url).length > 0">
                     <div 
@@ -146,30 +146,30 @@
                 </div>
               </td>
 
-              <td class="py-4 px-4 font-mono font-bold text-slate-800">{{ item.oem }}</td>
-              <td class="py-4 px-4 font-medium text-slate-900">{{ item.name }}</td>
+              <td class="py-2.5 px-3 font-mono font-bold text-slate-800">{{ item.oem }}</td>
+              <td class="py-2.5 px-3 font-medium text-slate-900">{{ item.name }}</td>
 
               <!-- 货架库位 -->
-              <td class="py-4 px-4">
+              <td class="py-2.5 px-3">
                 <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-semibold font-mono border border-emerald-200/60">
                   📍 {{ item.bin_location || '—' }}
                 </span>
               </td>
 
-              <td class="py-4 px-4 font-bold" :class="item.stock <= 5 ? 'text-rose-600' : 'text-slate-800'">{{ item.stock }}</td>
+              <td class="py-2.5 px-3 font-bold" :class="item.stock <= 5 ? 'text-rose-600' : 'text-slate-800'">{{ item.stock }}</td>
               
-              <td class="py-4 px-4 font-bold text-blue-600">$ {{ Number(item.price || 0).toFixed(2) }}</td>
+              <td class="py-2.5 px-3 font-bold text-blue-600">$ {{ Number(item.price || 0).toFixed(2) }}</td>
               
-              <td class="py-4 px-4 font-bold text-amber-600">$ {{ Number(item.cost_price || 0).toFixed(2) }}</td>
+              <td class="py-2.5 px-3 font-bold text-amber-600">$ {{ Number(item.cost_price || 0).toFixed(2) }}</td>
 
-              <td class="py-4 px-4 font-black">
+              <td class="py-2.5 px-3 font-black">
                 <span :class="(item.price - (item.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">
                   $ {{ Number((item.price || 0) - (item.cost_price || 0)).toFixed(2) }}
                 </span>
               </td>
 
               <!-- 操作列：仅保留删除 -->
-              <td class="py-4 px-4 text-center" @click.stop>
+              <td class="py-2.5 px-3 text-center" @click.stop>
                 <button @click="$emit('delete-part', item)" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer">
                   {{ t.common.delete }}
                 </button>
@@ -331,44 +331,44 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colOem }}</label>
-              <input v-model="editingPart.oem" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono font-bold outline-none focus:border-blue-500" />
+              <input v-model="editingPart.oem" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colName }}</label>
-              <input v-model="editingPart.name" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium outline-none focus:border-blue-500" />
+              <input v-model="editingPart.name" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colCategory }}</label>
-              <input v-model="editingPart.category" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-blue-500" />
+              <input v-model="editingPart.category" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colBrand }}</label>
-              <input v-model="editingPart.brand" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-blue-500" />
+              <input v-model="editingPart.brand" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colStock }}</label>
-              <input v-model.number="editingPart.stock" type="number" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono outline-none focus:border-blue-500" />
+              <input v-model.number="editingPart.stock" type="number" min="0" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colPriceUsd }}</label>
-              <input v-model.number="editingPart.price" type="number" step="0.5" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono outline-none focus:border-blue-500" />
+              <input v-model.number="editingPart.price" type="number" step="0.5" min="0" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-amber-600 mb-1">{{ t.inventory.costPrice }}</label>
-              <input v-model.number="editingPart.cost_price" type="number" step="0.5" min="0" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono text-amber-900 outline-none focus:border-amber-500" />
+              <input v-model.number="editingPart.cost_price" type="number" step="0.5" min="0" class="w-full bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700/50 rounded-md px-3 py-2 text-sm font-bold font-mono text-amber-900 dark:text-amber-400 outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.taxRate }}</label>
-              <select v-model.number="editingPart.tax_rate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:border-blue-500 cursor-pointer">
+              <select v-model.number="editingPart.tax_rate" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                 <option :value="0.16">{{ t.inventory.tax16 }}</option>
                 <option :value="0.08">{{ t.inventory.tax8 }}</option>
                 <option :value="0.0">{{ t.inventory.tax0 }}</option>
@@ -376,7 +376,7 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colBin }}</label>
-              <input v-model="editingPart.bin_location" type="text" :placeholder="t.inventory.binPlaceholder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono outline-none focus:border-blue-500" />
+              <input v-model="editingPart.bin_location" type="text" :placeholder="t.inventory.binPlaceholder" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
             </div>
           </div>
 

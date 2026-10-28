@@ -27,7 +27,7 @@ const isEs = computed(() => currentLang.value === 'es')
             @input="$emit('update:clientSearchQuery',$event.target.value)"
             type="text"
             :placeholder="t.clients.searchPlaceholder"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-bold dark:text-white"
+            class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm rounded-md pl-10 pr-4 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white transition-all font-bold"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ const isEs = computed(() => currentLang.value === 'es')
         <table class="w-full text-left border-collapse min-w-[900px]">
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              <th class="py-4 px-4 w-12 text-center">
+              <th class="py-2.5 px-3 w-12 text-center">
                 <input 
                   type="checkbox" 
                   :checked="isAllSelected" 
@@ -75,12 +75,12 @@ const isEs = computed(() => currentLang.value === 'es')
                 />
               </th>
               <th class="py-4 px-6 w-1/4">{{ isZh ? '客户 / 店铺' : isEs ? 'Cliente / Tienda' : 'Client / Store' }}</th>
-              <th class="py-4 px-4 w-24">{{ isZh ? '类型' : isEs ? 'Tipo' : 'Type' }}</th>
-              <th class="py-4 px-4 w-32">{{ isZh ? '电话' : isEs ? 'Teléfono' : 'Phone' }}</th>
-              <th class="py-4 px-4 w-1/4">{{ isZh ? '地址' : isEs ? 'Dirección' : 'Address' }}</th>
-              <th class="py-4 px-4 w-32">RIF</th>
-              <th class="py-4 px-4 w-24 text-right">{{ isZh ? '欠款' : isEs ? 'Deuda' : 'Debt' }}</th>
-              <th class="py-4 px-4 w-20 text-center">{{ isZh ? '操作' : isEs ? 'Acción' : 'Action' }}</th>
+              <th class="py-2.5 px-3 w-24">{{ isZh ? '类型' : isEs ? 'Tipo' : 'Type' }}</th>
+              <th class="py-2.5 px-3 w-32">{{ isZh ? '电话' : isEs ? 'Teléfono' : 'Phone' }}</th>
+              <th class="py-2.5 px-3 w-1/4">{{ isZh ? '地址' : isEs ? 'Dirección' : 'Address' }}</th>
+              <th class="py-2.5 px-3 w-32">RIF</th>
+              <th class="py-2.5 px-3 w-24 text-right">{{ isZh ? '欠款' : isEs ? 'Deuda' : 'Debt' }}</th>
+              <th class="py-2.5 px-3 w-20 text-center">{{ isZh ? '操作' : isEs ? 'Acción' : 'Action' }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
@@ -97,7 +97,7 @@ const isEs = computed(() => currentLang.value === 'es')
               @click="openDetailDrawer(c)"
             >
               <!-- 单选框 -->
-              <td class="py-4 px-4 text-center" @click.stop>
+              <td class="py-2.5 px-3 text-center" @click.stop>
                 <input 
                   type="checkbox" 
                   :checked="selectedIds.includes(c.id)" 
@@ -117,7 +117,7 @@ const isEs = computed(() => currentLang.value === 'es')
               </td>
 
               <!-- 类型：固定不换行 -->
-              <td class="py-4 px-4 whitespace-nowrap">
+              <td class="py-2.5 px-3 whitespace-nowrap">
                 <span :class="['inline-flex px-2.5 py-1 rounded-md text-xs font-semibold',
                   c.client_type === 'Mayorista' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : (c.client_type === 'Taller' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400')]">
                   {{ getClientTypeLabel(c.client_type) }}
@@ -125,25 +125,25 @@ const isEs = computed(() => currentLang.value === 'es')
               </td>
 
               <!-- 电话 -->
-              <td class="py-4 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ c.phone || '-' }}</td>
+              <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ c.phone || '-' }}</td>
               
               <!-- 地址：两行截断 -->
-              <td class="py-4 px-4 text-slate-600 dark:text-slate-400 text-xs">
+              <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 text-xs">
                 <div class="line-clamp-2" :title="c.address">{{ c.address || '-' }}</div>
               </td>
 
               <!-- RIF -->
-              <td class="py-4 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ c.rif_or_cedula || '-' }}</td>
+              <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ c.rif_or_cedula || '-' }}</td>
 
               <!-- 欠款：强制单行，右对齐 -->
-              <td class="py-4 px-4 text-right whitespace-nowrap">
+              <td class="py-2.5 px-3 text-right whitespace-nowrap">
                 <span class="font-bold font-mono text-sm" :class="(c.debt || 0) > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400 dark:text-slate-500'">
                   $ {{ (c.debt || 0).toFixed(2) }}
                 </span>
               </td>
 
               <!-- 操作列 -->
-              <td class="py-4 px-4 text-center whitespace-nowrap" @click.stop>
+              <td class="py-2.5 px-3 text-center whitespace-nowrap" @click.stop>
                 <div class="flex items-center justify-center gap-1.5">
                   <button @click="downloadStatement(c)" class="text-xs bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800 px-2.5 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer" :title="isZh ? '下载对账单' : isEs ? 'Descargar estado' : 'Download Statement'">
                     📄
@@ -277,17 +277,17 @@ const isEs = computed(() => currentLang.value === 'es')
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</label>
-              <input v-model="editForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
+              <input v-model="editForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</label>
-              <input v-model="editForm.store_name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
+              <input v-model="editForm.store_name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colType }}</label>
-              <select v-model="editForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 cursor-pointer dark:text-white">
+              <select v-model="editForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 cursor-pointer dark:text-white">
                 <option value="Regular">{{ tExt.regular }}</option>
                 <option value="Taller">{{ tExt.taller }}</option>
                 <option value="Mayorista">{{ tExt.mayorista }}</option>
@@ -295,26 +295,26 @@ const isEs = computed(() => currentLang.value === 'es')
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colPhone }}</label>
-              <input v-model="editForm.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:border-blue-500 dark:text-white" />
+              <input v-model="editForm.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colRif }}</label>
-              <input v-model="editForm.rif_or_cedula" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:border-blue-500 dark:text-white" />
+              <input v-model="editForm.rif_or_cedula" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colAddress }}</label>
-              <input v-model="editForm.address" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
+              <input v-model="editForm.address" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '信用额度 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)' }}</label>
-              <input v-model.number="editForm.credit_limit" type="number" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white font-mono" />
+              <input v-model.number="editForm.credit_limit" type="number" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white font-mono" />
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">备注 (Notes)</label>
-            <textarea v-model="editForm.notes" rows="2" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white resize-none"></textarea>
+            <textarea v-model="editForm.notes" rows="2" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white resize-none"></textarea>
           </div>
         </div>
 
@@ -329,7 +329,7 @@ const isEs = computed(() => currentLang.value === 'es')
                 type="number" 
                 step="0.01" 
                 min="0"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-colors" 
+                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" 
               />
             </div>
             <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0 mb-0.5">
@@ -362,7 +362,7 @@ const isEs = computed(() => currentLang.value === 'es')
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.payMethod }}</label>
               <select 
                 v-model="repayForm.payment_method"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:border-blue-500 cursor-pointer dark:text-white"
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-bold outline-none focus:border-blue-500 cursor-pointer dark:text-white"
               >
                 <option v-for="pm in paymentMethods" :key="pm.value" :value="pm.value">{{ pm.label }}</option>
               </select>
@@ -373,7 +373,7 @@ const isEs = computed(() => currentLang.value === 'es')
                 v-model="repayForm.reference_no" 
                 type="text" 
                 :placeholder="tExt.optional"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-mono outline-none focus:border-blue-500 dark:text-white" 
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" 
               />
             </div>
           </div>

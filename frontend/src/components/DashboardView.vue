@@ -3,7 +3,7 @@
   <div class="space-y-6 max-w-11xl mx-auto">
     
     <!-- 欢迎横幅与系统概览 (恢复蓝底，移除汇率) -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-500/15 flex flex-col justify-center">
+    <div class="bg-gradient-to-r from-blue-700 to-indigo-800 dark:from-blue-900 dark:to-indigo-900 rounded-xl p-5 sm:p-6 text-white shadow-md border border-transparent dark:border-slate-700 flex flex-col justify-center">
       <div>
         <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight">{{ t.dashboard.title }}</h1>
         <p class="text-blue-100 text-xs sm:text-sm mt-1">{{ t.dashboard.subtitle }}</p>
@@ -14,10 +14,10 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
       
       <!-- 卡片 1：当前库存总资产 -->
-      <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/60 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between hover:scale-[1.01]">
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 transition-colors duration-200 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t.dashboard.assetTitle }}</span>
-          <div class="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
             <Package :size="20" />
           </div>
         </div>
@@ -32,10 +32,10 @@
       </div>
 
       <!-- 卡片 2：累计销售总额 -->
-      <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/60 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between hover:scale-[1.01]">
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 transition-colors duration-200 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t.dashboard.salesTitle }}</span>
-          <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
             <TrendingUp :size="20" />
           </div>
         </div>
@@ -50,10 +50,10 @@
       </div>
 
       <!-- 卡片 3：配件总SKU数 -->
-      <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/60 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between hover:scale-[1.01]">
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 transition-colors duration-200 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t.dashboard.skuTitle }}</span>
-          <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
             <Layers :size="20" />
           </div>
         </div>
@@ -66,10 +66,10 @@
       </div>
 
       <!-- 卡片 4：库存低水位预警 -->
-      <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/60 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between hover:scale-[1.01]">
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 transition-colors duration-200 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t.dashboard.warningTitle }}</span>
-          <div class="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
             <AlertTriangle :size="20" />
           </div>
         </div>
@@ -87,7 +87,7 @@
     <TrendChart />
 
     <!-- 🚀 快捷业务直达面板 (Quick Actions) -->
-    <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-slate-700 shadow-lg space-y-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
       <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base flex items-center gap-2">
         <span>⚡</span> {{ tExt.quickNavTitle }}
       </h3>
@@ -97,7 +97,7 @@
         <button 
           @click="$emit('navigate', 'pos')" 
           :title="tExt.btnPos"
-          class="bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">🛒</span>
           <span>{{ tExt.btnPos }}</span>
@@ -107,7 +107,7 @@
         <button 
           @click="$emit('navigate', 'quotation')" 
           :title="tExt.btnQuote"
-          class="bg-amber-50/60 dark:bg-amber-900/20 hover:bg-amber-500 dark:hover:bg-amber-500 hover:text-white text-amber-800 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-amber-50/60 dark:bg-amber-900/20 hover:bg-amber-500 dark:hover:bg-amber-500 hover:text-white text-amber-800 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">📝</span>
           <span>{{ tExt.btnQuote }}</span>
@@ -117,7 +117,7 @@
         <button 
           @click="$emit('navigate', 'financial')" 
           :title="tExt.btnFinancial"
-          class="bg-emerald-50/60 dark:bg-emerald-900/20 hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white text-emerald-800 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-emerald-50/60 dark:bg-emerald-900/20 hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white text-emerald-800 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">📈</span>
           <span>{{ tExt.btnFinancial }}</span>
@@ -127,7 +127,7 @@
         <button 
           @click="$emit('navigate', 'parts')" 
           :title="tExt.btnParts"
-          class="bg-slate-50/60 dark:bg-slate-900/50 hover:bg-slate-600 dark:hover:bg-slate-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-slate-50/60 dark:bg-slate-900/50 hover:bg-slate-600 dark:hover:bg-slate-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">📦</span>
           <span>{{ tExt.btnParts }}</span>
@@ -137,7 +137,7 @@
         <button 
           @click="$emit('navigate', 'clients')" 
           :title="tExt.btnClients"
-          class="bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-500 dark:hover:bg-purple-500 hover:text-white text-purple-800 dark:text-purple-400 border border-purple-200/80 dark:border-purple-800 p-4 rounded-2xl font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-2xs hover:scale-[1.02] group"
+          class="bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-500 dark:hover:bg-purple-500 hover:text-white text-purple-800 dark:text-purple-400 border border-purple-200/80 dark:border-purple-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">👥</span>
           <span>{{ tExt.btnClients }}</span>
