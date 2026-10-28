@@ -315,3 +315,52 @@
 
 **文档版本**：v1.0（大段 6.1 完成）
 **下次更新**：大段 6.2/6.3 完成后
+
+---
+
+## 7. 大段 6.2 追加（MobileLayout 插件化）
+
+**改造范围**：
+
+- `registry.js` 新增 `MOBILE_TAB_GROUPS` + `getMobileTabs(isPluginEnabled)`
+- `usePlugins.js` 暴露 `getMobileTabs()`（与 `isPluginEnabled` 同 API 风格）
+- `MobileLayout.vue`：
+  - template 主内容区从 5 个 `v-if` 分支 → `<component :is="currentView">`
+  - script `tabs` computed 从 manifest 派生
+  - `ICON_MAP` / `VIEW_MAP` / `MOBILE_LABELS` 保留在 MobileLayout 侧
+    （lucide 与 View 依赖不进 registry，避免耦合）
+
+**设计原则**（与桌面端 Sidebar 一致）：
+
+- manifest 声明"是什么"（key / labelKey / iconName / componentKey）
+- 组件侧维护"怎么渲染"（ICON_MAP 指向 lucide 组件，VIEW_MAP 指向 Vue 组件）
+- 加 fmcg mobile tab 只需改 manifest + 补 2 行映射表
+
+**E2E 硬标准**：`29 passed / 0 failed`（DOM 与改造前完全等价）
+
+**未做的**：
+
+- fmcg 目前无 mobile 视图，MOBILE_TAB_GROUPS 里没有 fmcg 条目
+- 未来做 fmcg mobile（如 MobileWalletView）时按此模板扩展
+
+---
+
+## 8. print-agent 多税率拆分（配套大段 3.A）
+
+**背景**：SENAT 规范要求小票按税率分档汇总（0%/8%/16%）。
+大段 3.A 后端已支持 `OrderItem.tax_rate` 独立记录；本次 print-agent 改动配套前端多税率打印。
+
+**改动**（`print-agent/agent.js`）：
+
+- 多税率动态解析：`exentoBase` / `bi8Base + tax8Val` / `bi16Base + tax16Val`
+- 硬件初始化：锁定 Font A（`\x1B\x4D\x00`）+ 物理前进防切头（`\x1B\x4A\x20`）
+- 支付方式补全：`cashBs`（玻利瓦尔现金）显示
+- 42 字符满宽居中网格系统（改进注释，行为不变）
+
+**为什么单独 commit**：print-agent 是独立 Node.js 服务（非前端），
+上次提交是 `618c626`，本次是其后续工作。
+
+---
+
+**文档版本**：v1.1（大段 6.2 完成）
+**下次更新**：大段 6.3 / 7 完成后
