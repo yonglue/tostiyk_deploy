@@ -52,7 +52,6 @@ from app.routers import (
 )
 from app.security import hash_password, verify_password
 from app.startup_checks import config_warnings, report
-from app.routers import staff
 from app.routers import expenses
 from app.routers import printer
 
@@ -161,7 +160,6 @@ app.include_router(audit_logs.router)
 app.include_router(purchase_orders.router)
 app.include_router(pos.router)
 app.include_router(settings.router)
-app.include_router(staff.router)
 app.include_router(expenses.router)
 app.include_router(backup.router)
 app.include_router(printer.router)  # 🌟 注册备份路由
