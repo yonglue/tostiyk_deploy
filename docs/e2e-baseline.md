@@ -40,3 +40,24 @@ E2E：12 passed / 3 failed
 - `staff.py` 有 Duplicate Operation ID 警告，疑似路由被注册两次或函数命名冲突
 - `AUTO_CREATE_TABLES=1` 会掩盖 Alembic 问题（大段 2 已改用 autogenerate 绕过）
 - E2E 3 项 selector 漂移（见上文）
+
+---
+
+## Flaky 记录
+
+### procurement-receive.spec.js（2026-10-27 观察到 1 次偶发失败）
+
+- **现象**：全量跑（29 tests）时 `procurement-receive.spec.js::创建采购单并收货入库` 偶发 45s 超时；单跑 `1 passed (1.5s)` 稳定通过
+- **不是业务 bug**：单跑 100% 通过，说明代码逻辑正常
+- **可能原因**：测试顺序污染（前面的 spec 留下的 DB 状态 / 资源占用 / vite 热重载残留）
+- **缓解**：`playwright.config.js` `retries: 0 → 1`（两次都失败才算真失败，正常全量时长不变）
+- **根治方向**（未来）：
+  - 检查 `procurement-receive.spec.js` 是否需要 `test.describe.serial` 内的状态隔离
+  - 检查 `global-setup.js` 的 admin login 是否污染了后续测试的 session
+  - 或加 `beforeEach` 清理采购单/流水
+
+### 全量时长基线
+
+- 29 tests / 1 worker：**~1.0m**（正常）/ **~1.8m**（含 1 次重试）
+- 加 retries 后如果全量变成 1.8m，说明这次触发了重试，需要看具体哪个 test 重试了
+

@@ -5,7 +5,7 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   workers: 1,
-  retries: 0,
+  retries: 1,  // 允许 1 次重试：消除偶发 flaky（两次都失败才算真失败）
   reporter: [['list'], ['html', { open: 'never' }]],
   timeout: 45_000,
   expect: { timeout: 5_000 },
