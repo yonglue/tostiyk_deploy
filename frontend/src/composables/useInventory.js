@@ -4,6 +4,7 @@
 
 import { computed, ref } from 'vue'
 import { apiFetch, AUTH_CURRENT_USER_KEY } from '../utils/api'
+import { getAllParts, putParts } from '../offline/db'
 
 const bcvRate = ref(36.50)
 const partsList = ref([])
@@ -46,8 +47,29 @@ const checkUserPermission = (permKey) => {
 export function useInventory() {
   const fetchParts = async () => {
     if (!checkUserPermission('parts:view')) return
-    const data = await safeJson('/api/parts')
-    if (data) partsList.value = data
+    // 🌟 缓存优先（6.1）：首次加载秒开缓存，网络刷新后覆盖
+    if (partsList.value.length === 0) {
+      try {
+        const cached = await getAllParts()
+        if (cached.length > 0) partsList.value = cached
+      } catch (_) {}
+    }
+    // 网络刷新：成功 → 覆盖 + 写缓存；失败 → 保留缓存（离线可用）
+    try {
+      const res = await apiFetch('/api/parts')
+      if (!res.ok) return
+      const data = await res.json()
+      if (Array.isArray(data)) {
+        partsList.value = data
+        putParts(data).catch(() => {})
+      }
+    } catch (e) {
+      // 网络错：如果 partsList 还空，再兜底一次缓存
+      if (partsList.value.length === 0) {
+        const cached = await getAllParts().catch(() => [])
+        if (cached.length > 0) partsList.value = cached
+      }
+    }
   }
   const fetchClients = async () => {
     if (!checkUserPermission('clients:view')) return

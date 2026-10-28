@@ -12,7 +12,7 @@
  */
 
 export const DB_NAME = 'tostiyk_offline'
-export const DB_VERSION = 1
+export const DB_VERSION = 2  // v2: cached_parts keyPath 从 'oem' 改为 'id'（修复同 OEM 多品牌覆盖）
 export const STORE_ORDERS = 'pending_orders'
 export const STORE_PARTS = 'cached_parts'
 export const STORE_META = 'meta'
@@ -28,8 +28,13 @@ export function openDB() {
       if (!db.objectStoreNames.contains(STORE_ORDERS)) {
         db.createObjectStore(STORE_ORDERS, { keyPath: 'local_id' })
       }
+      // v2: 若存在 v1 的 cached_parts（keyPath='oem'），删掉重建（keyPath='id'）
+      // 数据是缓存，重建不影响业务（下次 fetch 会重新填充）
+      if (db.objectStoreNames.contains(STORE_PARTS) && evt.oldVersion < 2) {
+        db.deleteObjectStore(STORE_PARTS)
+      }
       if (!db.objectStoreNames.contains(STORE_PARTS)) {
-        db.createObjectStore(STORE_PARTS, { keyPath: 'oem' })
+        db.createObjectStore(STORE_PARTS, { keyPath: 'id' })
       }
       if (!db.objectStoreNames.contains(STORE_META)) {
         db.createObjectStore(STORE_META, { keyPath: 'key' })
@@ -78,6 +83,25 @@ export async function getOrderCount() {
 export async function clearOrders() {
   const db = await openDB()
   await _req(_store(db, STORE_ORDERS, 'readwrite').clear())
+}
+
+// ═══════ cached_parts ═══════
+export async function putParts(items) {
+  if (!Array.isArray(items) || items.length === 0) return
+  const db = await openDB()
+  const tx = db.transaction(STORE_PARTS, 'readwrite')
+  const store = tx.objectStore(STORE_PARTS)
+  await Promise.all(items.map(it => _req(store.put(it))))
+}
+
+export async function getAllParts() {
+  const db = await openDB()
+  return await _req(_store(db, STORE_PARTS, 'readonly').getAll())
+}
+
+export async function clearParts() {
+  const db = await openDB()
+  await _req(_store(db, STORE_PARTS, 'readwrite').clear())
 }
 
 // ═══════ meta ═══════
