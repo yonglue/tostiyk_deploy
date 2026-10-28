@@ -57,7 +57,7 @@
         <span class="text-sm text-emerald-600 font-mono font-bold">{{ t.dashboard.bcvLabel }}: {{ bcvRate }}</span>
         
         <button v-if="heldOrders.length > 0" @click="openRecallModal" class="bg-white dark:bg-slate-800/70 hover:bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-slate-200 dark:border-slate-700 hover:border-amber-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
-          <span>📦 {{ t.pos.holdPool }} ({{ heldOrders.length }}) [Ctrl+R]</span>
+          <span> {{ t.pos.holdPool }} ({{ heldOrders.length }}) [Ctrl+R]</span>
         </button>
       </div>
       
@@ -111,7 +111,7 @@
           <div class="w-1/4">
             <div v-if="quoteClientName" class="flex items-center justify-between bg-blue-50/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
               <div class="flex items-center gap-2 flex-1 truncate">
-                <span class="text-blue-600 text-lg">👤</span>
+                <span class="text-blue-600 text-lg"></span>
                 <div class="truncate">
                   <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
                   <div class="text-[10px] text-blue-600/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
@@ -194,7 +194,7 @@
               </tr>
               <tr v-if="cartItems.length === 0">
                 <td colspan="6" class="text-center py-20 text-slate-400 text-sm font-bold">
-                  🛒 {{ tExt.cartEmpty }}
+                  <div class="flex flex-col items-center gap-2 text-slate-400"><ShoppingCart :size="48" class="opacity-20 mb-2" /> {{ tExt.cartEmpty }}</div>
                 </td>
               </tr>
             </tbody>
@@ -221,7 +221,7 @@
               <!-- 1. Card POS [F4] -->
               <div @click="focusPaymentChannel('cardPos')" class="bg-white dark:bg-slate-800/90 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all duration-200 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:bg-blue-50/30 focus-within:shadow-md">
                 <div class="flex-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 text-[13px]">💳 {{ t.pos.payCardPos }} <span class="text-[10px] text-blue-600 font-mono">[F4]</span></span>
+                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-[13px]"><CreditCard :size="16" class="text-slate-400 dark:text-slate-500 shrink-0" /> {{ t.pos.payCardPos }} <span class="text-[10px] text-blue-600 font-mono">[F4]</span></span>
                   <span class="text-xs text-emerald-600 font-mono font-bold block mt-0.5">{{ primaryCurrency === 'USD' ? `≈ $${((Number(paymentSplit.cardPos) || 0) / (bcvRate || 1)).toFixed(2)}` : `Bs. ${(Number(paymentSplit.cardPos) || 0).toFixed(2)}` }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -234,7 +234,7 @@
               <!-- 2. Pago Móvil [F5] -->
               <div @click="focusPaymentChannel('pagoMovil')" class="bg-white dark:bg-slate-800/90 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all duration-200 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:bg-blue-50/30 focus-within:shadow-md">
                 <div class="flex-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 text-[13px]">⚡ {{ t.pos.payPagoMovil }} <span class="text-[10px] text-blue-600 font-mono">[F5]</span></span>
+                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-[13px]"><Zap :size="16" class="text-slate-400 dark:text-slate-500 shrink-0" /> {{ t.pos.payPagoMovil }} <span class="text-[10px] text-blue-600 font-mono">[F5]</span></span>
                   <span class="text-xs text-emerald-600 font-mono font-bold block mt-0.5">{{ primaryCurrency === 'USD' ? `≈ $${((Number(paymentSplit.pagoMovil) || 0) / (bcvRate || 1)).toFixed(2)}` : `Bs. ${(Number(paymentSplit.pagoMovil) || 0).toFixed(2)}` }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -247,7 +247,7 @@
               <!-- 3. Efectivo Bs. [F6] -->
               <div @click="focusPaymentChannel('cashBs')" class="bg-white dark:bg-slate-800/90 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all duration-200 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:bg-blue-50/30 focus-within:shadow-md">
                 <div class="flex-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 text-[13px]">🇻🇪 {{ t.pos.payCashBs }} <span class="text-[10px] text-blue-600 font-mono">[F6]</span></span>
+                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-[13px]"><Banknote :size="16" class="text-slate-400 dark:text-slate-500 shrink-0" /> {{ t.pos.payCashBs }} <span class="text-[10px] text-blue-600 font-mono">[F6]</span></span>
                   <span class="text-xs text-emerald-600 font-mono font-bold block mt-0.5">{{ primaryCurrency === 'USD' ? `≈ $${((Number(paymentSplit.cashBs) || 0) / (bcvRate || 1)).toFixed(2)}` : `Bs. ${(Number(paymentSplit.cashBs) || 0).toFixed(2)}` }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -260,7 +260,7 @@
               <!-- 4. Cash USD [F7] -->
               <div @click="focusPaymentChannel('cashUsd')" class="bg-white dark:bg-slate-800/90 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-all duration-200 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:bg-blue-50/30 focus-within:shadow-md">
                 <div class="flex-1">
-                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 text-[13px]">💵 {{ t.pos.payCashUsd }} <span class="text-[10px] text-blue-600 font-mono">[F7]</span></span>
+                  <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-[13px]"><DollarSign :size="16" class="text-slate-400 dark:text-slate-500 shrink-0" /> {{ t.pos.payCashUsd }} <span class="text-[10px] text-blue-600 font-mono">[F7]</span></span>
                   <span class="text-xs text-emerald-600 font-mono font-bold block mt-0.5">{{ primaryCurrency === 'USD' ? `≈ Bs. ${((Number(paymentSplit.cashUsd) || 0) * bcvRate).toFixed(2)}` : `≈ $${(Number(paymentSplit.cashUsd) || 0).toFixed(2)}` }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -383,13 +383,13 @@
     <div v-if="recallModalVisible" @click.self="recallModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
       <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-4xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
         <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>📦 {{ tExt.recallTitle }} ({{ heldOrders.length }})</span></h3>
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span> {{ tExt.recallTitle }} ({{ heldOrders.length }})</span></h3>
           <button @click="recallModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
         <div class="flex-1 overflow-y-auto p-5 space-y-3 bg-white dark:bg-slate-800/20 flex flex-col">
           <div v-for="order in heldOrders" :key="order.id" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:bg-slate-800 transition-all flex items-center justify-between shadow-2xs shrink-0">
             <div class="space-y-1">
-              <div class="font-bold text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2"><span class="font-mono text-blue-600 font-black text-sm">{{ order.hold_no }}</span><span class="text-slate-700 dark:text-slate-300">👤 {{ order.client_name || 'Cliente General' }}</span></div>
+              <div class="font-bold text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2"><span class="font-mono text-blue-600 font-black text-sm">{{ order.hold_no }}</span><span class="text-slate-700 dark:text-slate-300"> {{ order.client_name || 'Cliente General' }}</span></div>
               <div class="text-[11px] text-slate-400 font-mono">{{ tExt.recallTime }} {{ order.timestamp }}</div>
             </div>
             <div class="flex items-center gap-4">
@@ -757,6 +757,8 @@
 </template>
 
 <script setup>
+import { CreditCard, Zap, Banknote, DollarSign, Trash2, ShoppingCart, Plus, Minus } from 'lucide-vue-next'
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
@@ -1692,7 +1694,7 @@ const confirmAndPrint = async (overridePin = null) => {
 
     showToast(`✅ ${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
 
-    // 🚀 立即清空购物车（双保险）：不依赖任何后续异步
+    //  立即清空购物车（双保险）：不依赖任何后续异步
     // 历史问题：清空放在最后，pendingQid 的 await / fetchCompletedOrders 挂住就清不掉
     props.cartItems.splice(0, props.cartItems.length)
     emit('clear-cart')
@@ -1999,7 +2001,7 @@ const generateReceiptHtml = (receiptData) => {
 
 const autoPrintReceipt = async (receiptData) => {
   if (!PRINT_ENABLED) return  // 🚫 打印功能已暂停，恢复时移除此行
-  // 🚀 优先使用本地 WebSocket 代理打印
+  //  优先使用本地 WebSocket 代理打印
   if (isConnected.value) {
     printReceipt({
       lang: isZh.value ? 'zh' : isEs.value ? 'es' : 'en',
