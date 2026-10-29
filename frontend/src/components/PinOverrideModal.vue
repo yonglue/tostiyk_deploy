@@ -17,14 +17,14 @@
             v-model="pin" 
             type="password" 
             placeholder="请输入店长安全 PIN 码"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
             @keyup.enter="confirm"
           />
         </div>
         
         <div class="flex gap-3">
           <button @click="close" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">取消</button>
-          <button @click="confirm" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">授权放行</button>
+          <button @click="confirm" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">授权放行</button>
         </div>
       </div>
     </div>

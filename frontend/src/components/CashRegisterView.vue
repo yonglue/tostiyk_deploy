@@ -5,7 +5,7 @@
     <div class="bg-white/75 backdrop-blur-xl p-6 rounded-2xl border border-white/80 shadow-lg flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
-          <span>📊</span> {{ tExt.title }}
+          <span><BarChart3 :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.title }}
         </h2>
         <p class="text-xs text-slate-500 mt-1 font-medium">{{ tExt.subtitle }}</p>
       </div>
@@ -46,19 +46,19 @@
     <!-- 收款渠道拆分 -->
     <div class="bg-white/75 backdrop-blur-xl p-6 rounded-2xl border border-white/80 shadow-lg space-y-4">
       <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-        <span>💳</span> {{ tExt.paySplitTitle }}
+        <span><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.paySplitTitle }}
       </h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div class="bg-white border border-slate-200/80 p-4 rounded-xl space-y-1 shadow-2xs hover:border-blue-300 transition-colors">
-          <span class="text-xs font-bold text-slate-500">💵 {{ tExt.payCashUSD }}</span>
+          <span class="text-xs font-bold text-slate-500"><DollarSign :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.payCashUSD }}</span>
           <div class="text-lg font-black text-slate-900 font-mono">$ {{ formatNum(paymentSplit.cashUsd) }}</div>
         </div>
         <div class="bg-white border border-slate-200/80 p-4 rounded-xl space-y-1 shadow-2xs hover:border-blue-300 transition-colors">
-          <span class="text-xs font-bold text-slate-500">💳 {{ tExt.payZelle }}</span>
+          <span class="text-xs font-bold text-slate-500"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.payZelle }}</span>
           <div class="text-lg font-black text-slate-900 font-mono">$ {{ formatNum(paymentSplit.zelle) }}</div>
         </div>
         <div class="bg-white border border-slate-200/80 p-4 rounded-xl space-y-1 shadow-2xs hover:border-blue-300 transition-colors">
-          <span class="text-xs font-bold text-slate-500">⚡ {{ tExt.payPagoMovil }}</span>
+          <span class="text-xs font-bold text-slate-500"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.payPagoMovil }}</span>
           <div class="text-lg font-black text-slate-900 font-mono">$ {{ formatNum(paymentSplit.pagoMovil) }}</div>
         </div>
         <div class="bg-white border border-slate-200/80 p-4 rounded-xl space-y-1 shadow-2xs hover:border-blue-300 transition-colors">
@@ -75,7 +75,7 @@
     <!-- 历史交接班对账表 -->
     <div class="bg-white/75 backdrop-blur-xl rounded-2xl border border-white/80 shadow-lg overflow-hidden">
       <div class="p-6 border-b border-slate-200/60 flex items-center justify-between">
-        <h3 class="font-bold text-slate-800 text-base">📋 {{ tExt.tableTitle }}</h3>
+        <h3 class="font-bold text-slate-800 text-base"><ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.tableTitle }}</h3>
         <span class="text-xs text-slate-500 font-bold">{{ tExt.totalRecords }} {{ shiftRecords.length }} {{ tExt.unitRecord }}</span>
       </div>
       <div class="overflow-x-auto">
@@ -126,6 +126,8 @@
 </template>
 
 <script setup>
+import { ClipboardList, CreditCard, BarChart3, Zap, DollarSign } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

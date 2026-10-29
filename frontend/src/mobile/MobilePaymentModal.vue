@@ -36,7 +36,7 @@
               <!-- 快捷全额按钮 -->
               <button @click="amount = clientDebt" class="text-xs font-bold text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-1 rounded-md shrink-0">{{ isZh ? '全额' : isEs ? 'Monto total' : 'Full amount' }}</button>
             </div>
-            <p v-if="isOverpay" class="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1">{{ isZh ? '⚠️ 收款金额不能大于当前欠款' : isEs ? '⚠️ El monto no puede exceder la deuda' : '⚠️ Amount cannot exceed debt' }}</p>
+            <p v-if="isOverpay" class="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1">{{ isZh ? '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 收款金额不能大于当前欠款' : isEs ? '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> El monto no puede exceder la deuda' : '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Amount cannot exceed debt' }}</p>
           </div>
 
           <!-- 操作按钮 -->
@@ -45,7 +45,7 @@
             <button 
               @click="submit"
               :disabled="!isValid || isSubmitting"
-              class="flex-[2] py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
+              class="flex-[2] py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
             >
               <span v-if="isSubmitting" class="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></span>
               <span v-else>{{ isZh ? '确认收款' : isEs ? 'Confirmar cobro' : 'Confirm Collection' }}</span>
@@ -59,6 +59,8 @@
 </template>
 
 <script setup>
+import { AlertTriangle } from 'lucide-vue-next';
+
 import { useI18n } from '../composables/useI18n'
 
 const { currentLang } = useI18n()

@@ -9,7 +9,7 @@ const isEs = computed(() => currentLang.value === 'es')
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span>👥</span> {{ t.clients.title }}
+          <span><Users :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.clients.title }}
         </h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '管理客户资料、赊账额度以及回款核销。' : isEs ? 'Gestión de clientes y créditos.' : 'Manage clients and credits.' }}</p>
       </div>
@@ -37,7 +37,7 @@ const isEs = computed(() => currentLang.value === 'es')
           @click="batchDeleteModalVisible = true" 
           class="flex items-center gap-2 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
-          <span>🗑️ {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
+          <span><Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
         </button>
 
         <button
@@ -49,7 +49,7 @@ const isEs = computed(() => currentLang.value === 'es')
         </button>
         <button
           @click="$emit('open-add-client')"
-          class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+          class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer"
         >
           <Plus :size="16" />
           <span>{{ t.clients.addBtn }}</span>
@@ -68,7 +68,7 @@ const isEs = computed(() => currentLang.value === 'es')
                   type="checkbox" 
                   :checked="isAllSelected" 
                   @change="toggleSelectAll" 
-                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-0 w-4 h-4 cursor-pointer" 
                 />
               </th>
               <th class="py-4 px-6 w-1/4">{{ isZh ? '客户 / 店铺' : isEs ? 'Cliente / Tienda' : 'Client / Store' }}</th>
@@ -99,7 +99,7 @@ const isEs = computed(() => currentLang.value === 'es')
                   type="checkbox" 
                   :checked="selectedIds.includes(c.id)" 
                   @change="toggleSelect(c.id)" 
-                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-0 w-4 h-4 cursor-pointer" 
                 />
               </td>
               
@@ -304,7 +304,7 @@ const isEs = computed(() => currentLang.value === 'es')
                 type="number" 
                 step="0.01" 
                 min="0"
-                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-1 focus:ring-blue-500 transition-colors" 
+                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-colors" 
               />
             </div>
             <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0 mb-0.5">
@@ -353,7 +353,7 @@ const isEs = computed(() => currentLang.value === 'es')
                 v-model="repayForm.reference_no" 
                 type="text" 
                 :placeholder="tExt.optional"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono outline-none focus:border-accent focus:ring-1 focus:ring-blue-500 dark:text-white" 
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono outline-none focus:border-accent  focus:ring-0 dark:text-white" 
               />
             </div>
           </div>
@@ -374,7 +374,7 @@ const isEs = computed(() => currentLang.value === 'es')
             data-testid="btn-repay-submit"
             @click="submitRepayment" 
             :disabled="isRepaying"
-            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
           >
             {{ isRepaying ? '...' : tExt.confirmRepay }}
           </button>
@@ -388,7 +388,7 @@ const isEs = computed(() => currentLang.value === 'es')
           <button 
             @click="saveClientEdit" 
             :disabled="isSavingEdit"
-            class="px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:bg-blue-300 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+            class="px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:bg-blue-300 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
           >
             {{ isSavingEdit ? (isZh ? '保存中...' : isEs ? 'Guardando...' : 'Saving...') : (isZh ? '保存修改' : isEs ? 'Guardar cambios' : 'Save changes') }}
           </button>
@@ -406,7 +406,7 @@ const isEs = computed(() => currentLang.value === 'es')
           <Trash2 :size="14" />{{ isZh ? '删除' : isEs ? 'Eliminar' : 'Delete' }}</button>
         <button @click="downloadStatement(currentClient)" class="flex-1 h-10 flex items-center justify-center gap-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl font-bold text-xs border border-indigo-100 dark:border-indigo-800 transition-colors cursor-pointer">
           <FileText :size="14" />{{ isZh ? '对账单' : isEs ? 'Estado de cuenta' : 'Statement' }}</button>
-        <button v-if="(currentClient?.debt || 0) > 0" @click="switchToRepay" class="flex-[1.2] h-10 flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-md shadow-emerald-500/20 transition-colors cursor-pointer">
+        <button v-if="(currentClient?.debt || 0) > 0" @click="switchToRepay" class="flex-[1.2] h-10 flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-sm transition-colors cursor-pointer">
           <Banknote :size="16" data-testid="btn-open-repay" />{{ isZh ? '收款' : isEs ? 'Cobro' : 'Collection' }}</button>
       </div>
 
@@ -423,7 +423,7 @@ const isEs = computed(() => currentLang.value === 'es')
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">客户：{{ currentClient?.store_name || currentClient?.name }} | RIF: {{ currentClient?.rif_or_cedula || (isZh ? '无' : isEs ? 'Ninguno' : 'None') }}</p>
           </div>
           <div class="flex items-center gap-2">
-            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">{{ isZh ? '🖨️ 打印对账单' : isEs ? '🖨️ Imprimir estado' : '🖨️ Print Statement' }}</button>
+            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">{{ isZh ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 打印对账单' : isEs ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Imprimir estado' : '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Print Statement' }}</button>
             <button @click="statementModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg font-bold p-1 cursor-pointer">✕</button>
           </div>
         </div>
@@ -480,7 +480,7 @@ import BaseSearchInput from './ui/BaseSearchInput.vue'
 import BaseInput from './ui/BaseInput.vue'
 import BaseSelect from './ui/BaseSelect.vue'
 import { ref, computed, watch } from 'vue'
-import { Search, Plus, FileSpreadsheet , FileText, Edit3, Banknote, Trash2} from 'lucide-vue-next'
+import { FileSpreadsheet, Users, Search, Banknote, XCircle, Trash2, Printer, Plus, FileText, Edit3 } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n'
 import { apiFetch } from '../utils/api'
 import { useNotifications } from '../composables/useNotifications'
@@ -645,11 +645,11 @@ const confirmBatchDelete = async () => {
     }
     batchDeleteModalVisible.value = false
     selectedIds.value = []
-    showSuccessModal('🗑️ ' + t.value.common.success)
+    showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.success)
     emit('refresh-data')
   } catch (e) {
     batchDeleteModalVisible.value = false
-    showSuccessModal('❌ ' + t.value.common.error)
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
   }
 }
 
@@ -703,7 +703,7 @@ const switchToEdit = () => {
 // 🌟 保存编辑
 const saveClientEdit = async () => {
   if (!editForm.value.name) {
-    showSuccessModal('❌ 客户名称不能为空')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 客户名称不能为空')
     return
   }
   
@@ -723,11 +723,11 @@ const saveClientEdit = async () => {
     } else {
       const err = await res.json().catch(() => ({}))
       const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail || '未知错误')
-      showSuccessModal(`❌ 修改失败: ${errorMsg}`)
+      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 修改失败: ${errorMsg}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('❌ 网络连接异常')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络连接异常')
   } finally {
     isSavingEdit.value = false
   }
@@ -792,11 +792,11 @@ const submitRepayment = async () => {
       emit('refresh-data')
     } else {
       const err = await res.json().catch(() => ({}))
-      showSuccessModal(`❌ ${tExt.value.toastRepayFailed}: ${err.detail || t.common.error}`)
+      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastRepayFailed}: ${err.detail || t.common.error}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('❌ ' + tExt.value.toastNetworkError)
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNetworkError)
   } finally {
     isRepaying.value = false
   }
@@ -823,7 +823,7 @@ const openStatementModal = async () => {
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('❌ 获取历史订单失败')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 获取历史订单失败')
   }
 }
 

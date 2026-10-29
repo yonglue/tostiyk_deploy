@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span>📋</span> {{ tExt.pageTitle }}
+          <span><ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.pageTitle }}
         </h2>
         <p class="text-xs text-slate-500 mt-1">{{ isZh ? '查看所有历史进销存单据、出入库明细及退款记录。' : isEs ? 'Ver todos los documentos y devoluciones.' : 'View all documents and refunds.' }}</p>
       </div>
@@ -65,10 +65,10 @@
 
       <div class="flex gap-3">
         <button @click="$emit('export-transactions')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-md text-sm font-bold shadow-xs transition-all cursor-pointer">
-          📥 {{ tExt.exportExcel }}
+          <Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.exportExcel }}
         </button>
-        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
-          ➕ {{ tExt.newTx }}
+        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-sm transition-all cursor-pointer">
+          <Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.newTx }}
         </button>
       </div>
     </div>
@@ -224,7 +224,7 @@
             @click="handleDeleteFromDrawer"
             class="w-full py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold transition-colors flex justify-center items-center gap-2 cursor-pointer"
           >
-            🗑️ {{ tExt.btnDelete }}单据
+            <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.btnDelete }}单据
           </button>
           <p v-else class="text-center text-xs text-slate-400">
             * {{ tExt.refundNoDelete }}
@@ -237,6 +237,8 @@
 </template>
 
 <script setup>
+import { ClipboardList, Trash2, Download, Plus } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

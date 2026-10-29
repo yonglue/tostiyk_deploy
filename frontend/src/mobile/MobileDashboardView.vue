@@ -8,7 +8,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
         <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{{ todayDate }}</p>
         <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-0.5">{{ isZh ? 'TOSTIYK 驾驶舱' : isEs ? 'Cabina TOSTIYK' : 'TOSTIYK Cockpit' }}</h1>
       </div>
-      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/30">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
         {{ userInitial }}
       </div>
     </header>

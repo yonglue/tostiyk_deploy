@@ -6,7 +6,7 @@
       <!-- 头部 -->
       <div class="p-5 border-b border-slate-200/60 flex items-center justify-between bg-white/50 shrink-0">
         <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
-          <span>📜 {{ tExt.title }}</span>
+          <span>{{ tExt.title }}</span>
         </h3>
         <button @click="$emit('close')" class="text-slate-400 hover:text-slate-700 text-base font-bold p-1 cursor-pointer">✕</button>
       </div>
@@ -82,7 +82,7 @@ const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
 import { ref, computed } from 'vue'
-import { Search } from 'lucide-vue-next'
+import { History, Search } from 'lucide-vue-next';
 import { useI18n } from '../../composables/useI18n'
 import ConfirmDialog from '../ConfirmDialog.vue'
 

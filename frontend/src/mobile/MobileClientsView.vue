@@ -3,7 +3,7 @@
     
     <!-- 顶部固定区 -->
     <div class="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl px-5 pt-6 pb-3 border-b border-slate-100 dark:border-slate-800/60">
-      <div class="bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl p-4 shadow-lg shadow-rose-500/20 mb-4 flex items-center justify-between">
+      <div class="bg-gradient-to-r from-rose-500 to-rose-600 rounded-2xl p-4 shadow-sm mb-4 flex items-center justify-between">
         <div>
           <p class="text-[11px] font-bold text-rose-100 uppercase tracking-wider">{{ isZh ? '客户总应收欠款' : isEs ? 'Total por cobrar' : 'Total Receivables' }}</p>
           <h2 class="text-2xl font-black text-white font-mono tabular-nums mt-1">$ {{ formatMoney(totalDebt) }}</h2>
@@ -53,14 +53,14 @@
       <div class="flex-1 overflow-y-auto p-5 space-y-6">
         
         <div class="flex flex-col items-center justify-center pt-4">
-          <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-3xl shadow-xl shadow-blue-500/30 mb-3">
+          <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-3xl shadow-sm mb-3">
             {{ selectedClient.name.charAt(0).toUpperCase() }}
           </div>
           <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ selectedClient.name }}</h1>
           <p class="text-sm text-slate-500 mt-1">{{ selectedClient.store_name || '未设置店铺名' }}</p>
         </div>
 
-        <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl p-5 shadow-lg shadow-rose-500/20">
+        <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl p-5 shadow-sm">
           <p class="text-[11px] font-bold text-rose-100 uppercase tracking-widest">{{ isZh ? '当前欠款' : isEs ? 'Deuda actual' : 'Current debt' }}</p>
           <h2 class="text-4xl font-black text-white font-mono mt-1">$ {{ formatMoney(selectedClient.debt) }}</h2>
           <div class="mt-4 pt-4 border-t border-white/20 flex justify-between text-xs text-rose-100">
@@ -90,7 +90,7 @@
         <button 
           v-if="selectedClient.debt > 0"
           @click="showPayModal = true"
-          class="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-[0.98] transition-transform"
+          class="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform"
         >
           <HandCoins :size="18" />{{ isZh ? '极速收款' : isEs ? 'Cobro rápido' : 'Quick Collection' }}</button>
         <a v-if="selectedClient.phone" :href="`tel:${selectedClient.phone}`" class="w-14 h-[50px] bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent rounded-xl font-bold flex items-center justify-center active:scale-[0.98] transition-transform">
@@ -124,7 +124,7 @@ const isEs = computed(() => currentLang.value === 'es')
 
 
 import { ref, computed, onMounted } from 'vue'
-import { Search, Phone, MessageCircle, HandCoins, ArrowLeft, ChevronRight } from 'lucide-vue-next'
+import { Search, XCircle, Phone, ArrowLeft, MessageCircle, HandCoins, CheckCircle2, ChevronRight } from 'lucide-vue-next';
 import { apiFetch } from '../utils/api'
 import { useSwipeBack } from '../composables/useSwipeBack'
 import { useNotifications } from '../composables/useNotifications'
@@ -193,13 +193,13 @@ const handleRepay = async (amount) => {
       if (clientInList) clientInList.debt = data.remaining_debt
       
       showPayModal.value = false
-      showSuccessModal(`✅ 收款成功！剩余欠款: $${data.remaining_debt.toFixed(2)}`)
+      showSuccessModal(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 收款成功！剩余欠款: $${data.remaining_debt.toFixed(2)}`)
     } else {
       const err = await res.json()
-      showSuccessModal(`❌ 收款失败: ${err.detail || '未知错误'}`)
+      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 收款失败: ${err.detail || '未知错误'}`)
     }
   } catch (e) {
-    showSuccessModal('❌ 网络请求失败')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络请求失败')
   } finally {
     isSubmittingPay.value = false
   }

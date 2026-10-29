@@ -1,5 +1,7 @@
 <!-- src/components/pos/PosHeader.vue -->
 <script setup>
+import { BarChart3, LogOut, Calendar, Keyboard, History } from 'lucide-vue-next';
+
 defineProps({
   t: { type: Object, required: true },
   currentUser: { type: Object },
@@ -29,7 +31,7 @@ defineEmits(['open-recall', 'open-history', 'open-shift', 'open-help', 'confirm-
         </svg>
       </div>
       
-      <span class="text-sm font-bold text-secondary">📅 {{ currentDateTime }}</span>
+      <span class="text-sm font-bold text-secondary"><Calendar :size="14" class="inline mr-1 align-text-bottom" /> {{ currentDateTime }}</span>
       <span class="text-sm text-success font-mono font-bold">{{ t.dashboard.bcvLabel }}: {{ bcvRate }}</span>
       
       <button v-if="heldOrders.length > 0" @click="$emit('open-recall')" class="bg-surface-raised hover:bg-amber-500/10 text-amber-600 border border-line hover:border-amber-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm hover:scale-[1.02]">
@@ -39,13 +41,13 @@ defineEmits(['open-recall', 'open-history', 'open-shift', 'open-help', 'confirm-
     
     <div class="flex items-center space-x-2.5">
       <button @click="$emit('open-history')" class="bg-surface-raised hover:bg-surface-muted text-indigo-600 border border-line hover:border-indigo-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm hover:scale-[1.02]">
-        <span>📜 {{ t.pos.salesHistory }}</span>
+        <span><History :size="14" class="inline mr-1 align-text-bottom" /> {{ t.pos.salesHistory }}</span>
       </button>
       <button @click="$emit('open-shift')" class="bg-surface-raised hover:bg-surface-muted text-success border border-line hover:border-success/50 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm hover:scale-[1.02]">
-        <span>📊 {{ t.pos.shiftReport }}</span>
+        <span><BarChart3 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.shiftReport }}</span>
       </button>
       <button @click="$emit('open-help')" class="bg-surface-raised hover:bg-surface-muted text-accent border border-line hover:border-accent/50 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm hover:scale-[1.02]">
-        <span>⌨️ {{ t.pos.shortcutGuide }}</span>
+        <span><Keyboard :size="14" class="inline mr-1 align-text-bottom" /> {{ t.pos.shortcutGuide }}</span>
       </button>
 
       <div class="flex items-center gap-2.5 pl-2.5 border-l border-line">

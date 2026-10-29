@@ -1,5 +1,7 @@
 <!-- src/components/pos/PosShiftReportModal.vue -->
 <script setup>
+import { CreditCard, Zap, Lock, DollarSign } from 'lucide-vue-next';
+
 import { computed, ref, watch } from 'vue'
 import BaseModal from '../ui/BaseModal.vue'
 
@@ -60,11 +62,11 @@ const submit = () => {
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div class="bg-surface p-3.5 rounded-lg border border-line">
-            <span class="text-secondary block mb-1">💳 {{ t.pos.payCardPos }}:</span>
+            <span class="text-secondary block mb-1"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payCardPos }}:</span>
             <span class="font-black text-accent text-sm">Bs. {{ (shiftStats.cardPos.amount * bcvRate).toFixed(2) }}</span>
           </div>
           <div class="bg-surface p-3.5 rounded-lg border border-line">
-            <span class="text-secondary block mb-1">⚡ {{ t.pos.payPagoMovil }}:</span>
+            <span class="text-secondary block mb-1"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payPagoMovil }}:</span>
             <span class="font-black text-accent text-sm">Bs. {{ (shiftStats.pagoMovil.amount * bcvRate).toFixed(2) }}</span>
           </div>
           <div class="bg-surface p-3.5 rounded-lg border border-line">
@@ -72,7 +74,7 @@ const submit = () => {
             <span class="font-black text-success text-sm">Bs. {{ (shiftStats.cashBs.amount * bcvRate).toFixed(2) }}</span>
           </div>
           <div class="bg-surface p-3.5 rounded-lg border border-line">
-            <span class="text-secondary block mb-1">💵 {{ t.pos.payCashUsd }}:</span>
+            <span class="text-secondary block mb-1"><DollarSign :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payCashUsd }}:</span>
             <span class="font-black text-primary text-sm">${{ shiftStats.cashUsd.amount.toFixed(2) }}</span>
           </div>
         </div>
@@ -90,7 +92,7 @@ const submit = () => {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-surface p-4 rounded-xl border border-line space-y-2">
-            <label class="block text-xs font-bold text-primary">💳 {{ t.pos.payCardPos }} (Bs.):</label>
+            <label class="block text-xs font-bold text-primary"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payCardPos }} (Bs.):</label>
             <div class="flex items-center gap-2">
               <span class="text-muted font-bold text-base">Bs.</span>
               <input v-model.number="actualCounts.cardPos" type="number" step="10" class="w-full bg-surface-raised border border-line rounded-lg px-3.5 py-2 text-right font-mono text-base outline-none focus:border-accent text-primary" />
@@ -98,7 +100,7 @@ const submit = () => {
             <div class="text-xs text-right font-bold pt-1" :class="cardPosDiff >= 0 ? 'text-success' : 'text-danger'">{{ tExt.shiftDiff }}: {{ cardPosDiff >= 0 ? '+' : '' }}Bs. {{ cardPosDiff.toFixed(2) }}</div>
           </div>
           <div class="bg-surface p-4 rounded-xl border border-line space-y-2">
-            <label class="block text-xs font-bold text-primary">⚡ {{ t.pos.payPagoMovil }} (Bs.):</label>
+            <label class="block text-xs font-bold text-primary"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payPagoMovil }} (Bs.):</label>
             <div class="flex items-center gap-2">
               <span class="text-muted font-bold text-base">Bs.</span>
               <input v-model.number="actualCounts.pagoMovil" type="number" step="10" class="w-full bg-surface-raised border border-line rounded-lg px-3.5 py-2 text-right font-mono text-base outline-none focus:border-accent text-primary" />
@@ -114,7 +116,7 @@ const submit = () => {
             <div class="text-xs text-right font-bold pt-1" :class="cashBsDiff >= 0 ? 'text-success' : 'text-danger'">{{ tExt.shiftDiff }}: {{ cashBsDiff >= 0 ? '+' : '' }}Bs. {{ cashBsDiff.toFixed(2) }}</div>
           </div>
           <div class="bg-surface p-4 rounded-xl border border-line space-y-2">
-            <label class="block text-xs font-bold text-primary">💵 {{ t.pos.payCashUsd }} (USD):</label>
+            <label class="block text-xs font-bold text-primary"><DollarSign :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payCashUsd }} (USD):</label>
             <div class="flex items-center gap-2">
               <span class="text-muted font-bold text-base">$</span>
               <input v-model.number="actualCounts.cashUsd" type="number" step="0.5" class="w-full bg-surface-raised border border-line rounded-lg px-3.5 py-2 text-right font-mono text-base outline-none focus:border-accent text-primary" />
@@ -137,7 +139,7 @@ const submit = () => {
     <template #footer>
       <div class="flex items-center justify-between w-full">
         <button @click="$emit('update:visible', false)" class="px-6 py-2.5 bg-surface-muted hover:bg-line text-secondary rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-        <button @click="submit" class="px-7 py-3 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-black shadow-lg shadow-accent/30 transition-all cursor-pointer">🔒 {{ tExt.shiftConfirm }}</button>
+        <button @click="submit" class="px-7 py-3 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-black shadow-lg shadow-accent/30 transition-all cursor-pointer"><Lock :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.shiftConfirm }}</button>
       </div>
     </template>
   </BaseModal>

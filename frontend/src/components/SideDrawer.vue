@@ -44,6 +44,8 @@
 </template>
 
 <script setup>
+import { ClipboardList } from 'lucide-vue-next';
+
 defineProps({
   visible: {
     type: Boolean,
@@ -55,7 +57,7 @@ defineProps({
   },
   icon: {
     type: String,
-    default: '📋'
+    default: '<ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" />'
   },
   widthClass: {
     type: String,

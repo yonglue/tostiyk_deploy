@@ -4,7 +4,7 @@
     
     <!-- 结账成功的全屏绿色对勾遮罩 -->
     <div v-if="checkoutSuccessVisible" class="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center flex-col transition-all duration-300">
-      <div class="w-40 h-40 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(16,185,129,0.6)] animate-pop-in">
+      <div class="w-40 h-40 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm animate-pop-in">
         <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
         </svg>
@@ -12,10 +12,11 @@
       <h2 class="text-white text-2xl font-black mt-8 tracking-widest drop-shadow-lg">{{ tExt.checkoutSuccessTitle }}</h2>
     </div>
 
-    <!-- 右上角提示条 -->
+    <!-- 右上角提示条 (修复了乱码) -->
     <transition name="fade">
       <div v-if="toastMessage" :class="toastType === 'success' ? 'bg-emerald-600/90 border-emerald-400/30' : 'bg-rose-600/90 border-rose-400/30'" class="fixed top-2 right-4 z-[100] text-white px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-sm font-bold animate-bounce">
-        <span>{{ toastType === 'success' ? '✅' : '❌' }}</span>
+        <CheckCircle2 v-if="toastType === 'success'" :size="18" />
+        <XCircle v-else :size="18" />
         <span>{{ toastMessage }}</span>
       </div>
     </transition>
@@ -26,28 +27,29 @@
         <span class="text-white text-xs px-2.5 py-1 rounded-lg font-mono font-bold shadow-2xs bg-amber-500">
           QUOTE v1.0
         </span>
-        <!-- 🖨️ 打印状态指示灯 (打印机图标版) -->
+        <!-- 打印状态指示灯 -->
         <div class="flex items-center justify-center p-1 cursor-pointer transition-all"
-             :title="isConnected ? '打印机已连接' : '⚠️ 打印服务离线，点击查看修复方法'"
-             @click="!isConnected && alert('⚠️ 打印服务已离线！请检查后台代理程序，或双击桌面的“一键修复打印.bat”。')">
+             :title="isConnected ? '打印机已连接' : '打印服务离线，点击查看修复方法'"
+             @click="!isConnected && alert('⚠️ 打印服务已离线！请检查后台代理程序。')">
           <svg class="w-5 h-5 transition-colors duration-300" 
                :class="isConnected ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500'" 
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
           </svg>
         </div>
-        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">📅 {{ currentDateTime }}</span>
+        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ currentDateTime }}</span>
         <span class="text-sm text-emerald-600 font-mono font-bold">{{ t.dashboard.bcvLabel }}: {{ bcvRate }}</span>
       </div>
       
       <div class="flex items-center space-x-2.5">
         <button @click="helpModalVisible = true" class="bg-white dark:bg-slate-800/70 hover:bg-white dark:bg-slate-800/90 text-accent border border-slate-200 dark:border-slate-700 hover:border-blue-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
-          <span>⌨️ {{ t.pos.shortcutGuide }}</span>
+          <Keyboard :size="14" />
+          <span>{{ t.pos.shortcutGuide }}</span>
         </button>
 
         <div class="flex items-center gap-2.5 pl-2.5 border-l border-slate-200 dark:border-slate-700/60">
           <div class="flex items-center gap-2 bg-white dark:bg-slate-800/70 hover:bg-accent/10/90 border border-slate-200 dark:border-slate-700 hover:border-blue-300 pl-2 pr-3.5 py-1.5 rounded-xl shadow-2xs backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02]">
-            <div class="relative flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs uppercase shrink-0 shadow-md shadow-blue-500/20">
+            <div class="relative flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs uppercase shrink-0 shadow-sm">
               {{ currentUser?.username ? currentUser.username.charAt(0) : 'U' }}
               <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
             </div>
@@ -77,14 +79,14 @@
               @keydown="handleSearchKeydown"
               type="text" 
               :placeholder="t.pos.searchPlaceholder" 
-              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
+              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent  focus:ring-0 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
             />
           </div>
           
           <div class="w-1/4">
             <div v-if="quoteClientName" class="flex items-center justify-between bg-accent/10/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
               <div class="flex items-center gap-2 flex-1 truncate">
-                <span class="text-accent text-lg">👤</span>
+                <User :size="16" class="text-accent shrink-0" />
                 <div class="truncate">
                   <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
                   <div class="text-[10px] text-accent/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
@@ -106,7 +108,7 @@
               class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
-                <span class="text-blue-500">🔍</span>
+                <Search :size="16" class="text-accent shrink-0" />
                 <span class="truncate">{{ t.pos.selectClient }}</span>
               </div>
             </button>
@@ -158,7 +160,10 @@
                 </td>
               </tr>
               <tr v-if="cartItems.length === 0">
-                <td colspan="6" class="text-center py-20 text-slate-400 text-sm font-bold">🛒 {{ tExt.cartEmpty }}</td>
+                <td colspan="6" class="text-center py-20 text-slate-400 text-sm font-bold">
+                  <ShoppingCart :size="24" class="mx-auto mb-2 opacity-50" />
+                  {{ tExt.cartEmpty }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -170,14 +175,19 @@
         <div class="flex flex-col h-full w-full p-4 justify-between animate-in fade-in duration-200">
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 pb-2">
-              <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-2">📄 {{ tExt.quoteInfoTitle }}</h3>
+              <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <FileText :size="18" /> {{ tExt.quoteInfoTitle }}
+              </h3>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.quoteNotesLabel }}</label>
-              <textarea v-model="quoteNotes" class="w-full border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 shadow-inner" rows="6" :placeholder="tExt.quoteNotesPlaceholder"></textarea>
+              <textarea v-model="quoteNotes" class="w-full border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm outline-none focus:border-amber-500  focus:ring-0 shadow-inner" rows="6" :placeholder="tExt.quoteNotesPlaceholder"></textarea>
             </div>
             <div class="bg-amber-50 dark:bg-amber-900/30/50 p-4 rounded-xl border border-amber-200/60">
-              <div class="text-xs text-amber-800 dark:text-amber-400 font-bold mb-1">{{ tExt.quoteTipTitle }}</div>
+              <div class="text-xs text-amber-800 dark:text-amber-400 font-bold mb-1 flex items-center gap-1">
+                <Info :size="14" />
+                {{ tExt.quoteTipTitle }}
+              </div>
               <div class="text-xs text-amber-700/80 leading-relaxed">{{ tExt.quoteTipText }}</div>
             </div>
           </div>
@@ -185,16 +195,18 @@
           <div class="p-3 bg-white dark:bg-slate-800/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 shrink-0 flex flex-col gap-2">
             <div class="flex gap-2 w-full mt-2">
               <button @click="generateQuotationPDF" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <Download :size="18" />
                 PDF
               </button>
-              <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-accent hover:bg-accent/100 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+              <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-accent hover:bg-accent/100 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
+                <Printer :size="18" />
                 打印
               </button>
             </div>
-            <button data-testid="quote-credit-btn" @click="submitOrderAsCredit()" :disabled="!quoteClientId || cartItems.length === 0 || isSubmitting" class="w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-md shadow-rose-500/30 transition-all cursor-pointer flex items-center justify-center gap-1.5">
-              <span>{{ isZh ? '📝 确认全单挂账 (Fiado)' : isEs ? '📝 Confirmar fiado completo' : '📝 Confirm Entire Credit' }}</span>
+            <!-- 修复了乱码的挂账按钮 -->
+            <button data-testid="quote-credit-btn" @click="submitOrderAsCredit()" :disabled="!quoteClientId || cartItems.length === 0 || isSubmitting" class="w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5">
+              <FileText :size="18" />
+              <span>{{ isZh ? '确认全单挂账 (Fiado)' : isEs ? 'Confirmar fiado completo' : 'Confirm Entire Credit' }}</span>
             </button>
             <p v-if="!quoteClientId && cartItems.length > 0" class="text-[10px] text-rose-500 text-center font-bold">{{ isZh ? '* 挂账前请先在顶部搜索并选择客户' : isEs ? '* Busque y seleccione cliente antes de fiar' : '* Search and select client before crediting' }}</p>
           </div>
@@ -247,7 +259,9 @@
         <div class="flex-1 overflow-y-auto p-3 space-y-2 bg-white dark:bg-slate-800">
           <div v-for="c in filteredModalClients" :key="c.id" @click="selectClient(c)" class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:bg-accent/10 hover:border-blue-300 transition-all flex items-center justify-between text-xs shadow-2xs">
             <div>
-              <div class="font-black text-slate-900 dark:text-white text-sm">🏢 {{ c.name }}</div>
+              <div class="font-black text-slate-900 dark:text-white text-sm flex items-center gap-1.5">
+                <Building2 :size="16" class="text-slate-500" /> {{ c.name }}
+              </div>
             </div>
             <span class="text-accent font-bold bg-blue-100/50 px-3 py-1.5 rounded-lg">{{ tExt.clientSelectBtn }} ↵</span>
           </div>
@@ -256,23 +270,20 @@
     </div>
 
     <!-- 退出确认 -->
-    <ConfirmDialog :visible="exitConfirmVisible" icon="⚠️" :title="tExt.exitTitle" :message="tExt.exitMsg" @cancel="exitConfirmVisible = false" @confirm="executeExitPos" />
+    <ConfirmDialog :visible="exitConfirmVisible" icon="" :title="tExt.exitTitle" :message="tExt.exitMsg" @cancel="exitConfirmVisible = false" @confirm="executeExitPos" />
 
-    <!-- 🌟 店长授权超额挂账弹窗 (直接内联，绝对不掉链子) -->
+    <!-- 店长授权超额挂账弹窗 -->
     <div v-if="showPinModal" class="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200/80 dark:border-slate-700">
         <div class="p-6">
           <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            <AlertTriangle :size="28" />
           </div>
           <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">超出信用额度</h3>
           <p class="text-xs text-center text-slate-500 dark:text-slate-400 mb-6 leading-relaxed px-2">
             {{ pendingOverrideError }}
           </p>
           
-          <!-- 🌟 这里加上了 form 表单 -->
           <form @submit.prevent="submitOverridePin">
             <div class="relative mb-6">
               <input 
@@ -280,13 +291,13 @@
                 type="password" 
                 autocomplete="new-password"
                 placeholder="请输入店长安全 PIN 码"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
               />
             </div>
             
             <div class="flex gap-3">
               <button type="button" @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">取消</button>
-              <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">授权放行</button>
+              <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">授权放行</button>
             </div>
           </form>
           
@@ -294,10 +305,12 @@
       </div>
     </div>
 
-  </div> <!-- 这是最外层包裹所有界面的 div，只能有一个 -->
-</template> <!-- 这是 template 的结束标签，只能有一个 -->
+  </div> 
+</template> 
 
 <script setup>
+import { Keyboard, ShoppingCart, Search, RefreshCw, AlertTriangle, Building2, XCircle, FileText, CheckCircle2, Calendar, User, Download, Printer, Info } from 'lucide-vue-next';
+
 import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 const { isConnected, printReceipt } = usePrintAgent()
 
@@ -317,12 +330,12 @@ const tExt = computed(() => {
   const isEs = currentLang.value === 'es'
   
   return {
-    switchToCashier: isZh ? '🔄 切换回收银' : isEs ? '🔄 Cambiar a Caja' : '🔄 Switch to Cashier',
-    switchToQuote: isZh ? '📄 切换到报价' : isEs ? '📄 Cambiar a Cotización' : '📄 Switch to Quote',
+    switchToCashier: isZh ? '切换回收银' : isEs ? 'Cambiar a Caja' : 'Switch to Cashier',
+    switchToQuote: isZh ? '切换到报价' : isEs ? 'Cambiar a Cotización' : 'Switch to Quote',
     quoteInfoTitle: isZh ? '报价单信息' : isEs ? 'Información de Cotización' : 'Quotation Info',
     quoteNotesLabel: isZh ? '销售备注' : isEs ? 'Notas de Venta' : 'Sales Notes',
     quoteNotesPlaceholder: isZh ? '填写客户要求、保修说明、交货期等...' : isEs ? 'Requisitos del cliente, garantía, entrega...' : 'Client requirements, warranty, delivery...',
-    quoteTipTitle: isZh ? '💡 温馨提示:' : isEs ? '💡 Nota:' : '💡 Tip:',
+    quoteTipTitle: isZh ? '温馨提示:' : isEs ? 'Nota:' : 'Tip:',
     quoteTipText: isZh ? '生成报价单不会扣减库存。客户确认购买后，请切回收银模式重新开单收款。' : isEs ? 'Generar cotización no descuenta inventario. Cámbiese a Caja para cobrar.' : 'Quotation does not deduct inventory. Switch to Cashier to charge.',
     savingQuote: isZh ? '正在生成...' : isEs ? 'Generando...' : 'Generating...',
     saveQuoteBtn: isZh ? '保存并生成报价单 PDF' : isEs ? 'Guardar y Generar PDF' : 'Save & Generate PDF',
@@ -595,20 +608,17 @@ const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos'
 
 const isSubmitting = ref(false)
 
-
-
 const printQuotationReceipt = async () => {
-  if (!PRINT_ENABLED) return  // 🚫 打印功能已暂停，恢复时移除此行
+  if (!PRINT_ENABLED) return
   if (props.cartItems.length === 0) return
   if (!isConnected.value) {
-    alert('⚠️ 打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。')
+    alert('打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。')
     return
   }
   
   isSubmitting.value = true
   
   try {
-    // 🌟 1. 先在后台静默保存到数据库
     const payload = {
       client_name: quoteClientName.value || "Cliente General",
       payment_method: "quotation",
@@ -618,10 +628,8 @@ const printQuotationReceipt = async () => {
         quantity: i.quantity, price: i.price 
       }))
     }
-    // 发送保存请求（不处理返回值，以免触发下载）
     await apiFetch('/api/quotations/generate', { method: 'POST', body: JSON.stringify(payload) })
 
-    // 🌟 2. 再调用本地打印机出纸
     await printReceipt({
       lang: currentLang.value === 'zh' ? 'zh' : currentLang.value === 'es' ? 'es' : 'en',
       companyName: systemConfig.value?.company_name || 'Tostiyk ERP',
@@ -642,11 +650,7 @@ const printQuotationReceipt = async () => {
       payment: {}
     })
     
-    console.log('✅ 报价单已保存并打印成功')
-    // 如果你希望打印后自动清空购物车，放开下面两行
-    // props.cartItems.splice(0, props.cartItems.length)
-    // quoteClientName.value = ''
-
+    console.log('报价单已保存并打印成功')
   } catch (err) {
     console.error(err)
     alert('保存或打印失败，请重试。')
@@ -658,7 +662,6 @@ const printQuotationReceipt = async () => {
 const generateQuotationPDF = async () => {
   if (props.cartItems.length === 0) return
   isSubmitting.value = true
-
   
   try {
     const payload = {
@@ -679,7 +682,7 @@ const generateQuotationPDF = async () => {
     
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
-    showToast('✅ ' + tExt.value.genQuoteSuccess, 'success')
+    showToast(tExt.value.genQuoteSuccess, 'success')
     
     emit('clear-cart')
     quoteClientName.value = ''
@@ -687,13 +690,12 @@ const generateQuotationPDF = async () => {
     quoteNotes.value = ''
     
   } catch (err) {
-    showToast('❌ ' + err.message, 'error')
+    showToast(err.message, 'error')
   } finally {
     isSubmitting.value = false
   }
 }
 
-// 🌟 新增：全单挂账函数及状态
 const showPinModal = ref(false)
 const pinInput = ref('')
 const pendingOverrideError = ref('')
@@ -706,7 +708,7 @@ const submitOverridePin = async () => {
 
 const submitOrderAsCredit = async (overridePin = null) => {
   if (!quoteClientId.value) {
-    showToast('❌ 必须先选中具体客户才能挂账！', 'error')
+    showToast('必须先选中具体客户才能挂账！', 'error')
     return
   }
   if (props.cartItems.length === 0) return
@@ -736,7 +738,6 @@ const submitOrderAsCredit = async (overridePin = null) => {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       
-      // 🌟 拦截核心
       if (!overridePin) {
         pendingOverrideError.value = err.detail || '超出信用额度'
         showPinModal.value = true
@@ -749,23 +750,20 @@ const submitOrderAsCredit = async (overridePin = null) => {
     
     const data = await res.json()
     
-    // 成功提示
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
-    showToast(`✅ 挂账成功！单号: ${data.order_no}`, 'success')
+    showToast(`挂账成功！单号: ${data.order_no}`, 'success')
 
-    // 清空状态
     paymentReference.value = ''
     quoteClientName.value = ''
     quoteClientId.value = null
 
-    // 强制清空购物车
     props.cartItems.splice(0, props.cartItems.length)
     
     emit('generate-quote')
 
   } catch (err) {
-    showToast('❌ ' + err.message, 'error')
+    showToast(err.message, 'error')
   } finally {
     isSubmitting.value = false
   }

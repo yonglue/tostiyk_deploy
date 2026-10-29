@@ -60,9 +60,9 @@
                     @click="convertToPos(q)"
                     :disabled="q.converted_order_id"
                     :class="{ 'opacity-40 cursor-not-allowed': q.converted_order_id }"
-                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1 cursor-pointer"
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-sm transition-all flex items-center gap-1 cursor-pointer"
                   >
-                    {{ q.converted_order_id ? `✅ ${tExt.btnConvert} #${q.converted_order_id}` : tExt.btnConvert }}
+                    {{ q.converted_order_id ? `<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.btnConvert} #${q.converted_order_id}` : tExt.btnConvert }}
                   </button>
                 </div>
               </td>
@@ -142,7 +142,7 @@
             @click="onDeleteFromDrawer" 
             class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-colors cursor-pointer"
           >
-            🗑️ {{ t.common.delete }}
+            <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.common.delete }}
           </button>
           
           <!-- 右侧操作组 -->
@@ -156,14 +156,14 @@
             <button 
               @click="printA4Quotation(currentQuote)" 
               class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer flex items-center gap-1"
-            >{{ isZh ? '🖨️ 打印 A4 报价单' : isEs ? '🖨️ Imprimir Cotización A4' : '🖨️ Print A4 Quote' }}</button>
+            >{{ isZh ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 打印 A4 报价单' : isEs ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Imprimir Cotización A4' : '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Print A4 Quote' }}</button>
             <button 
               @click="convertToPos(currentQuote)" 
               :disabled="currentQuote.converted_order_id"
               :class="{ 'opacity-40 cursor-not-allowed': currentQuote.converted_order_id }"
-              class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20 transition-colors cursor-pointer flex items-center gap-1"
+              class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer flex items-center gap-1"
             >
-              🚀 {{ currentQuote.converted_order_id ? `✅ ${tExt.btnConvert} #${currentQuote.converted_order_id}` : tExt.btnConvert }}
+              <Rocket :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ currentQuote.converted_order_id ? `<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.btnConvert} #${currentQuote.converted_order_id}` : tExt.btnConvert }}
             </button>
           </div>
         </div>
@@ -248,6 +248,8 @@
 </template>
 
 <script setup>
+import { XCircle, Trash2, Printer, CheckCircle2, Rocket } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
@@ -334,10 +336,10 @@ const downloadPdf = async (quotationNo) => {
     a.click()
     a.remove()
     window.URL.revokeObjectURL(url)
-    emit('show-toast', '✅ ' + tExt.value.toastDownloadSuccess, 'success')
+    emit('show-toast', '<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastDownloadSuccess, 'success')
   } catch (err) {
     console.error(err)
-    emit('show-toast', '❌ ' + tExt.value.toastDownloadFail, 'error')
+    emit('show-toast', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastDownloadFail, 'error')
   }
 }
 
@@ -348,7 +350,7 @@ const convertToPos = (q) => {
     closeDrawer()
   } catch (e) {
     console.error('解析报价单明细失败', e)
-    emit('show-toast', '❌ ' + tExt.value.toastParseFail, 'error')
+    emit('show-toast', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastParseFail, 'error')
   }
 }
 

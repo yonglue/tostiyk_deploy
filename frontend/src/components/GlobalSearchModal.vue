@@ -80,11 +80,11 @@
 
         <!-- 空状态 -->
         <div v-if="searchQuery && filteredParts.length === 0 && filteredClients.length === 0" class="text-center py-12 text-slate-400 text-sm">
-          <span class="text-3xl block mb-2">🔍</span>
+          <span class="text-3xl block mb-2"><Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           没有找到与 "{{ searchQuery }}" 相关的商品或客户
         </div>
         <div v-else-if="!searchQuery" class="text-center py-12 text-slate-400 text-sm">
-          <span class="text-3xl block mb-2">⌨️</span>{{ isZh ? '请输入商品 OEM、名称或客户姓名开始搜索...' : isEs ? 'Ingrese OEM o nombre...' : 'Enter OEM or name...' }}</div>
+          <span class="text-3xl block mb-2"></span>{{ isZh ? '请输入商品 OEM、名称或客户姓名开始搜索...' : isEs ? 'Ingrese OEM o nombre...' : 'Enter OEM or name...' }}</div>
       </div>
 
       <!-- 底部提示 -->
@@ -104,7 +104,7 @@ import { useI18n } from '../composables/useI18n'
 
 
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
-import { Search, Package, User } from 'lucide-vue-next'
+import { Keyboard, Search, Package, User } from 'lucide-vue-next';
 
 const { currentLang } = useI18n()
 const isZh = computed(() => currentLang.value === 'zh')

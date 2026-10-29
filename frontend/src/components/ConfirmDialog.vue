@@ -1,12 +1,14 @@
 <!-- src/components/ConfirmDialog.vue -->
 <script setup>
+import { AlertTriangle } from 'lucide-vue-next';
+
 import BaseModal from './ui/BaseModal.vue'
 
 defineProps({
   visible: { type: Boolean, default: false },
   title: { type: String, default: 'Confirm' },
   message: { type: String, default: 'Are you sure?' },
-  icon: { type: String, default: '⚠️' },
+  icon: { type: String, default: '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" />' },
   cancelText: { type: String, default: 'Cancel' },
   confirmText: { type: String, default: 'Confirm' },
   // 保留原 API 以兼容旧调用，但在 BaseModal 中由统一 token 驱动，故忽略

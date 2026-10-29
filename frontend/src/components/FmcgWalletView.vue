@@ -4,7 +4,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span>💰</span> {{ title }}
+          <span><Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ title }}
         </h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ subtitle }}</p>
       </div>
@@ -29,7 +29,7 @@
               </select>
             </div>
             <button @click="doQuery" :disabled="queryLoading" data-testid="fmcg-wallet-search"
-              class="px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover disabled:opacity-50 text-white text-sm font-bold shadow-md shadow-blue-500/20 transition-all">
+              class="px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover disabled:opacity-50 text-white text-sm font-bold shadow-sm transition-all">
               {{ queryLoading ? loadingLabel : searchLabel }}
             </button>
           </div>
@@ -86,7 +86,7 @@
       <div class="lg:col-span-2">
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-xs space-y-4">
           <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-            <span>➕</span> {{ creditTitle }}
+            <span><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ creditTitle }}
           </h3>
           <div class="space-y-3">
             <div>
@@ -126,7 +126,7 @@
                 class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <button @click="doCredit" :disabled="creditLoading" data-testid="fmcg-wallet-credit"
-              class="w-full px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-bold shadow-md shadow-emerald-500/20 transition-all">
+              class="w-full px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-bold shadow-sm transition-all">
               {{ creditLoading ? loadingLabel : creditBtnLabel }}
             </button>
             <div v-if="creditResult" class="text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3">
@@ -143,6 +143,8 @@
 </template>
 
 <script setup>
+import { Plus, Wallet } from 'lucide-vue-next';
+
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import { apiFetch } from '../utils/api'

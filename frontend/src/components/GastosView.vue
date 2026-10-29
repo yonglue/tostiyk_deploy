@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span>💸</span> {{ tExt.title }}
+          <span><Banknote :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.title }}
         </h2>
         <p class="text-xs text-slate-500 mt-1">{{ tExt.subtitle }}</p>
       </div>
@@ -26,10 +26,10 @@
       <!-- 右侧：操作按钮 -->
       <div class="flex items-center gap-3">
         <button @click="fetchExpenses" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer">
-          🔄 {{ t.common.refresh }}
+          <RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.common.refresh }}
         </button>
-        <button @click="openDetailDrawer(null)" class="flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-rose-500/20 transition-all cursor-pointer">
-          ➕ {{ tExt.addBtn }}
+        <button @click="openDetailDrawer(null)" class="flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer">
+          <Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.addBtn }}
         </button>
       </div>
     </div>
@@ -253,6 +253,8 @@
 </template>
 
 <script setup>
+import { RefreshCw, Banknote, Trash2, Plus } from 'lucide-vue-next';
+
 import BaseInput from './ui/BaseInput.vue'
 import BaseSelect from './ui/BaseSelect.vue'
 
@@ -420,7 +422,7 @@ const executeDelete = async () => {
   try {
     const res = await apiFetch(`/api/expenses/${deleteTargetId.value}`, { method: 'DELETE' })
     if (res.ok) {
-      showSuccessModal('🗑️ ' + tExt.value.toastDeleted)
+      showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastDeleted)
       fetchExpenses()
       if (currentExpense.value?.id === deleteTargetId.value) closeDrawer()
     }

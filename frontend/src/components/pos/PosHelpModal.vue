@@ -6,7 +6,7 @@
       <!-- 顶部标题栏 -->
       <div class="p-5 border-b border-slate-200/60 flex items-center justify-between bg-white/50 shrink-0">
         <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
-          <span>⌨️ {{ tExt.title }}</span>
+          <span>{{ tExt.title }}</span>
         </h3>
         <button @click="$emit('close')" class="text-slate-400 hover:text-slate-700 text-base font-bold p-1 cursor-pointer">✕</button>
       </div>
@@ -16,7 +16,7 @@
         
         <!-- 搜索与点选 -->
         <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-2xs">
-          <div class="font-extrabold text-accent uppercase tracking-wider mb-1 text-sm">🔍 {{ tExt.groupSearch }}</div>
+          <div class="font-extrabold text-accent uppercase tracking-wider mb-1 text-sm"><Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.groupSearch }}</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700">
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.hkFocus }}</span>
@@ -35,7 +35,7 @@
 
         <!-- 购物车与数量 -->
         <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-2xs">
-          <div class="font-extrabold text-indigo-600 uppercase tracking-wider mb-1 text-sm">🛒 {{ tExt.groupCart }}</div>
+          <div class="font-extrabold text-indigo-600 uppercase tracking-wider mb-1 text-sm"><ShoppingCart :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.groupCart }}</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700">
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.hkSwitchRow }}</span>
@@ -62,7 +62,7 @@
 
         <!-- 支付快捷键 -->
         <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-2xs">
-          <div class="font-extrabold text-emerald-600 uppercase tracking-wider mb-1 text-sm">💳 {{ tExt.groupPay }}</div>
+          <div class="font-extrabold text-emerald-600 uppercase tracking-wider mb-1 text-sm"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.groupPay }}</div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-slate-700">
             <div class="bg-white p-3 rounded-xl border border-slate-200/80 text-center shadow-2xs">
               <span class="block font-bold text-slate-900 mb-1">{{ tExt.payCash }}</span>
@@ -88,7 +88,7 @@
 
         <!-- 常用系统快捷键 -->
         <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-2xs">
-          <div class="font-extrabold text-amber-600 uppercase tracking-wider mb-1 text-sm">⚡ {{ tExt.groupSys }}</div>
+          <div class="font-extrabold text-amber-600 uppercase tracking-wider mb-1 text-sm"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.groupSys }}</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700">
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.sysClient }}</span>
@@ -122,6 +122,8 @@
 </template>
 
 <script setup>
+import { Keyboard, Search, ShoppingCart, Zap, CreditCard } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

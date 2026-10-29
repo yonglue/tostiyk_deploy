@@ -47,7 +47,7 @@
 
     <button 
       @click="continuousScannerVisible = true"
-      class="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-5 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg shadow-emerald-500/40 flex items-center justify-center active:scale-95 transition-transform z-40"
+      class="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-5 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-sm flex items-center justify-center active:scale-95 transition-transform z-40"
     >
       <PackagePlus :size="26" />
     </button>
@@ -138,7 +138,7 @@ const isEs = computed(() => currentLang.value === 'es')
 
 
 import { ref, computed, onMounted } from 'vue'
-import { Search, ArrowLeft, Package, ScanLine, PackagePlus } from 'lucide-vue-next'
+import { Package, Search, PackagePlus, ArrowLeft, CheckCircle2, ScanLine } from 'lucide-vue-next';
 import { apiFetch, apiUrl } from '../utils/api'
 import { useSwipeBack } from '../composables/useSwipeBack'
 import MobileScannerModal from './MobileScannerModal.vue'
@@ -162,7 +162,7 @@ const handleContinuousSubmit = (payload) => {
   
   // 计算总数并弹出提示
   const total = payload.reduce((s, p) => s + p.quantity, 0)
-  showToast(`✅ 成功入库 ${total} 件商品`)
+  showToast(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 成功入库 ${total} 件商品`)
 }
 
 const refreshParts = async () => {

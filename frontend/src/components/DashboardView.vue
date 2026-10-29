@@ -87,7 +87,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base flex items-center gap-2">
-          <span>📈</span> 销售趋势
+          <span><TrendingUp :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> 销售趋势
         </h3>
         <!-- 🌟 日期选择器 -->
         <div class="w-32">
@@ -109,37 +109,37 @@
     <!-- 🚀 快捷业务直达面板 -->
     <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
       <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base flex items-center gap-2">
-        <span>⚡</span> {{ tExt.quickNavTitle }}
+        <span><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.quickNavTitle }}
       </h3>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         
         <!-- 快速收银 -->
         <button @click="$emit('navigate', 'pos')" :title="tExt.btnPos" class="bg-accent/10 hover:bg-accent hover:text-white text-accent border border-accent/20 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group">
-          <span class="text-2xl group-hover:scale-110 transition-transform">🛒</span>
+          <span class="text-2xl group-hover:scale-110 transition-transform"><ShoppingCart :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           <span>{{ tExt.btnPos }}</span>
         </button>
 
         <!-- 开单报价 -->
         <button @click="$emit('navigate', 'quotation')" :title="tExt.btnQuote" class="bg-amber-50/60 dark:bg-amber-900/20 hover:bg-amber-500 dark:hover:bg-amber-500 hover:text-white text-amber-800 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group">
-          <span class="text-2xl group-hover:scale-110 transition-transform">📝</span>
+          <span class="text-2xl group-hover:scale-110 transition-transform"><FileText :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           <span>{{ tExt.btnQuote }}</span>
         </button>
 
         <!-- 财务利润 -->
         <button @click="$emit('navigate', 'financial')" :title="tExt.btnFinancial" class="bg-emerald-50/60 dark:bg-emerald-900/20 hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white text-emerald-800 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group">
-          <span class="text-2xl group-hover:scale-110 transition-transform">📈</span>
+          <span class="text-2xl group-hover:scale-110 transition-transform"><TrendingUp :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           <span>{{ tExt.btnFinancial }}</span>
         </button>
 
         <!-- 配件库存 -->
         <button @click="$emit('navigate', 'parts')" :title="tExt.btnParts" class="bg-slate-50/60 dark:bg-slate-900/50 hover:bg-slate-600 dark:hover:bg-slate-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group">
-          <span class="text-2xl group-hover:scale-110 transition-transform">📦</span>
+          <span class="text-2xl group-hover:scale-110 transition-transform"><Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           <span>{{ tExt.btnParts }}</span>
         </button>
 
         <!-- 客户与账本 -->
         <button @click="$emit('navigate', 'clients')" :title="tExt.btnClients" class="bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-500 dark:hover:bg-purple-500 hover:text-white text-purple-800 dark:text-purple-400 border border-purple-200/80 dark:border-purple-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group">
-          <span class="text-2xl group-hover:scale-110 transition-transform">👥</span>
+          <span class="text-2xl group-hover:scale-110 transition-transform"><Users :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
           <span>{{ tExt.btnClients }}</span>
         </button>
       </div>
@@ -150,7 +150,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Package, TrendingUp, Layers, AlertTriangle } from 'lucide-vue-next'
+import { Package, TrendingUp, Users, AlertTriangle, Layers, ShoppingCart, Zap, FileText } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n'
 import TrendChart from './TrendChart.vue'
 import BaseSelect from './ui/BaseSelect.vue'

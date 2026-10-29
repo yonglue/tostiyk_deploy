@@ -5,7 +5,7 @@
     <!-- 🌟 顶部标题与导出按钮 -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-        <span>📊</span> {{ tExt.title }}
+        <span><BarChart3 :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.title }}
       </h2>
       
       <div class="flex items-center gap-3 flex-wrap">
@@ -64,7 +64,7 @@
           @click="exportProfitReport"
           class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-sm transition-colors cursor-pointer"
         >
-          📥 {{ tExt.exportBtn }}
+          <Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.exportBtn }}
         </button>
       </div>
     </div>
@@ -113,7 +113,7 @@
       <!-- 营收与利润趋势图 -->
       <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-2xl border border-white/80 dark:border-slate-700 shadow-xl p-6 transition-shadow duration-300 hover:shadow-2xl">
         <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base mb-4 flex items-center gap-2">
-          <span>📈</span> {{ tExt.chartTrendTitle }}
+          <span><TrendingUp :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.chartTrendTitle }}
         </h3>
         <div ref="trendChartRef" class="w-full h-72"></div>
       </div>
@@ -122,7 +122,7 @@
       <div class="bg-white/75 dark:bg-slate-800/75 backdrop-blur-xl rounded-2xl border border-white/80 dark:border-slate-700 shadow-xl p-6 transition-shadow duration-300 hover:shadow-2xl">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base flex items-center gap-2">
-            <span>💳</span> {{ tExt.paymentBreakdown }}
+            <span><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.paymentBreakdown }}
           </h3>
           <span class="text-xs bg-accent/100/10 dark:bg-accent/100/20 text-accent dark:text-accent border border-blue-200/60 dark:border-blue-500/30 px-3 py-1 rounded-xl font-mono font-bold shadow-2xs">
             BCV: {{ bcvRate }}
@@ -136,7 +136,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
       <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-800/80">
         <div>
-          <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">📋 {{ tExt.dailyAuditTitle }}</h3>
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base"><ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.dailyAuditTitle }}</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{{ startDate }} {{ tExt.to }} {{ endDate }} {{ tExt.auditSubtitle }}</p>
         </div>
       </div>
@@ -191,6 +191,8 @@
 </template>
 
 <script setup>
+import { TrendingUp, ClipboardList, CreditCard, Download, BarChart3 } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

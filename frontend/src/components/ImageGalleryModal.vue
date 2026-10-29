@@ -22,7 +22,7 @@
           :title="tExt.zoomIn" 
           class="hover:text-blue-400 transition-colors cursor-pointer px-1.5 py-0.5 font-bold text-sm"
         >
-          ➕
+          <Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" />
         </button>
         <button 
           @click="resetZoom" 
@@ -81,6 +81,8 @@
 </template>
 
 <script setup>
+import { Plus } from 'lucide-vue-next';
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

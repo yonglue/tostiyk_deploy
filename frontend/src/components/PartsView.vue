@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span>📦</span> {{ t.inventory.title }}
+          <span><Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.inventory.title }}
         </h2>
         <p class="text-xs text-slate-500 mt-1">{{ isZh ? '管理汽车配件的入库、出库、定价及多图档案。' : isEs ? 'Gestión de entradas, salidas y precios.' : 'Manage stock in/out, pricing, and photos.' }}</p>
       </div>
@@ -57,12 +57,12 @@
           @click="openBatchDeleteModal" 
           class="flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
-          <span>🗑️ {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
+          <span><Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
         </button>
 
         <button
           @click="$emit('open-add-modal')"
-          class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+          class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer"
         >
           <Plus :size="16" />
           <span>{{ t.inventory.addBtn }}</span>
@@ -77,7 +77,7 @@
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               <th class="py-2.5 px-3 w-12 text-center">
-                <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" />
+                <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" class="rounded border-slate-300 text-accent focus:ring-0 w-4 h-4 cursor-pointer" />
               </th>
               <th class="py-2.5 px-3">{{ t.inventory.colImage }}</th>
               <th class="py-2.5 px-3">{{ t.inventory.colOem }}</th>
@@ -93,7 +93,7 @@
           <tbody class="divide-y divide-slate-100 text-sm">
             <tr v-for="item in paginatedParts" :key="item.id || item.oem" class="hover:bg-accent/10/50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer group border-b border-slate-100 dark:border-slate-800" @click="openDetailDrawer(item)">
               <td class="py-2.5 px-3 text-center" @click.stop>
-                <input type="checkbox" :checked="selectedIds.includes(item.id)" @change="toggleSelect(item.id)" class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" />
+                <input type="checkbox" :checked="selectedIds.includes(item.id)" @change="toggleSelect(item.id)" class="rounded border-slate-300 text-accent focus:ring-0 w-4 h-4 cursor-pointer" />
               </td>
               <td class="py-2.5 px-3" @click.stop>
                 <div class="flex items-center gap-1.5">
@@ -247,7 +247,7 @@
       <template #footer>
         <div v-if="drawerMode === 'edit'" class="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
           <button @click="switchToRead" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-          <button @click="saveEditedPart" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">{{ tExt.saveChanges }}</button>
+          <button @click="saveEditedPart" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer">{{ tExt.saveChanges }}</button>
         </div>
       </template>
     </SideDrawer>
@@ -268,7 +268,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Package, XCircle, Trash2, Plus } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n'
 import { apiUrl, apiFetch } from '../utils/api'
 import { useNotifications } from '../composables/useNotifications'
@@ -446,11 +446,11 @@ const confirmBatchDelete = async () => {
     }
     batchDeleteModalVisible.value = false
     selectedIds.value = []
-    showSuccessModal('🗑️ ' + t.value.common.success)
+    showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.success)
     emit('refresh-data')
   } catch (e) {
     batchDeleteModalVisible.value = false
-    showSuccessModal('❌ ' + t.value.common.error)
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
   }
 }
 
@@ -531,11 +531,11 @@ const saveEditedPart = async () => {
       emit('refresh-data')
     } else {
       const err = await res.json()
-      showSuccessModal(`❌ ${t.value.common.error}: ${err.detail || 'Unknown'}`)
+      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${t.value.common.error}: ${err.detail || 'Unknown'}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('❌ ' + t.value.common.error)
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
   }
 }
 

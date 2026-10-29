@@ -21,7 +21,7 @@
 
     <!-- 结账成功的全屏绿色对勾遮罩 -->
     <div v-if="checkoutSuccessVisible" class="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center flex-col transition-all duration-300">
-      <div class="w-40 h-40 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(16,185,129,0.6)] animate-pop-in">
+      <div class="w-40 h-40 bg-emerald-500 rounded-full flex items-center justify-center shadow-sm animate-pop-in">
         <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
         </svg>
@@ -32,7 +32,7 @@
     <!-- 右上角提示条 -->
     <transition name="fade">
       <div v-if="toastMessage" :class="toastType === 'success' ? 'bg-emerald-600/90 border-emerald-400/30' : 'bg-rose-600/90 border-rose-400/30'" class="fixed top-2 right-4 z-[100] text-white px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-sm font-bold animate-bounce">
-        <span>{{ toastType === 'success' ? '✅' : '❌' }}</span>
+        <span>{{ toastType === 'success' ? '<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" />' : '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />' }}</span>
         <span>{{ toastMessage }}</span>
       </div>
     </transition>
@@ -67,7 +67,7 @@
               @keydown="handleSearchKeydown"
               type="text" 
               :placeholder="t.pos.searchPlaceholder" 
-              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
+              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent  focus:ring-0 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
             />
           </div>
           
@@ -96,7 +96,7 @@
               class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
-                <span class="text-blue-500">🔍</span>
+                <span class="text-blue-500"><Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
                 <span class="truncate">{{ t.pos.selectClient }}</span>
               </div>
               <span class="text-slate-400 font-mono text-[10px] hidden sm:inline">Ctrl+F</span>
@@ -207,7 +207,7 @@
     <div v-if="previewModalVisible" @click.self="previewModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
       <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-4xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
         <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>🧾 {{ tExt.ticketTitle }}</span></h3>
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span><Receipt :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.ticketTitle }}</span></h3>
           <button @click="previewModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
         <div id="receipt-preview-content" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50">
@@ -291,7 +291,7 @@
         
         <div class="p-5 bg-white dark:bg-slate-800/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 flex gap-4 shrink-0">
           <button @click="previewModalVisible = false" :disabled="isSubmitting" class="flex-1 py-3 bg-slate-200/80 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">{{ t.pos.backToEdit }}</button>
-          <button @click="confirmAndPrint" :disabled="isSubmitting" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white rounded-xl text-sm font-black shadow-lg shadow-emerald-600/30 transition-all cursor-pointer">{{ isSubmitting ? tExt.ticketPrinting : t.pos.confirmAndPrint }}</button>
+          <button @click="confirmAndPrint" :disabled="isSubmitting" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white rounded-xl text-sm font-black shadow-sm transition-all cursor-pointer">{{ isSubmitting ? tExt.ticketPrinting : t.pos.confirmAndPrint }}</button>
         </div>
       </div>
     </div>
@@ -346,7 +346,7 @@
             </div>
           </div>
           <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colType }}</label><select v-model="newClientForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-accent font-semibold text-slate-900 dark:text-white cursor-pointer"><option value="Regular">{{ tExt.clientTypeRegular }}</option><option value="Taller">{{ tExt.clientTypeTaller }}</option><option value="Mayorista">{{ tExt.clientTypeMayorista }}</option></select></div>
-          <div class="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 p-3 rounded-xl"><input type="checkbox" id="specialTax" v-model="newClientForm.is_special_taxpayer" class="w-4 h-4 text-amber-600 rounded border-amber-300 focus:ring-amber-500 cursor-pointer" /><label for="specialTax" class="text-xs font-bold text-amber-900 cursor-pointer">{{ tExt.isSpecialTaxpayer }}</label></div>
+          <div class="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 p-3 rounded-xl"><input type="checkbox" id="specialTax" v-model="newClientForm.is_special_taxpayer" class="w-4 h-4 text-amber-600 rounded border-amber-300 focus:ring-0 cursor-pointer" /><label for="specialTax" class="text-xs font-bold text-amber-900 cursor-pointer">{{ tExt.isSpecialTaxpayer }}</label></div>
         </div>
         <div class="p-5 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900/50">
           <button @click="newClientModalVisible = false" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-200 text-slate-600 dark:text-slate-400 hover:bg-slate-300 transition-colors cursor-pointer">{{ t.common.cancel }}</button>
@@ -432,7 +432,7 @@
       <div v-if="receiptPreviewVisible" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden h-[85vh]">
           <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-white shrink-0">
-            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span>🧾</span>{{ isZh ? '小票预览 (80mm)' : isEs ? 'Vista previa de recibo (80mm)' : 'Receipt Preview (80mm)' }}</h3>
+            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span><Receipt :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '小票预览 (80mm)' : isEs ? 'Vista previa de recibo (80mm)' : 'Receipt Preview (80mm)' }}</h3>
             <button @click="receiptPreviewVisible = false" class="text-slate-400 hover:text-rose-500 text-2xl leading-none font-bold">&times;</button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 flex justify-center bg-slate-200/50">
@@ -445,8 +445,8 @@
           </div>
           <div class="p-4 border-t border-slate-200 flex gap-3 bg-white shrink-0">
             <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">{{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}</button>
-            <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
-              <span>🖨️</span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
+            <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-sm transition flex items-center justify-center gap-2">
+              <span><Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
           </div>
         </div>
       </div>
@@ -474,7 +474,7 @@
             v-model="pinInput" 
             type="password" 
             :placeholder="isZh ? '请输入店长安全 PIN 码' : isEs ? 'Ingrese PIN de gerente' : 'Enter Manager PIN'"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
             @keyup.enter="submitOverridePin"
           />
         </div>
@@ -483,7 +483,7 @@
           <button @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
             {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
           </button>
-          <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">
+          <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">
             {{ isZh ? '授权放行' : isEs ? 'Autorizar' : 'Authorize' }}
           </button>
         </div>
@@ -502,7 +502,7 @@ import PosShiftReportModal from './pos/PosShiftReportModal.vue'
 import { generateReceiptHtml } from '../utils/pos/receipt'
 import { goodsTotalUsd as calcGoodsTotal, baseTotalUsd as calcBaseTotal, taxTotalUsd as calcTaxTotal, paidTotalUsd as calcPaidTotal, balanceUsd as calcBalance } from '../utils/pos/calc'
 import { fmtPrimary, fmtBsChannel, fmtUsdChannel } from '../utils/pos/format'
-import { CreditCard, Zap, Banknote, DollarSign, Trash2, ShoppingCart, Plus, Minus } from 'lucide-vue-next'
+import { Package, Lock, CreditCard, Search, Banknote, Minus, Receipt, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, DollarSign, Wallet } from 'lucide-vue-next';
 
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
@@ -858,9 +858,9 @@ const submitShiftHandover = async (actualCounts, handoverNotes) => {
     }
     const res = await apiFetch('/api/pos/shift-handover', { method: 'POST', body: JSON.stringify(payload) })
     if (!res.ok) throw new Error(tExt.value.toastShiftError)
-    showToast('🔒 ' + tExt.value.toastShiftSuccess, 'success')
+    showToast('<Lock :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastShiftSuccess, 'success')
     shiftReportModalVisible.value = false
-  } catch (err) { showToast('❌ ' + err.message, 'error') }
+  } catch (err) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + err.message, 'error') }
 }
 
 const previewModalVisible = ref(false)
@@ -975,11 +975,11 @@ const saveNewClient = async () => {
     return
   }
   if (newClientForm.value.rif_number && !/^\d{8,9}$/.test(newClientForm.value.rif_number)) {
-    showToast('❌ RIF格式错误', 'error')
+    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> RIF格式错误', 'error')
     return
   }
   if (newClientForm.value.phone && newClientForm.value.phone.length !== 10) {
-    showToast('❌ 电话格式错误', 'error')
+    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 电话格式错误', 'error')
     return
   }
   
@@ -1010,7 +1010,7 @@ const saveNewClient = async () => {
       quoteClientRif.value = data.rif || ''
       clientFilterQuery.value = ''
       clientModalVisible.value = false
-      showToast('✅ ' + tExt.value.toastClientCreated, 'success')
+      showToast('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastClientCreated, 'success')
       emit('refresh-clients')
     } else {
       let errorMsg = 'Unknown Error'
@@ -1019,10 +1019,10 @@ const saveNewClient = async () => {
         if (typeof err.detail === 'string') errorMsg = err.detail
         else if (Array.isArray(err.detail)) errorMsg = err.detail[0]?.msg || 'Validation Error'
       } catch (e) {}
-      showToast(`❌ ${errorMsg}`, 'error')
+      showToast(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${errorMsg}`, 'error')
     }
   } catch (e) {
-    showToast('❌ ' + t.common.error, 'error')
+    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.common.error, 'error')
   } finally {
     isSavingClient.value = false
   }
@@ -1120,13 +1120,13 @@ const holdCurrentOrder = async () => {
       showToast('📌 ' + tExt.value.toastHoldSuccess, 'success')
       fetchHeldOrders()
     }
-  } catch (e) { showToast('❌ ' + tExt.value.toastHoldEmpty, 'error') }
+  } catch (e) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastHoldEmpty, 'error') }
 }
 
 const openRecallModal = async () => {
   await fetchHeldOrders()
   if (heldOrders.value.length === 0) {
-    showToast('❌ ' + tExt.value.recallEmpty, 'error')
+    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.recallEmpty, 'error')
     return
   }
   recallModalVisible.value = true
@@ -1141,8 +1141,8 @@ const recallOrder = (order) => {
     quoteClientId.value = matchedClient?.id ?? null
     apiFetch(`/api/held-orders/${order.id}`, { method: 'DELETE' }).then(() => fetchHeldOrders())
     recallModalVisible.value = false
-    showToast('✅ ' + tExt.value.toastRecallSuccess, 'success')
-  } catch (e) { showToast('❌ ' + tExt.value.toastRecallError, 'error') }
+    showToast('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastRecallSuccess, 'success')
+  } catch (e) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastRecallError, 'error') }
 }
 
 const deleteHeldOrder = async (id) => {
@@ -1207,13 +1207,13 @@ const processReturnOrder = async (dbId) => {
     const res = await apiFetch(`/api/pos/orders/${dbId}/refund`, { method: 'POST' })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
-      showToast('❌ ' + (err.detail || tExt.value.toastReturnError), 'error')
+      showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + (err.detail || tExt.value.toastReturnError), 'error')
       return
     }
-    showToast('🔄 ' + tExt.value.toastReturnSuccess, 'success')
+    showToast('<RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastReturnSuccess, 'success')
     fetchCompletedOrders()
   } catch (e) {
-    showToast('❌ ' + tExt.value.toastReturnError, 'error')
+    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastReturnError, 'error')
   }
 }
 
@@ -1388,7 +1388,7 @@ const confirmAndPrint = async (overridePin = null) => {
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
 
-    showToast(`✅ ${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
+    showToast(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
 
     //  立即清空购物车（双保险）：不依赖任何后续异步
     // 历史问题：清空放在最后，pendingQid 的 await / fetchCompletedOrders 挂住就清不掉
@@ -1428,7 +1428,7 @@ const confirmAndPrint = async (overridePin = null) => {
 const handleGlobalKeydown = (e) => {
   const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
   
-  // 🔍 搜索聚焦: / 
+  // <Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 搜索聚焦: / 
   if (e.key === '/' && !isInput) {
     e.preventDefault()
     searchInputRef.value?.focus()
@@ -1443,13 +1443,13 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // 💳 支付通道切换: F4 - F7
+  // <CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 支付通道切换: F4 - F7
   if (e.key === 'F4') { e.preventDefault(); focusPaymentChannel('cardPos'); return; }
   if (e.key === 'F5') { e.preventDefault(); focusPaymentChannel('pagoMovil'); return; }
   if (e.key === 'F6') { e.preventDefault(); focusPaymentChannel('cashBs'); return; }
   if (e.key === 'F7') { e.preventDefault(); focusPaymentChannel('cashUsd'); return; }
 
-  // 📦 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
+  // <Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
   if (e.key === 'F8') {
     e.preventDefault()
     if (typeof saveHeldOrder === 'function') saveHeldOrder()
@@ -1457,7 +1457,7 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // 💰 结账: F12 或 Ctrl+Enter
+  // <Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 结账: F12 或 Ctrl+Enter
   if (e.key === 'F12' || (e.ctrlKey && e.key === 'Enter')) {
     e.preventDefault()
     if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
@@ -1466,7 +1466,7 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // 🗑️ 删除: Delete 删末项，Alt+Delete 清空
+  // <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 删除: Delete 删末项，Alt+Delete 清空
   if (e.key === 'Delete') {
     if (e.altKey) {
       e.preventDefault()
@@ -1541,7 +1541,7 @@ const autoPrintReceipt = async (receiptData) => {
       total_usd: receiptData.total_usd || 0,
       total_bs: receiptData.total_bs || 0,
       payment: receiptData.payment || {}
-    }).then(() => console.log('✅ WebSocket 打印成功'))
+    }).then(() => console.log('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> WebSocket 打印成功'))
       .catch(err => console.warn('WebSocket 打印失败:', err.message));
       
     return; 
@@ -1619,7 +1619,7 @@ const printFromPreview = () => {
 }
 
 const reprintOrderTicket = (order) => {
-  showToast(`🖨️ ${tExt.value.toastReprint} #${order.orderId}`, 'success')
+  showToast(`<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastReprint} #${order.orderId}`, 'success')
   
   const receiptData = {
     company_name: systemConfig.value?.company_name || 'TOSTIYK (TK)',

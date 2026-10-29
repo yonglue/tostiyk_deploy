@@ -39,7 +39,7 @@
         </div>
         <h3 class="font-bold text-lg mb-2">无法开启摄像头</h3>
         <p class="text-xs text-slate-400 mb-6">当前环境不支持（如非 HTTPS 或权限被拒），请使用下方的手动输入。</p>
-        <button @click="cameraInput?.click()" class="px-6 py-3 bg-accent rounded-xl font-bold text-sm">📷 拍照扫码</button>
+        <button @click="cameraInput?.click()" class="px-6 py-3 bg-accent rounded-xl font-bold text-sm">拍照扫码</button>
       </div>
 
       <div v-show="isCameraReady && !hasCameraError" class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
@@ -109,7 +109,7 @@
     <!-- 提交成功全屏遮罩 -->
     <Transition name="fade">
       <div v-if="showSuccessOverlay" class="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center">
-        <div class="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mb-6 animate-bounce shadow-[0_0_40px_rgba(16,185,129,0.5)]">
+        <div class="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mb-6 animate-bounce shadow-sm">
           <Check :size="48" class="text-white" />
         </div>
         <h2 class="text-2xl font-black text-white mb-2">入库成功</h2>
@@ -162,7 +162,7 @@
 
 <script setup>
 import { ref, computed, onUnmounted, watch, nextTick } from 'vue'
-import { X, Image as ImageIcon, XCircle, ShoppingCart, Trash2, Check, Zap } from 'lucide-vue-next'
+import { Check, ShoppingCart, Image as ImageIcon, XCircle, Camera, X, Trash2, Zap } from 'lucide-vue-next';
 import jsQR from 'jsqr'
 import { apiFetch } from '../utils/api'
 

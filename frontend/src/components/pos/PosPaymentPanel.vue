@@ -1,7 +1,7 @@
 <!-- src/components/pos/PosPaymentPanel.vue -->
 <script setup>
 import { ref } from 'vue'
-import { CreditCard, Zap, Banknote, DollarSign } from 'lucide-vue-next'
+import { CreditCard, Banknote, Zap, RefreshCw, DollarSign } from 'lucide-vue-next';
 import { fmtPrimary, fmtBsChannel, fmtUsdChannel } from '../../utils/pos/format'
 
 const props = defineProps({
@@ -44,13 +44,13 @@ const toggleCurrency = () => {
     <div class="flex flex-col h-full w-full">
       <div class="flex-1 overflow-y-auto p-3.5 space-y-3">
         <div class="flex items-center justify-between border-b border-line pb-2">
-          <h3 class="font-bold text-xs text-primary uppercase tracking-wider">💳 {{ t.pos.payPanelTitle }}</h3>
+          <h3 class="font-bold text-xs text-primary uppercase tracking-wider"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payPanelTitle }}</h3>
           <button 
             @click="toggleCurrency" 
             type="button"
             class="bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 px-2.5 py-1 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer shadow-sm flex items-center gap-1"
           >
-            <span>🔄 {{ t.pos.mainCurrency }}: {{ primaryCurrency === 'USD' ? 'USD ($)' : 'Bs.' }}</span>
+            <span><RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.mainCurrency }}: {{ primaryCurrency === 'USD' ? 'USD ($)' : 'Bs.' }}</span>
           </button>
         </div>
 

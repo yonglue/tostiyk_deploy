@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span>📋</span>{{ isZh ? '库存盘点（实体清点）' : isEs ? 'Auditoría (Conteo)' : 'Audit (Count)' }}</h2>
+          <span><ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '库存盘点（实体清点）' : isEs ? 'Auditoría (Conteo)' : 'Audit (Count)' }}</h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '请录入实际清点的数量。留空的商品将被系统忽略，不参与本次盘点。' : isEs ? 'Ingrese cantidad real. Vacíos ignorados.' : 'Enter actual count. Blanks ignored.' }}</p>
       </div>
 
@@ -60,12 +60,12 @@
             :disabled="hasNoChanges"
             class="bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-5 py-2.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2"
           >
-            <span>📥</span>{{ isZh ? '导出差异表' : isEs ? 'Exportar diferencias' : 'Export diffs' }}</button>
+            <span><Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '导出差异表' : isEs ? 'Exportar diferencias' : 'Export diffs' }}</button>
 
           <button 
             @click="submitAudit" 
             :disabled="hasNoChanges || isSubmitting"
-            class="bg-accent hover:bg-accent-hover disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2"
+            class="bg-accent hover:bg-accent-hover disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all cursor-pointer flex items-center gap-2"
           >
             <span>💾</span> {{ isSubmitting ? '提交中...' : '提交盘点结果' }}
           </button>
@@ -78,7 +78,7 @@
           <h3 class="font-bold text-slate-800 dark:text-slate-200">{{ isZh ? '历史盘点单据' : isEs ? 'Docs Historial' : 'History Docs' }}</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '系统自动汇总的盘点盈亏流水（来源：进销存系统）' : isEs ? 'Flujo automático de inventario' : 'Auto inventory ledger' }}</p>
         </div>
-        <button @click="fetchHistory" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer flex items-center gap-1.5">{{ isZh ? '🔄 刷新记录' : isEs ? '🔄 Actualizar' : '🔄 Refresh Records' }}</button>
+        <button @click="fetchHistory" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer flex items-center gap-1.5">{{ isZh ? '<RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 刷新记录' : isEs ? '<RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Actualizar' : '<RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Refresh Records' }}</button>
       </template>
 
     </div>
@@ -114,7 +114,7 @@
                   type="number" 
                   min="0"
                   :placeholder="isZh ? '未盘' : isEs ? 'No auditado' : 'Not audited'"
-                  class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-accent focus:ring-2 focus:ring-blue-500/20 placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                  class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-accent  focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                 />
               </td>
               <td class="py-4 px-6 text-center font-mono font-black">
@@ -241,7 +241,7 @@ const isEs = computed(() => currentLang.value === 'es')
 
 
 import { ref, computed, onMounted, reactive, watch } from 'vue'
-import { Search, ClipboardList } from 'lucide-vue-next'
+import { ClipboardList, Search, AlertTriangle, Download, XCircle, CheckCircle2, RefreshCw } from 'lucide-vue-next';
 import { apiFetch } from '../utils/api'
 import { useNotifications } from '../composables/useNotifications'
 
@@ -357,7 +357,7 @@ const submitAudit = async () => {
     }))
 
   if (diffItems.length === 0) {
-    showSuccessModal('⚠️ 没有需要提交的盘点差异')
+    showSuccessModal('<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 没有需要提交的盘点差异')
     return
   }
 
@@ -370,15 +370,15 @@ const submitAudit = async () => {
     
     if (res.ok) {
       const data = await res.json()
-      showSuccessModal(`✅ ${data.message}`)
+      showSuccessModal(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${data.message}`)
       fetchParts()
       if (activeTab.value === 'history') fetchHistory()
     } else {
       const err = await res.json()
-      showSuccessModal(`❌ 盘点提交失败: ${err.detail}`)
+      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 盘点提交失败: ${err.detail}`)
     }
   } catch (e) {
-    showSuccessModal('❌ 网络异常')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络异常')
   } finally {
     isSubmitting.value = false
   }
@@ -393,7 +393,7 @@ const exportAuditDiff = () => {
   })
 
   if (diffItems.length === 0) {
-    showSuccessModal('⚠️ 当前没有盘点差异可以导出')
+    showSuccessModal('<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 当前没有盘点差异可以导出')
     return
   }
 
@@ -453,7 +453,7 @@ const fetchHistory = async () => {
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('❌ 获取盘点历史失败')
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 获取盘点历史失败')
   } finally {
     isFetchingHistory.value = false
   }

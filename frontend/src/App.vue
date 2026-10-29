@@ -178,7 +178,7 @@
         </main>
 
         <Transition name="fade">
-          <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-accent hover:bg-accent-hover text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
+          <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-accent hover:bg-accent-hover text-white shadow-sm flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
             <span class="whitespace-nowrap font-bold text-sm ml-2 transition-all duration-300" :class="isFabExpanded ? 'opacity-100 translate-x-0 w-auto' : 'opacity-0 translate-x-4 w-0'">{{ isZh ? '返回顶部' : isEs ? 'Volver arriba' : 'Back to Top' }}</span>
           </button>
@@ -192,7 +192,7 @@
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
-            <span class="text-xl">📝</span>
+            <span class="text-xl"><FileText :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddTxTitle }}</h3>
           </div>
           <button @click="txDialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
@@ -209,7 +209,7 @@
             <button type="button" @click="txDialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }}
             </button>
-            <button type="submit" :disabled="isSubmittingTx" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
+            <button type="submit" :disabled="isSubmittingTx" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50">
               {{ isSubmittingTx ? '...' : t.common.save }}
             </button>
           </div>
@@ -222,7 +222,7 @@
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
-            <span class="text-xl">➕</span>
+            <span class="text-xl"><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddPartTitle }}</h3>
           </div>
           <button @click="dialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
@@ -277,7 +277,7 @@
             <button type="button" @click="dialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }} (ESC)
             </button>
-            <button type="submit" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+            <button type="submit" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer">
               {{ t.common.save }} (Enter)
             </button>
           </div>
@@ -331,8 +331,8 @@
     <div v-if="resetModalVisible" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4">
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-6 flex flex-col gap-4">
         <div class="text-center space-y-1.5">
-          <div class="w-12 h-12 rounded-xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
-            🔒
+          <div class="w-12 h-12 rounded-xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-sm">
+            <Lock :size="18" class="inline-block align-middle mr-1 text-slate-500" />
           </div>
           <h3 class="font-bold text-base text-slate-900">{{ tExt.resetPinTitle }}</h3>
           <p class="text-xs text-slate-400">{{ tExt.resetPinDesc }}</p>
@@ -418,6 +418,8 @@
 </template>
 
 <script setup>
+import { FileText, Lock, Plus, XCircle } from 'lucide-vue-next';
+
 import BaseInput from './components/ui/BaseInput.vue'
 import BaseSelect from './components/ui/BaseSelect.vue'
 import { ref, computed, defineAsyncComponent, onMounted, onUnmounted, watch } from 'vue'
@@ -699,13 +701,13 @@ let _forbiddenDebounce = null
 const _onForbidden = (e) => {
   clearTimeout(_forbiddenDebounce)
   _forbiddenDebounce = setTimeout(() => {
-    showSuccessModal('❌ ' + (e.detail?.message || '权限不足'))
+    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + (e.detail?.message || '权限不足'))
   }, 100)
 }
 
 const _onGlobalApiError = (e) => {
   const msg = e.detail?.message || '服务器发生未知错误'
-  showSuccessModal('❌ ' + msg) 
+  showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + msg) 
 }
 
 onMounted(() => window.addEventListener('api:global-error', _onGlobalApiError))
