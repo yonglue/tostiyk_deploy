@@ -6,7 +6,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    host: '127.0.0.1', // 仅限本地访问
+    host: '0.0.0.0', // 仅限本地访问  // 允许局域网任何设备访问: '127.0.0.1'
     port: 5173,
     https: false,      // 关闭 HTTPS，免去证书烦恼
     proxy: {

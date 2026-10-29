@@ -67,7 +67,7 @@
             :disabled="hasNoChanges || isSubmitting"
             class="bg-accent hover:bg-accent-hover disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all cursor-pointer flex items-center gap-2"
           >
-            <span>💾</span> {{ isSubmitting ? '提交中...' : '提交盘点结果' }}
+            <span>💾</span> {{ isSubmitting ? isZh ? '提交中...' : 'Enviando...' : '提交盘点结果' }}
           </button>
         </div>
       </template>
@@ -378,7 +378,7 @@ const submitAudit = async () => {
       showSuccessModal(`盘点提交失败: ${err.detail}`)
     }
   } catch (e) {
-    showSuccessModal('网络异常')
+    showSuccessModal(t.value.common.error)
   } finally {
     isSubmitting.value = false
   }

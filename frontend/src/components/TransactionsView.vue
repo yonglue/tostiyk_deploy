@@ -279,7 +279,7 @@ const tExt = computed(() => {
     unit: isZh ? '笔' : isEs ? 'trans.' : 'txns',
     tabAll: isZh ? '全部类型' : isEs ? 'Todos los Tipos' : 'All Types',
     tabOut: isZh ? '出库 (销售)' : isEs ? 'Salida (Venta)' : 'Outbound (Sale)',
-    tabIn: isZh ? '采购入库' : isEs ? 'Entrada (Compra)' : 'Inbound (Purchase)',
+    tabIn: isZh ? isZh ? '采购入库' : 'Entrada' : isEs ? 'Entrada (Compra)' : 'Inbound (Purchase)',
     exportExcel: isZh ? '导出 Excel' : isEs ? 'Exportar Excel' : 'Export Excel',
     newTx: isZh ? '新增单据' : isEs ? 'Nuevo Registro' : 'New Record',
     colTime: isZh ? '时间' : isEs ? 'Hora' : 'Time',

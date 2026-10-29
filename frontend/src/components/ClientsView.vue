@@ -271,17 +271,17 @@ const isEs = computed(() => currentLang.value === 'es')
 
         <!-- 编辑态 -->
         <div v-else-if="drawerMode === 'edit'" class="space-y-4">
-          <BaseInput v-model="editForm.name" label="客户名称 *" />
-          <BaseInput v-model="editForm.store_name" label="门店名称" />
-          <BaseInput v-model="editForm.phone" label="联系电话" />
-          <BaseInput v-model="editForm.rif_or_cedula" label="RIF / 身份证" />
-          <BaseInput v-model="editForm.address" label="地址" class="col-span-2" />
-          <BaseInput v-model.number="editForm.credit_limit" type="number" label="信用额度 ($)" />
+          <BaseInput v-model="editForm.name" :label="t.clients.colName + ' *'" />
+          <BaseInput v-model="editForm.store_name" :label="isZh ? '门店名称' : 'Tienda'" />
+          <BaseInput v-model="editForm.phone" :label="t.clients.colPhone" />
+          <BaseInput v-model="editForm.rif_or_cedula" :label="t.clients.colRif" />
+          <BaseInput v-model="editForm.address" :label="t.clients.colAddress" class="col-span-2" />
+          <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
 
           <!-- 客户类型 -->
           <BaseSelect 
             v-model="editForm.client_type" 
-            label="客户类型"
+            :label="t.clients.colType"
             :options="[
               { label: tExt.regular, value: 'Regular' },
               { label: tExt.taller, value: 'Taller' },
@@ -289,7 +289,7 @@ const isEs = computed(() => currentLang.value === 'es')
             ]" 
           />
 
-          <BaseInput v-model.number="editForm.credit_limit" type="number" label="信用额度 ($)" />
+          <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
 
         </div>
 
@@ -504,7 +504,7 @@ const downloadStatement = async (client) => {
     window.URL.revokeObjectURL(url)
   } catch (e) {
     console.error(e)
-    alert('生成对账单失败，请检查网络或重试')
+    alert(isZh.value ? '生成对账单失败，请检查网络或重试' : 'Error al generar estado de cuenta')
   }
 }
 
@@ -703,7 +703,7 @@ const switchToEdit = () => {
 // 🌟 保存编辑
 const saveClientEdit = async () => {
   if (!editForm.value.name) {
-    showSuccessModal('客户名称不能为空')
+    showSuccessModal(isZh.value ? '客户名称不能为空' : 'El nombre no puede estar vacío')
     return
   }
   
@@ -723,11 +723,11 @@ const saveClientEdit = async () => {
     } else {
       const err = await res.json().catch(() => ({}))
       const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail || '未知错误')
-      showSuccessModal(`修改失败: ${errorMsg}`)
+      showSuccessModal(isZh.value ? `修改失败: ${errorMsg}` : `Error al modificar: ${errorMsg}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('网络连接异常')
+    showSuccessModal(t.value.common.error)
   } finally {
     isSavingEdit.value = false
   }
@@ -823,7 +823,7 @@ const openStatementModal = async () => {
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('获取历史订单失败')
+    showSuccessModal(isZh.value ? '获取历史订单失败' : 'Error al obtener historial')
   }
 }
 

@@ -221,13 +221,13 @@
 
         <!-- 编辑态 -->
         <div v-else class="space-y-4">
-          <BaseInput v-model="editingPart.oem" label="OEM 编号 *" placeholder="输入 OEM..." />
-          <BaseInput v-model="editingPart.name" label="配件名称 *" placeholder="输入配件名称..." />
-          <BaseInput v-model="editingPart.category" label="分类" />
-          <BaseInput v-model="editingPart.brand" label="品牌" />
-          <BaseInput v-model.number="editingPart.stock" type="number" label="库存数量" />
-          <BaseInput v-model.number="editingPart.price" type="number" label="零售价 ($)" />
-          <BaseInput v-model.number="editingPart.cost_price" type="number" label="成本价 ($)" />
+          <BaseInput v-model="editingPart.oem" :label="t.inventory.colOem + ' *'" :placeholder="isZh ? '输入 OEM...' : 'Ingrese OEM...'" />
+          <BaseInput v-model="editingPart.name" :label="t.inventory.colName + ' *'" :placeholder="isZh ? '输入配件名称...' : 'Ingrese nombre...'" />
+          <BaseInput v-model="editingPart.category" :label="t.inventory.colCategory" />
+          <BaseInput v-model="editingPart.brand" :label="t.inventory.colBrand" />
+          <BaseInput v-model.number="editingPart.stock" type="number" :label="t.inventory.colStock" />
+          <BaseInput v-model.number="editingPart.price" type="number" :label="t.inventory.colPriceUsd" />
+          <BaseInput v-model.number="editingPart.cost_price" type="number" :label="t.inventory.costPrice" />
           
           <BaseSelect 
             v-model.number="editingPart.tax_rate" 
@@ -239,7 +239,7 @@
             ]" 
           />
 
-          <BaseInput v-model="editingPart.bin_location" label="货架位" placeholder="例如 A-01" />
+          <BaseInput v-model="editingPart.bin_location" :label="t.inventory.colBin" :placeholder="isZh ? '例如 A-01' : 'Ej. A-01'" />
         </div>
       </div>
 
@@ -299,7 +299,7 @@ const tExt = computed(() => {
   return {
     allBrands: isZh ? '全部品牌' : isEs ? 'Todas las Marcas' : 'All Brands',
     allCategories: isZh ? '全部分类' : isEs ? 'Todas las Categorías' : 'All Categories',
-    uncategorized: isZh ? '未分类' : isEs ? 'Sin categoría' : 'Uncategorized',
+    uncategorized: isZh ? isZh ? '未分类' : 'Sin categoría' : isEs ? 'Sin categoría' : 'Uncategorized',
     batchDelete: isZh ? '批量删除' : isEs ? 'Eliminar Lote' : 'Batch Delete',
     batchSelected: isZh ? '已选' : isEs ? 'seleccionados' : 'selected',
     emptyParts: isZh ? '没有找到符合条件的商品档案' : isEs ? 'No se encontraron repuestos' : 'No parts found',

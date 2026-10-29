@@ -609,7 +609,7 @@ const printQuotationReceipt = async () => {
   if (!PRINT_ENABLED) return
   if (props.cartItems.length === 0) return
   if (!isConnected.value) {
-    alert('打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。')
+    alert(isZh.value ? '打印服务离线，请检查后台代理程序或点击右上角图标查看修复方法。' : 'Servicio de impresión offline.')
     return
   }
   

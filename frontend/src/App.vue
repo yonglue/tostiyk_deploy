@@ -228,7 +228,7 @@
           <button @click="dialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
         </div>
 
-        <form @submit.prevent="handleAddPart" class="space-y-4 max-h-[70vh] overflow-y-auto px-6 py-5">
+        <form @submit.prevent="handleAddPart(tExt, t)" class="space-y-4 max-h-[70vh] overflow-y-auto px-6 py-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <BaseInput v-model="newPart.oem" :label="t.inventory.colOem" :placeholder="tExt.placeholderOem" />
             <BaseInput v-model="newPart.name" :label="t.inventory.colName" :placeholder="tExt.placeholderName" />

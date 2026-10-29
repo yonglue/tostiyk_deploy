@@ -29,7 +29,7 @@
         <div class="flex justify-between items-center">
           <div class="flex-1 min-w-0 pr-3">
             <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">{{ client.name }}</h3>
-            <p class="text-xs text-slate-400 mt-0.5 truncate">{{ client.store_name || '未设置店铺名' }}</p>
+            <p class="text-xs text-slate-400 mt-0.5 truncate">{{ client.store_name || isZh ? '未设置店铺名' : 'Sin tienda' }}</p>
             <div class="mt-2 flex items-center gap-2">
               <span class="text-sm font-black font-mono tabular-nums" :class="client.debt > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'">$ {{ formatMoney(client.debt) }}</span>
             </div>
@@ -54,7 +54,7 @@
             {{ selectedClient.name.charAt(0).toUpperCase() }}
           </div>
           <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ selectedClient.name }}</h1>
-          <p class="text-sm text-slate-500 mt-1">{{ selectedClient.store_name || '未设置店铺名' }}</p>
+          <p class="text-sm text-slate-500 mt-1">{{ selectedClient.store_name || isZh ? '未设置店铺名' : 'Sin tienda' }}</p>
         </div>
 
         <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl p-5 shadow-sm">
@@ -72,7 +72,7 @@
           <div v-if="clientHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">{{ isZh ? '暂无历史记录' : isEs ? 'Sin historial' : 'No history' }}</div>
           <div v-for="record in clientHistory" :key="record.id" class="bg-white dark:bg-slate-900 rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <div>
-              <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ record.payment_method === 'Fiado' ? '挂账' : '还款/销售' }}</p>
+              <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ record.payment_method === 'Fiado' ? isZh ? '挂账' : 'Fiado' : isZh ? '还款/销售' : 'Pago/Venta' }}</p>
               <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ record.timestamp }}</p>
             </div>
             <p class="text-sm font-black font-mono text-rose-500">+${{ formatMoney(record.total_amount || record.amount_usd) }}</p>

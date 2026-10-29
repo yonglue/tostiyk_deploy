@@ -10,7 +10,7 @@
     :class="[
       'fixed md:static inset-y-0 left-0 z-30 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 shrink-0 relative group/sidebar',
       mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-      isCollapsed ? 'w-[64px]' : 'w-[224px]'
+      isCollapsed ? 'w-[64px]' : 'w-[200px]'
     ]"
   >
     

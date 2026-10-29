@@ -73,7 +73,7 @@ def create_part(
     category: str = Form(...),
     stock: int = Form(...),
     price: str = Form(...),
-    cost_price: str = Form(default="0.00"), # 🌟 新增：进货价
+    cost_price: str = Form(default="0.00"),
     tax_rate: str = Form(...),  
     cross_references: str = Form(default=""),
     bin_location: str = Form(default="Estante A-1"),
@@ -84,9 +84,9 @@ def create_part(
     image_paths = _save_uploaded_files(files)
     _ensure_unique_oem_brand(session, oem, brand)
     
-    # 🌟 精度处理
+    # 精度处理
     d_price = Decimal(price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    d_cost_price = Decimal(cost_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) # 🌟 新增
+    d_cost_price = Decimal(cost_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     d_tax_rate = Decimal(tax_rate)
 
     new_part = AutoPart(
@@ -96,21 +96,36 @@ def create_part(
         category=category,
         stock=stock,
         price=float(d_price),
-        cost_price=float(d_cost_price), # 🌟 新增
+        cost_price=float(d_cost_price),
         tax_rate=float(d_tax_rate),
         cross_references=cross_references,
         bin_location=bin_location,
         image_url=json.dumps(image_paths) if image_paths else "",
+        # 🌟 补全必填字段的默认值
+        min_stock=0,
+        max_stock=9999,
+        wholesale_price=0.0,
+        vip2_price=0.0,
+        vip3_price=0.0,
     )
     session.add(new_part)
     try:
         session.commit()
-    except IntegrityError:
+    except IntegrityError as e:
         session.rollback()
-        raise HTTPException(
-            status_code=409,
-            detail=f"OEM {oem} + 品牌 {brand} 的商品已存在",
-        )
+        error_msg = str(e)
+        print(f"❌ 数据库保存异常: {error_msg}")
+        
+        if "UNIQUE constraint failed" in error_msg or "uq_autopart_oem_brand" in error_msg:
+            raise HTTPException(
+                status_code=409,
+                detail=f"OEM {oem} + 品牌 {brand} 的商品已存在，请直接修改该商品",
+            )
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="保存失败：数据缺失或格式错误。请检查是否缺少必填项。",
+            )
 
     log_action(
         session=session,
@@ -132,7 +147,7 @@ def update_part(
     category: str = Form(...),
     stock: int = Form(...),
     price: str = Form(...),
-    cost_price: str = Form(default="0.00"), # 🌟 新增
+    cost_price: str = Form(default="0.00"),
     tax_rate: str = Form(...),
     bin_location: str = Form(default="Estante A-1"),
     cross_references: str = Form(default=""),
@@ -151,7 +166,7 @@ def update_part(
     _ensure_unique_oem_brand(session, oem, brand, exclude_id=part_id)
 
     d_price = Decimal(price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    d_cost_price = Decimal(cost_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) # 🌟 新增
+    d_cost_price = Decimal(cost_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     d_tax_rate = Decimal(tax_rate)
 
     part.oem = oem
@@ -160,7 +175,7 @@ def update_part(
     part.category = category
     part.stock = stock
     part.price = float(d_price)
-    part.cost_price = float(d_cost_price) # 🌟 新增
+    part.cost_price = float(d_cost_price)
     part.tax_rate = float(d_tax_rate)
     part.bin_location = bin_location
     part.cross_references = cross_references
@@ -168,12 +183,21 @@ def update_part(
     session.add(part)
     try:
         session.commit()
-    except IntegrityError:
+    except IntegrityError as e:
         session.rollback()
-        raise HTTPException(
-            status_code=409,
-            detail=f"OEM {oem} + 品牌 {brand} 的商品已存在",
-        )
+        error_msg = str(e)
+        print(f"❌ 数据库更新异常: {error_msg}")
+        
+        if "UNIQUE constraint failed" in error_msg or "uq_autopart_oem_brand" in error_msg:
+            raise HTTPException(
+                status_code=409,
+                detail=f"OEM {oem} + 品牌 {brand} 的商品已存在",
+            )
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="更新失败：数据缺失或格式错误。",
+            )
 
     log_action(
         session=session,
@@ -305,10 +329,9 @@ def audit_inventory(
     changed_count = 0
     batch_no = f"AUDIT-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     operator = actor.username
-    audit_logs = [] # 🌟 收集日志，避免在循环内 commit 导致事务断裂
+    audit_logs = []
 
     for item in payload.items:
-        # 🌟 新增：防御性校验，防止非法入参
         if item.actual_stock < 0:
             raise HTTPException(status_code=400, detail=f"商品 ID {item.part_id} 的实盘数量不能为负数")
 
@@ -342,10 +365,8 @@ def audit_inventory(
             f"盘点调整(批次:{batch_no}): {part.name}(OEM:{part.oem}) 原库存:{old_stock} -> 实盘:{item.actual_stock}，原因:{item.reason or '未填'}"
         )
         
-    # 🌟 1. 先原子提交所有库存和流水变更
     session.commit()
     
-    # 🌟 2. 主业务成功后，再统一写审计日志
     for log_detail in audit_logs:
         log_action(
             session=session,
@@ -391,10 +412,8 @@ def mobile_stock_in(
             if not part:
                 raise HTTPException(status_code=404, detail=f"商品 ID {item.part_id} 不存在")
 
-            # 记录原库存供审计使用
             old_stock = part.stock
             
-            # 🌟 原子更新库存（防止并发丢失）
             changed = session.exec(
                 update(AutoPart)
                 .where(AutoPart.id == part.id)
@@ -404,14 +423,13 @@ def mobile_stock_in(
             if changed.rowcount != 1:
                 raise HTTPException(status_code=409, detail=f"商品 {part.name} 更新冲突，请重试")
 
-            # 记录进销存流水
             unit_cost = part.cost_price or 0.0
             total_amount = item.quantity * unit_cost
             
             tx = InventoryTransaction(
                 part_oem=part.oem,
                 part_name=part.name,
-                type="PURCHASE_RECEIVE", # 复用采购入库类型，方便报表统计
+                type="PURCHASE_RECEIVE",
                 quantity=item.quantity,
                 unit_price=unit_cost,
                 total_amount=total_amount,
@@ -425,10 +443,8 @@ def mobile_stock_in(
                 f"移动端扫码入库(批次:{batch_no}): {part.name}(OEM:{part.oem}) 原库存:{old_stock} -> 增加:{item.quantity}"
             )
 
-        # 全部成功，统一提交
         session.commit()
 
-        # 统一写审计日志
         for log_detail in audit_logs:
             log_action(
                 session=session,
@@ -447,8 +463,3 @@ def mobile_stock_in(
         session.rollback()
         print(f"❌ 极速入库发生异常，已回滚: {e}")
         raise HTTPException(status_code=500, detail="入库处理失败，已安全回滚")
-
-
-
-
-        

@@ -82,7 +82,7 @@
         <div>
           <div class="flex items-center gap-2 mb-2">
             <span class="text-xs font-bold text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-0.5 rounded">{{ selectedPart.brand || 'GENERAL' }}</span>
-            <span class="text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ selectedPart.category || '未分类' }}</span>
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ selectedPart.category || isZh ? '未分类' : 'Sin categoría' }}</span>
           </div>
           <h1 class="text-xl font-black text-slate-800 dark:text-slate-100">{{ selectedPart.name }}</h1>
           <p class="text-sm font-mono text-slate-400 mt-1">{{ selectedPart.oem }}</p>
@@ -112,7 +112,7 @@
           <div v-if="productHistory.length === 0" class="text-center py-6 text-xs text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">{{ isZh ? '暂无历史变动' : isEs ? 'Sin cambios históricos' : 'No historical changes' }}</div>
           <div v-for="tx in productHistory" :key="tx.id" class="bg-white dark:bg-slate-900 rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <div>
-              <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ tx.type === 'IN' ? '采购入库' : '销售出库' }}</p>
+              <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ tx.type === 'IN' ? isZh ? '采购入库' : 'Entrada' : isZh ? '销售出库' : 'Salida' }}</p>
               <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ tx.timestamp }}</p>
             </div>
             <p class="text-sm font-black font-mono" :class="tx.type === 'IN' ? 'text-emerald-500' : 'text-amber-500'">

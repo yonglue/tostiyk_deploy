@@ -482,7 +482,7 @@ const downloadStatement = async (supplier) => {
     window.URL.revokeObjectURL(url)
   } catch (e) {
     console.error(e)
-    alert('生成对账单失败，请检查网络或重试')
+    alert(isZh.value ? '生成对账单失败，请检查网络或重试' : 'Error al generar estado de cuenta')
   }
 }
 

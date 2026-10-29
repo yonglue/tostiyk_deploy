@@ -21,8 +21,7 @@ ALL_PERMISSIONS = [
 
 # ══════════════════════════ 库存与商品 ══════════════════════════
 class AutoPart(SQLModel, table=True):
-    # 同一 OEM 允许存在多个品牌，但 (oem, brand) 必须唯一，
-    # 否则按 oem 批量改库存会一次误改所有品牌行。
+    # 同一 OEM 允许存在多个品牌，但 (oem, brand) 必须唯一
     __table_args__ = (
         Index("uq_autopart_oem_brand", "oem", "brand", unique=True),
     )
@@ -39,6 +38,13 @@ class AutoPart(SQLModel, table=True):
     image_url: str = Field(default="")
     cross_references: str = Field(default="")
     tax_rate: float = Field(default=0.16)
+    
+    # 🌟 补全这些字段，否则数据库会报错
+    min_stock: int = Field(default=0)
+    max_stock: int = Field(default=9999)
+    wholesale_price: float = Field(default=0.0)
+    vip2_price: float = Field(default=0.0)
+    vip3_price: float = Field(default=0.0)
 
 
 class InventoryTransaction(SQLModel, table=True):

@@ -1,4 +1,3 @@
-
 import { ref } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useNotifications } from './useNotifications'
@@ -24,7 +23,10 @@ export function usePartActions() {
   }
 
   const handleAddPart = async (tExt, t) => {
-    if (!newPart.value.oem || !newPart.value.name) return
+    if (!newPart.value.oem || !newPart.value.name) {
+      showSuccessModal('❌ 请填写商品编号和名称')
+      return
+    }
     
     const formData = new FormData()
     formData.append('oem', newPart.value.oem || '')
@@ -47,15 +49,16 @@ export function usePartActions() {
         selectedFiles.value = []
         fetchParts()
         fetchDashboardStats()
-        showSuccessModal('✨ ' + tExt.value.toastPartAdded)
+        showSuccessModal('✨ 商品创建成功！')
       } else {
-        const err = await res.json()
-        const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail)
-        showSuccessModal(`❌ ${t.value.common.error}: ${errorMsg}`)
+        // 🌟 防御性修复：直接从后端读取报错，不再依赖 t 变量，防止崩溃
+        const err = await res.json().catch(() => ({}))
+        const errorMsg = err.detail || '该商品编号已存在或数据不合法'
+        showSuccessModal(`❌ 保存失败: ${typeof errorMsg === 'string' ? errorMsg : '数据格式错误'}`)
       }
     } catch (e) {
       console.error(e)
-      showSuccessModal('❌ ' + tExt.value.toastServerError)
+      showSuccessModal('❌ 网络异常或服务器连接失败')
     }
   }
 

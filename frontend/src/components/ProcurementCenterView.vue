@@ -635,7 +635,7 @@ const tExt = computed(() => {
     searchPartDropdown: isZh ? '输入 OEM 或名称搜索...' : isEs ? 'Buscar por OEM o nombre...' : 'Search OEM or name...',
     stockLabel: isZh ? '库存' : isEs ? 'Stock' : 'Stock',
     lastPriceLabel: isZh ? '进价' : isEs ? 'Costo' : 'Cost',
-    noPartFound: isZh ? '未找到匹配商品' : isEs ? 'No se encontraron productos' : 'No parts found',
+    noPartFound: isZh ? isZh ? '未找到匹配商品' : 'Sin coincidencias' : isEs ? 'No se encontraron productos' : 'No parts found',
     qtyLabel: isZh ? '数量' : isEs ? 'Cantidad' : 'Qty',
     priceLabel: isZh ? '进货价' : isEs ? 'Precio Costo' : 'Cost Price',
     poTotalLabel: isZh ? '预估总价' : isEs ? 'Costo Total' : 'Total Est.',

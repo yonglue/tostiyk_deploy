@@ -148,7 +148,7 @@
           <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex gap-3 shrink-0">
             <button @click="clearCart" :disabled="cartItems.length === 0" class="px-4 py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl disabled:opacity-40">清空</button>
             <button @click="submitCart" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-3 bg-accent text-white font-bold rounded-xl disabled:opacity-40 active:scale-[0.98] transition-transform">
-              {{ isSubmitting ? '提交中...' : `提交入库（${totalQty} 件）` }}
+              {{ isSubmitting ? isZh ? '提交中...' : 'Enviando...' : `提交入库（${totalQty} 件）` }}
             </button>
           </div>
         </div>
