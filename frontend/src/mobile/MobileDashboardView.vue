@@ -92,8 +92,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
-              <TrendingUp :size="18" class="text-emerald-600 dark:text-emerald-400" />
-            </div>
+              </div>
             <div>
               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ isZh ? '预估销售利润' : isEs ? 'Beneficio estimado' : 'Estimated Profit' }}</p>
               <p class="text-base font-black text-slate-800 dark:text-slate-100 font-mono tabular-nums mt-0.5">$ {{ formatMoney(stats.totalRetailUSD - stats.totalAssetUSD) }}</p>

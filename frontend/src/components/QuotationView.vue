@@ -86,7 +86,6 @@
           <div class="w-1/4">
             <div v-if="quoteClientName" class="flex items-center justify-between bg-accent/10/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
               <div class="flex items-center gap-2 flex-1 truncate">
-                <User :size="16" class="text-accent shrink-0" />
                 <div class="truncate">
                   <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
                   <div class="text-[10px] text-accent/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
@@ -108,7 +107,6 @@
               class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
-                <Search :size="16" class="text-accent shrink-0" />
                 <span class="truncate">{{ t.pos.selectClient }}</span>
               </div>
             </button>
@@ -161,7 +159,6 @@
               </tr>
               <tr v-if="cartItems.length === 0">
                 <td colspan="6" class="text-center py-20 text-slate-400 text-sm font-bold">
-                  <ShoppingCart :size="24" class="mx-auto mb-2 opacity-50" />
                   {{ tExt.cartEmpty }}
                 </td>
               </tr>
@@ -260,7 +257,7 @@
           <div v-for="c in filteredModalClients" :key="c.id" @click="selectClient(c)" class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:bg-accent/10 hover:border-blue-300 transition-all flex items-center justify-between text-xs shadow-2xs">
             <div>
               <div class="font-black text-slate-900 dark:text-white text-sm flex items-center gap-1.5">
-                <Building2 :size="16" class="text-slate-500" /> {{ c.name }}
+                {{ c.name }}
               </div>
             </div>
             <span class="text-accent font-bold bg-blue-100/50 px-3 py-1.5 rounded-lg">{{ tExt.clientSelectBtn }} ↵</span>

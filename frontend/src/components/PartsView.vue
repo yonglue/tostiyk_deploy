@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span><Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.inventory.title }}
+          <span></span> {{ t.inventory.title }}
         </h2>
         <p class="text-xs text-slate-500 mt-1">{{ isZh ? '管理汽车配件的入库、出库、定价及多图档案。' : isEs ? 'Gestión de entradas, salidas y precios.' : 'Manage stock in/out, pricing, and photos.' }}</p>
       </div>
@@ -57,7 +57,7 @@
           @click="openBatchDeleteModal" 
           class="flex items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
-          <span><Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
+          <span>{{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
         </button>
 
         <button
@@ -446,11 +446,11 @@ const confirmBatchDelete = async () => {
     }
     batchDeleteModalVisible.value = false
     selectedIds.value = []
-    showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.success)
+    showSuccessModal('' + t.value.common.success)
     emit('refresh-data')
   } catch (e) {
     batchDeleteModalVisible.value = false
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
+    showSuccessModal('' + t.value.common.error)
   }
 }
 
@@ -531,11 +531,11 @@ const saveEditedPart = async () => {
       emit('refresh-data')
     } else {
       const err = await res.json()
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${t.value.common.error}: ${err.detail || 'Unknown'}`)
+      showSuccessModal(`${t.value.common.error}: ${err.detail || 'Unknown'}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
+    showSuccessModal('' + t.value.common.error)
   }
 }
 

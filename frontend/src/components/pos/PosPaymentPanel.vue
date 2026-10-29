@@ -44,13 +44,13 @@ const toggleCurrency = () => {
     <div class="flex flex-col h-full w-full">
       <div class="flex-1 overflow-y-auto p-3.5 space-y-3">
         <div class="flex items-center justify-between border-b border-line pb-2">
-          <h3 class="font-bold text-xs text-primary uppercase tracking-wider"><CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.payPanelTitle }}</h3>
+          <h3 class="font-bold text-xs text-primary uppercase tracking-wider">{{ t.pos.payPanelTitle }}</h3>
           <button 
             @click="toggleCurrency" 
             type="button"
             class="bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 px-2.5 py-1 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer shadow-sm flex items-center gap-1"
           >
-            <span><RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.pos.mainCurrency }}: {{ primaryCurrency === 'USD' ? 'USD ($)' : 'Bs.' }}</span>
+            <span>{{ t.pos.mainCurrency }}: {{ primaryCurrency === 'USD' ? 'USD ($)' : 'Bs.' }}</span>
           </button>
         </div>
 
@@ -58,7 +58,7 @@ const toggleCurrency = () => {
           <!-- 1. Card POS [F4] -->
           <div @click="$emit('focus-channel', 'cardPos')" class="bg-surface-raised p-2.5 rounded-xl border border-line transition-all duration-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-accent hover:shadow-md focus-within:ring-2 focus-within:ring-accent focus-within:border-accent">
             <div class="flex-1">
-              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]"><CreditCard :size="16" class="text-muted shrink-0" /> {{ t.pos.payCardPos }} <span class="text-[10px] text-accent font-mono">[F4]</span></span>
+              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]">{{ t.pos.payCardPos }} <span class="text-[10px] text-accent font-mono">[F4]</span></span>
               <span class="text-xs text-success font-mono font-bold block mt-0.5">{{ fmtBsChannel(paymentSplit.cardPos, bcvRate, primaryCurrency) }}</span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -72,7 +72,7 @@ const toggleCurrency = () => {
           <!-- 2. Pago Móvil [F5] -->
           <div @click="$emit('focus-channel', 'pagoMovil')" class="bg-surface-raised p-2.5 rounded-xl border border-line transition-all duration-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-accent hover:shadow-md focus-within:ring-2 focus-within:ring-accent focus-within:border-accent">
             <div class="flex-1">
-              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]"><Zap :size="16" class="text-muted shrink-0" /> {{ t.pos.payPagoMovil }} <span class="text-[10px] text-accent font-mono">[F5]</span></span>
+              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]">{{ t.pos.payPagoMovil }} <span class="text-[10px] text-accent font-mono">[F5]</span></span>
               <span class="text-xs text-success font-mono font-bold block mt-0.5">{{ fmtBsChannel(paymentSplit.pagoMovil, bcvRate, primaryCurrency) }}</span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -86,7 +86,7 @@ const toggleCurrency = () => {
           <!-- 3. Efectivo Bs. [F6] -->
           <div @click="$emit('focus-channel', 'cashBs')" class="bg-surface-raised p-2.5 rounded-xl border border-line transition-all duration-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-accent hover:shadow-md focus-within:ring-2 focus-within:ring-accent focus-within:border-accent">
             <div class="flex-1">
-              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]"><Banknote :size="16" class="text-muted shrink-0" /> {{ t.pos.payCashBs }} <span class="text-[10px] text-accent font-mono">[F6]</span></span>
+              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]">{{ t.pos.payCashBs }} <span class="text-[10px] text-accent font-mono">[F6]</span></span>
               <span class="text-xs text-success font-mono font-bold block mt-0.5">{{ fmtBsChannel(paymentSplit.cashBs, bcvRate, primaryCurrency) }}</span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -100,7 +100,7 @@ const toggleCurrency = () => {
           <!-- 4. Cash USD [F7] -->
           <div @click="$emit('focus-channel', 'cashUsd')" class="bg-surface-raised p-2.5 rounded-xl border border-line transition-all duration-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-accent hover:shadow-md focus-within:ring-2 focus-within:ring-accent focus-within:border-accent">
             <div class="flex-1">
-              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]"><DollarSign :size="16" class="text-muted shrink-0" /> {{ t.pos.payCashUsd }} <span class="text-[10px] text-accent font-mono">[F7]</span></span>
+              <span class="font-bold text-primary flex items-center gap-1.5 text-[13px]">{{ t.pos.payCashUsd }} <span class="text-[10px] text-accent font-mono">[F7]</span></span>
               <span class="text-xs text-success font-mono font-bold block mt-0.5">{{ fmtUsdChannel(paymentSplit.cashUsd, bcvRate, primaryCurrency) }}</span>
             </div>
             <div class="flex items-center gap-1.5">

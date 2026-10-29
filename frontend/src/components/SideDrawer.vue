@@ -57,7 +57,7 @@ defineProps({
   },
   icon: {
     type: String,
-    default: '<ClipboardList :size="18" class="inline-block align-middle mr-1 text-slate-500" />'
+    default: ''
   },
   widthClass: {
     type: String,

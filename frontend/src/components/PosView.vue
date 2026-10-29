@@ -32,7 +32,7 @@
     <!-- 右上角提示条 -->
     <transition name="fade">
       <div v-if="toastMessage" :class="toastType === 'success' ? 'bg-emerald-600/90 border-emerald-400/30' : 'bg-rose-600/90 border-rose-400/30'" class="fixed top-2 right-4 z-[100] text-white px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-sm font-bold animate-bounce">
-        <span>{{ toastType === 'success' ? '<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" />' : '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />' }}</span>
+        <span>{{ toastType === 'success' ? '' : '' }}</span>
         <span>{{ toastMessage }}</span>
       </div>
     </transition>
@@ -96,7 +96,7 @@
               class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
-                <span class="text-blue-500"><Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
+                <span class="text-blue-500"></span>
                 <span class="truncate">{{ t.pos.selectClient }}</span>
               </div>
               <span class="text-slate-400 font-mono text-[10px] hidden sm:inline">Ctrl+F</span>
@@ -207,7 +207,7 @@
     <div v-if="previewModalVisible" @click.self="previewModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
       <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-4xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
         <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span><Receipt :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.ticketTitle }}</span></h3>
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>{{ tExt.ticketTitle }}</span></h3>
           <button @click="previewModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
         <div id="receipt-preview-content" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50">
@@ -432,7 +432,7 @@
       <div v-if="receiptPreviewVisible" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden h-[85vh]">
           <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-white shrink-0">
-            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span><Receipt :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '小票预览 (80mm)' : isEs ? 'Vista previa de recibo (80mm)' : 'Receipt Preview (80mm)' }}</h3>
+            <h3 class="font-bold text-slate-800 flex items-center gap-2"><span></span>{{ isZh ? '小票预览 (80mm)' : isEs ? 'Vista previa de recibo (80mm)' : 'Receipt Preview (80mm)' }}</h3>
             <button @click="receiptPreviewVisible = false" class="text-slate-400 hover:text-rose-500 text-2xl leading-none font-bold">&times;</button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 flex justify-center bg-slate-200/50">
@@ -446,7 +446,7 @@
           <div class="p-4 border-t border-slate-200 flex gap-3 bg-white shrink-0">
             <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">{{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}</button>
             <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-sm transition flex items-center justify-center gap-2">
-              <span><Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
+              <span></span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
           </div>
         </div>
       </div>
@@ -858,9 +858,9 @@ const submitShiftHandover = async (actualCounts, handoverNotes) => {
     }
     const res = await apiFetch('/api/pos/shift-handover', { method: 'POST', body: JSON.stringify(payload) })
     if (!res.ok) throw new Error(tExt.value.toastShiftError)
-    showToast('<Lock :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastShiftSuccess, 'success')
+    showToast('' + tExt.value.toastShiftSuccess, 'success')
     shiftReportModalVisible.value = false
-  } catch (err) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + err.message, 'error') }
+  } catch (err) { showToast('' + err.message, 'error') }
 }
 
 const previewModalVisible = ref(false)
@@ -975,11 +975,11 @@ const saveNewClient = async () => {
     return
   }
   if (newClientForm.value.rif_number && !/^\d{8,9}$/.test(newClientForm.value.rif_number)) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> RIF格式错误', 'error')
+    showToast('RIF格式错误', 'error')
     return
   }
   if (newClientForm.value.phone && newClientForm.value.phone.length !== 10) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 电话格式错误', 'error')
+    showToast('电话格式错误', 'error')
     return
   }
   
@@ -1010,7 +1010,7 @@ const saveNewClient = async () => {
       quoteClientRif.value = data.rif || ''
       clientFilterQuery.value = ''
       clientModalVisible.value = false
-      showToast('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastClientCreated, 'success')
+      showToast('' + tExt.value.toastClientCreated, 'success')
       emit('refresh-clients')
     } else {
       let errorMsg = 'Unknown Error'
@@ -1019,10 +1019,10 @@ const saveNewClient = async () => {
         if (typeof err.detail === 'string') errorMsg = err.detail
         else if (Array.isArray(err.detail)) errorMsg = err.detail[0]?.msg || 'Validation Error'
       } catch (e) {}
-      showToast(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${errorMsg}`, 'error')
+      showToast(`${errorMsg}`, 'error')
     }
   } catch (e) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.common.error, 'error')
+    showToast('' + t.common.error, 'error')
   } finally {
     isSavingClient.value = false
   }
@@ -1120,13 +1120,13 @@ const holdCurrentOrder = async () => {
       showToast('📌 ' + tExt.value.toastHoldSuccess, 'success')
       fetchHeldOrders()
     }
-  } catch (e) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastHoldEmpty, 'error') }
+  } catch (e) { showToast('' + tExt.value.toastHoldEmpty, 'error') }
 }
 
 const openRecallModal = async () => {
   await fetchHeldOrders()
   if (heldOrders.value.length === 0) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.recallEmpty, 'error')
+    showToast('' + tExt.value.recallEmpty, 'error')
     return
   }
   recallModalVisible.value = true
@@ -1141,8 +1141,8 @@ const recallOrder = (order) => {
     quoteClientId.value = matchedClient?.id ?? null
     apiFetch(`/api/held-orders/${order.id}`, { method: 'DELETE' }).then(() => fetchHeldOrders())
     recallModalVisible.value = false
-    showToast('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastRecallSuccess, 'success')
-  } catch (e) { showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastRecallError, 'error') }
+    showToast('' + tExt.value.toastRecallSuccess, 'success')
+  } catch (e) { showToast('' + tExt.value.toastRecallError, 'error') }
 }
 
 const deleteHeldOrder = async (id) => {
@@ -1207,13 +1207,13 @@ const processReturnOrder = async (dbId) => {
     const res = await apiFetch(`/api/pos/orders/${dbId}/refund`, { method: 'POST' })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
-      showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + (err.detail || tExt.value.toastReturnError), 'error')
+      showToast('' + (err.detail || tExt.value.toastReturnError), 'error')
       return
     }
-    showToast('<RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastReturnSuccess, 'success')
+    showToast('' + tExt.value.toastReturnSuccess, 'success')
     fetchCompletedOrders()
   } catch (e) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastReturnError, 'error')
+    showToast('' + tExt.value.toastReturnError, 'error')
   }
 }
 
@@ -1388,7 +1388,7 @@ const confirmAndPrint = async (overridePin = null) => {
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
 
-    showToast(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
+    showToast(`${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
 
     //  立即清空购物车（双保险）：不依赖任何后续异步
     // 历史问题：清空放在最后，pendingQid 的 await / fetchCompletedOrders 挂住就清不掉
@@ -1428,7 +1428,7 @@ const confirmAndPrint = async (overridePin = null) => {
 const handleGlobalKeydown = (e) => {
   const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
   
-  // <Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 搜索聚焦: / 
+  // 搜索聚焦: / 
   if (e.key === '/' && !isInput) {
     e.preventDefault()
     searchInputRef.value?.focus()
@@ -1443,13 +1443,13 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // <CreditCard :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 支付通道切换: F4 - F7
+  // 支付通道切换: F4 - F7
   if (e.key === 'F4') { e.preventDefault(); focusPaymentChannel('cardPos'); return; }
   if (e.key === 'F5') { e.preventDefault(); focusPaymentChannel('pagoMovil'); return; }
   if (e.key === 'F6') { e.preventDefault(); focusPaymentChannel('cashBs'); return; }
   if (e.key === 'F7') { e.preventDefault(); focusPaymentChannel('cashUsd'); return; }
 
-  // <Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
+  // 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
   if (e.key === 'F8') {
     e.preventDefault()
     if (typeof saveHeldOrder === 'function') saveHeldOrder()
@@ -1457,7 +1457,7 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // <Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 结账: F12 或 Ctrl+Enter
+  // 结账: F12 或 Ctrl+Enter
   if (e.key === 'F12' || (e.ctrlKey && e.key === 'Enter')) {
     e.preventDefault()
     if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
@@ -1466,7 +1466,7 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 删除: Delete 删末项，Alt+Delete 清空
+  // 删除: Delete 删末项，Alt+Delete 清空
   if (e.key === 'Delete') {
     if (e.altKey) {
       e.preventDefault()
@@ -1541,7 +1541,7 @@ const autoPrintReceipt = async (receiptData) => {
       total_usd: receiptData.total_usd || 0,
       total_bs: receiptData.total_bs || 0,
       payment: receiptData.payment || {}
-    }).then(() => console.log('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> WebSocket 打印成功'))
+    }).then(() => console.log('WebSocket 打印成功'))
       .catch(err => console.warn('WebSocket 打印失败:', err.message));
       
     return; 
@@ -1619,7 +1619,7 @@ const printFromPreview = () => {
 }
 
 const reprintOrderTicket = (order) => {
-  showToast(`<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastReprint} #${order.orderId}`, 'success')
+  showToast(`${tExt.value.toastReprint} #${order.orderId}`, 'success')
   
   const receiptData = {
     company_name: systemConfig.value?.company_name || 'TOSTIYK (TK)',

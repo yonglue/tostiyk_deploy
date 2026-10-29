@@ -11,10 +11,10 @@
       </div>
       <div class="flex items-center gap-2.5">
         <button @click="exportAuditLogsCsv" class="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-400 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 border border-emerald-200/60 dark:border-emerald-800 shadow-xs cursor-pointer">
-          <span><Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ tExt.exportBtn }}
+          <span></span> {{ tExt.exportBtn }}
         </button>
         <button @click="fetchLogs" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer">
-          <span><RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.common.refresh }}
+          <span></span> {{ t.common.refresh }}
         </button>
       </div>
     </div>
@@ -161,8 +161,7 @@
     <div v-if="warningModalVisible" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
       <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100 dark:border-slate-700 p-6 space-y-5 text-center animate-in fade-in zoom-in-95 duration-150">
         <div class="w-12 h-12 rounded-2xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-sm text-xl font-bold">
-          <AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" />
-        </div>
+          </div>
         <div class="space-y-1">
           <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">{{ tExt.tipTitle }}</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{{ warningMessage }}</p>
@@ -250,18 +249,18 @@ const getActionLabel = (code) => {
   const isEs = currentLang.value === 'es'
 
   const dict = {
-    'CREATE_QUOTATION': { zh: '<ShoppingCart :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 开单挂账成交', es: 'Venta a Crédito', en: 'Credit Sale' },
-    'CLIENT_REPAYMENT': { zh: '<Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 客户还款销账', es: 'Cobro de Deuda', en: 'Client Repayment' },
-    'UPDATE_STOCK': { zh: '<Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 库存进出变动', es: 'Movimiento de Stock', en: 'Stock Movement' },
-    'CREATE_PART': { zh: '<Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 新增配件商品', es: 'Nuevo Repuesto', en: 'Create Part' },
-    'DELETE_PART': { zh: '<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 删除配件商品', es: 'Eliminar Repuesto', en: 'Delete Part' },
-    'CREATE_CLIENT': { zh: '<Users :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 新增客户档案', es: 'Nuevo Cliente', en: 'Create Client' },
-    'DELETE_CLIENT': { zh: '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 删除客户档案', es: 'Eliminar Cliente', en: 'Delete Client' },
-    'UPDATE_CLIENT': { zh: '<Edit3 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 修改客户档案', es: 'Editar Cliente', en: 'Update Client' }, // 补充了这个
+    'CREATE_QUOTATION': { zh: '开单挂账成交', es: 'Venta a Crédito', en: 'Credit Sale' },
+    'CLIENT_REPAYMENT': { zh: '客户还款销账', es: 'Cobro de Deuda', en: 'Client Repayment' },
+    'UPDATE_STOCK': { zh: '库存进出变动', es: 'Movimiento de Stock', en: 'Stock Movement' },
+    'CREATE_PART': { zh: '新增配件商品', es: 'Nuevo Repuesto', en: 'Create Part' },
+    'DELETE_PART': { zh: '删除配件商品', es: 'Eliminar Repuesto', en: 'Delete Part' },
+    'CREATE_CLIENT': { zh: '新增客户档案', es: 'Nuevo Cliente', en: 'Create Client' },
+    'DELETE_CLIENT': { zh: '删除客户档案', es: 'Eliminar Cliente', en: 'Delete Client' },
+    'UPDATE_CLIENT': { zh: '修改客户档案', es: 'Editar Cliente', en: 'Update Client' }, // 补充了这个
     'CREATE_STAFF': { zh: '👨‍💼 新增员工账号', es: 'Nuevo Empleado', en: 'Create Staff' },
     'DELETE_STAFF': { zh: '🚫 删除员工账号', es: 'Eliminar Empleado', en: 'Delete Staff' },
-    'RECEIVE_PURCHASE_ORDER': { zh: '<Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 采购收货入库', es: 'Recepción de Compra', en: 'Receive PO' },
-    'CREATE_PURCHASE_ORDER': { zh: '<FileText :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 创建采购单', es: 'Nueva Orden de Compra', en: 'Create PO' }
+    'RECEIVE_PURCHASE_ORDER': { zh: '采购收货入库', es: 'Recepción de Compra', en: 'Receive PO' },
+    'CREATE_PURCHASE_ORDER': { zh: '创建采购单', es: 'Nueva Orden de Compra', en: 'Create PO' }
   }
 
   if (dict[code]) {

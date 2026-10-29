@@ -111,7 +111,7 @@
               <p class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">{{ bf.filename }}</p>
               <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">{{ bf.created_at }} | {{ bf.size_mb }} MB</p>
             </div>
-            <button @click="downloadBackup(bf.filename)" class="text-xs text-accent dark:text-accent hover:text-blue-800 font-bold px-2 py-1 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">{{ isZh ? '<Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 下载' : isEs ? '<Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Descargar' : '<Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Download' }}</button>
+            <button @click="downloadBackup(bf.filename)" class="text-xs text-accent dark:text-accent hover:text-blue-800 font-bold px-2 py-1 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">{{ isZh ? '下载' : isEs ? 'Descargar' : 'Download' }}</button>
           </div>
           <div v-if="backupList.length === 0" class="text-center py-6 text-slate-400 text-xs">{{ isZh ? '暂无备份记录' : isEs ? 'Sin copias de seguridad' : 'No backups' }}</div>
         </div>
@@ -120,7 +120,7 @@
       <!-- 模块 2：数据导出与备份 -->
       <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-5">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
-          <div class="w-10 h-10 rounded-xl bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent flex items-center justify-center font-bold text-lg shadow-sm"><Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /></div>
+          <div class="w-10 h-10 rounded-xl bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent flex items-center justify-center font-bold text-lg shadow-sm"></div>
           <div>
             <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ tExt.exportTitle }}</h3>
             <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ tExt.exportSub }}</p>
@@ -144,7 +144,7 @@
       <!-- 模块 3：批量导入商品 -->
       <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
-          <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shadow-sm"><Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /></div>
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shadow-sm"></div>
           <div>
             <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ tExt.importTitle }}</h3>
             <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ tExt.importSub }}</p>
@@ -173,7 +173,7 @@
           @click="uploadCsv" 
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
-          <Rocket :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.btnConfirmImport }} ({{ selectedFile.name }})
+          {{ tExt.btnConfirmImport }} ({{ selectedFile.name }})
         </button>
       </div>
 
@@ -194,7 +194,7 @@
         </div>
 
         <button @click="showCleanupModal = true" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-3.5 rounded-xl text-xs font-bold shadow-sm transition-all shrink-0 cursor-pointer mt-auto">
-          <Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.btnCleanup }}
+          {{ tExt.btnCleanup }}
         </button>
       </div>
 
@@ -223,7 +223,7 @@
     <!-- 🌟 导入进度遮罩 -->
     <div v-if="isImporting" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
       <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl w-96 text-center space-y-4">
-        <div class="text-4xl animate-bounce"><Download :size="18" class="inline-block align-middle mr-1 text-slate-500" /></div>
+        <div class="text-4xl animate-bounce"></div>
         <h3 class="font-bold text-lg dark:text-white">{{ isZh ? '正在上传并解析数据' : isEs ? 'Subiendo y analizando datos' : 'Uploading and parsing data' }}</h3>
         <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-4 overflow-hidden">
           <div class="bg-indigo-600 h-4 rounded-full transition-all duration-300" :style="{ width: importProgress + '%' }"></div>
@@ -236,7 +236,7 @@
     <div v-if="showImportReport" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-2xl max-w-lg w-full space-y-4">
         <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
-          <span>{{ importStats.imported > 0 ? '<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" />' : '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />' }}</span>{{ isZh ? '导入结果报告' : isEs ? 'Reporte de importación' : 'Import Report' }}</h3>
+          <span>{{ importStats.imported > 0 ? '' : '' }}</span>{{ isZh ? '导入结果报告' : isEs ? 'Reporte de importación' : 'Import Report' }}</h3>
         
         <div class="grid grid-cols-2 gap-4">
           <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl text-center">
@@ -309,13 +309,13 @@ const triggerBackup = async () => {
   try {
     const res = await apiFetch('/api/backup/trigger', { method: 'POST' })
     if (res.ok) {
-      showToast('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 备份成功！', '🎉')
+      showToast('备份成功！', '🎉')
       await fetchBackups()
     } else {
-      showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 备份失败，请检查数据库', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+      showToast('备份失败，请检查数据库', '')
     }
   } catch (e) {
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络异常', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+    showToast('网络异常', '')
   } finally {
     isBackingUp.value = false
   }
@@ -358,7 +358,7 @@ const tExt = computed(() => {
     
     cleanupTitle: isZh ? '数据库清理与优化' : isEs ? 'Limpieza de Base de Datos' : 'Database Cleanup',
     cleanupSub: isZh ? '执行 VACUUM 释放磁盘空间并优化查询性能' : isEs ? 'Ejecute VACUUM para liberar espacio y optimizar' : 'Run VACUUM to free space and optimize',
-    cleanupWarning: isZh ? '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 注意：定期执行数据库碎片整理可以有效减小文件体积、提高索引查询速度。在执行期间请勿强行关闭后端服务或断电。' : isEs ? '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Nota: La limpieza optimiza el archivo. No cierre el servidor durante el proceso.' : '<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Note: Cleanup optimizes the file. Do not close the server during the process.',
+    cleanupWarning: isZh ? '注意：定期执行数据库碎片整理可以有效减小文件体积、提高索引查询速度。在执行期间请勿强行关闭后端服务或断电。' : isEs ? 'Nota: La limpieza optimiza el archivo. No cierre el servidor durante el proceso.' : 'Note: Cleanup optimizes the file. Do not close the server during the process.',
     btnCleanup: isZh ? '开始清理与优化数据库' : isEs ? 'Iniciar Limpieza' : 'Start Cleanup',
     confirmCleanupTitle: isZh ? '确认执行数据库优化' : isEs ? 'Confirmar Limpieza' : 'Confirm Cleanup',
     confirmCleanupMsg: isZh ? '此操作将释放 SQLite 未使用的磁盘空间并整理内存碎片。在执行期间请勿强行关闭服务或断电。' : isEs ? 'Esta acción liberará espacio en disco. No cierre el servicio.' : 'This action will free disk space. Do not close the service.',
@@ -418,11 +418,11 @@ const saveSettings = async () => {
       showToast(tExt.value.toastSettingsSaved, '🎉')
     } else {
       const errData = await res.json().catch(() => ({}))
-      showToast(`${tExt.value.toastSettingsFail}: ${errData.detail || res.statusText}`, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+      showToast(`${tExt.value.toastSettingsFail}: ${errData.detail || res.statusText}`, '')
     }
   } catch (e) {
     console.error(e)
-    showToast(tExt.value.toastNetworkError, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+    showToast(tExt.value.toastNetworkError, '')
   }
 }
 
@@ -453,13 +453,13 @@ const autoFetchRate = async () => {
       if (ok) {
         showToast(tExt.value.toastFetchSuccess, '🌐')
       } else {
-        showToast(tExt.value.toastRateFail, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+        showToast(tExt.value.toastRateFail, '')
       }
     } else {
-      showToast(tExt.value.toastFetchFail, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+      showToast(tExt.value.toastFetchFail, '')
     }
   } catch (e) {
-    showToast(tExt.value.toastNetworkError, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+    showToast(tExt.value.toastNetworkError, '')
   } finally {
     isFetchingRate.value = false
   }
@@ -473,13 +473,13 @@ const runCleanup = async () => {
     })
     if (res.ok) {
       const data = await res.json()
-      showToast(data.message || tExt.value.toastCleanupSuccess, '<Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+      showToast(data.message || tExt.value.toastCleanupSuccess, '')
     } else {
-      showToast(tExt.value.toastCleanupFail, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+      showToast(tExt.value.toastCleanupFail, '')
     }
   } catch (e) {
     console.error(e)
-    showToast(tExt.value.toastNetworkError, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+    showToast(tExt.value.toastNetworkError, '')
   }
 }
 
@@ -539,16 +539,16 @@ const uploadCsv = () => {
     } else {
       try {
         const data = JSON.parse(xhr.responseText)
-        showToast(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 导入失败: ${data.detail}`, '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+        showToast(`导入失败: ${data.detail}`, '')
       } catch (e) {
-        showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 导入失败: 服务器返回了未知错误', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+        showToast('导入失败: 服务器返回了未知错误', '')
       }
     }
   }
 
   xhr.onerror = () => {
     isImporting.value = false
-    showToast('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络连接异常', '<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" />')
+    showToast('网络连接异常', '')
   }
 
   xhr.send(formData)

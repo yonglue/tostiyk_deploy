@@ -61,8 +61,7 @@
     <div v-if="selectedTx" ref="panelRef" :style="swipeStyle" class="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col">
       <header class="px-5 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
         <button @click="selectedTx = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-          <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
-        </button>
+          </button>
         <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '单据详情' : isEs ? 'Detalles del documento' : 'Document Details' }}</h2>
         <div class="w-8"></div>
       </header>

@@ -192,7 +192,7 @@
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
-            <span class="text-xl"><FileText :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
+            <span class="text-xl"></span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddTxTitle }}</h3>
           </div>
           <button @click="txDialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
@@ -222,7 +222,7 @@
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
-            <span class="text-xl"><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
+            <span class="text-xl"></span>
             <h3 class="font-bold text-slate-800 text-base">{{ tExt.dialogAddPartTitle }}</h3>
           </div>
           <button @click="dialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
@@ -332,8 +332,7 @@
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-6 flex flex-col gap-4">
         <div class="text-center space-y-1.5">
           <div class="w-12 h-12 rounded-xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-sm">
-            <Lock :size="18" class="inline-block align-middle mr-1 text-slate-500" />
-          </div>
+            </div>
           <h3 class="font-bold text-base text-slate-900">{{ tExt.resetPinTitle }}</h3>
           <p class="text-xs text-slate-400">{{ tExt.resetPinDesc }}</p>
         </div>
@@ -701,13 +700,13 @@ let _forbiddenDebounce = null
 const _onForbidden = (e) => {
   clearTimeout(_forbiddenDebounce)
   _forbiddenDebounce = setTimeout(() => {
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + (e.detail?.message || '权限不足'))
+    showSuccessModal('' + (e.detail?.message || '权限不足'))
   }, 100)
 }
 
 const _onGlobalApiError = (e) => {
   const msg = e.detail?.message || '服务器发生未知错误'
-  showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + msg) 
+  showSuccessModal('' + msg) 
 }
 
 onMounted(() => window.addEventListener('api:global-error', _onGlobalApiError))

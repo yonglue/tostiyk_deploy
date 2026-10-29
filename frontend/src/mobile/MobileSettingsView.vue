@@ -55,8 +55,7 @@
           </div>
           <div class="flex items-center gap-1 text-sm font-bold text-slate-500 dark:text-slate-400">
             {{ currentLangLabel }}
-            <ChevronRight :size="16" class="text-slate-300 dark:text-slate-600" />
-          </div>
+            </div>
         </div>
 
       </div>

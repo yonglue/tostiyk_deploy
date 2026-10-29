@@ -22,7 +22,7 @@
                 @click="batchDeleteModalVisible = true" 
                 class="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-3.5 py-2 rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
               >
-                <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchDelete }}
+                {{ tExt.batchDelete }}
               </button>
               <button 
                 @click="selectedIds = []" 
@@ -87,7 +87,7 @@
                   class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-0 w-4 h-4 cursor-pointer" 
                 />
               </td>
-              <td class="py-4 px-6 font-bold text-slate-900 dark:text-slate-200"><Building2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ s.name }}</td>
+              <td class="py-4 px-6 font-bold text-slate-900 dark:text-slate-200">{{ s.name }}</td>
               <td class="py-4 px-6 text-slate-600 dark:text-slate-400">{{ s.contact_person || '-' }}</td>
               <td class="py-4 px-6 font-mono text-slate-600 dark:text-slate-400">{{ s.phone || '-' }}</td>
               <td class="py-4 px-6 font-bold" :class="(s.debt_usd || 0) > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400 dark:text-slate-500'">
@@ -98,7 +98,7 @@
                   <!-- 🌟 增加权限判断 -->
                   <template v-if="hasPermission('procurement:manage')">
                     <button @click="downloadStatement(s)" class="text-xs bg-accent/10 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-accent dark:text-accent border border-blue-200 dark:border-blue-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer mr-2">{{ isZh ? '📄 对账单' : isEs ? '📄 Estado de cuenta' : '📄 Statement' }}</button>
-                    <button v-if="(s.debt_usd || 0) > 0" @click="openDrawerPayMode(s)" class="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer"><Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.payBtn }}</button>
+                    <button v-if="(s.debt_usd || 0) > 0" @click="openDrawerPayMode(s)" class="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.payBtn }}</button>
                     <button @click="openDrawerEditMode(s)" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ t.common.edit }}</button>
                     <button @click="promptDelete(s)" class="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ t.common.delete }}</button>
                   </template>
@@ -152,7 +152,7 @@
               @click="switchToPay" 
               class="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer"
             >
-              <Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.payBtn }}
+              {{ tExt.payBtn }}
             </button>
             <button @click="switchToEdit" class="text-xs bg-accent/10 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-accent dark:text-accent px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
               {{ t.common.edit }}
@@ -423,14 +423,14 @@ const executeSingleDelete = async () => {
   try {
     const res = await apiFetch(`/api/suppliers/${deleteTarget.value.id}`, { method: 'DELETE' })
     if (res.ok) {
-      showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastDeleted)
+      showSuccessModal('' + tExt.value.toastDeleted)
       fetchSuppliers()
       if (currentSupplier.value?.id === deleteTarget.value.id) closeDrawer()
     } else if (res.status !== 403) {
       const err = await res.json()
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${t.common.error}: ${err.detail}`)
+      showSuccessModal(`${t.common.error}: ${err.detail}`)
     }
-  } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNetworkError) }
+  } catch (e) { showSuccessModal('' + tExt.value.toastNetworkError) }
   finally {
     isSingleDeleteVisible.value = false
     deleteTarget.value = null
@@ -491,7 +491,7 @@ const switchToRead = () => { drawerMode.value = 'read' }
 const closeDrawer = () => { detailDrawerVisible.value = false; drawerMode.value = 'read' }
 
 const saveSupplier = async () => {
-  if (!formData.value.name?.trim()) return showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNoName)
+  if (!formData.value.name?.trim()) return showSuccessModal('' + tExt.value.toastNoName)
   isSubmitting.value = true
   const isEdit = !!currentSupplier.value?.id
   try {
@@ -500,16 +500,16 @@ const saveSupplier = async () => {
       body: JSON.stringify(formData.value)
     })
     if (res.ok) {
-      showSuccessModal('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastSaved)
+      showSuccessModal('' + tExt.value.toastSaved)
       const savedData = await res.json()
       currentSupplier.value = isEdit ? { ...currentSupplier.value, ...formData.value } : savedData
       drawerMode.value = 'read'
       fetchSuppliers()
     } else if (res.status !== 403) {
       const err = await res.json()
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastSaveFailed}: ${err.detail}`)
+      showSuccessModal(`${tExt.value.toastSaveFailed}: ${err.detail}`)
     }
-  } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNetworkError) }
+  } catch (e) { showSuccessModal('' + tExt.value.toastNetworkError) }
   finally { isSubmitting.value = false }
 }
 
@@ -525,8 +525,8 @@ const confirmBatchDelete = async () => {
   batchDeleteModalVisible.value = false
   selectedIds.value = []
   fetchSuppliers()
-  if (errs.length > 0) showSuccessModal(`<AlertTriangle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${errs[0]}`)
-  else showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastDeleted)
+  if (errs.length > 0) showSuccessModal(`${errs[0]}`)
+  else showSuccessModal('' + tExt.value.toastDeleted)
 }
 
 const submitPay = async () => {

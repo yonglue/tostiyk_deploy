@@ -6,7 +6,7 @@
     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-700 flex items-center justify-between transition-colors">
       <div>
         <h2 class="font-bold text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span><Users :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.staff.title }}
+          <span></span> {{ t.staff.title }}
         </h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ t.staff.subtitle }}</p>
       </div>
@@ -15,7 +15,7 @@
     <!-- 新增员工表单 -->
     <form @submit.prevent="handleCreateStaff" class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-700 space-y-6 transition-colors">
       <h3 class="font-bold text-sm text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
-        <span><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.staff.addTitle }}
+        <span></span> {{ t.staff.addTitle }}
       </h3>
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -82,10 +82,10 @@
       <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
         <div>
           <p v-if="errorMessage" class="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1">
-            <span><XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ errorMessage }}
+            <span></span> {{ errorMessage }}
           </p>
           <p v-if="successMessage" class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-            <span><CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ successMessage }}
+            <span></span> {{ successMessage }}
           </p>
         </div>
         <button type="submit" class="px-6 py-3 bg-accent hover:bg-accent-hover text-white rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-2">
@@ -125,7 +125,7 @@
               </td>
               <td class="px-6 py-4">
                 <span class="inline-flex items-center gap-1 text-[11px] font-mono font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 px-2.5 py-1 rounded-md">
-                  <span><Key :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ s.permissions ? s.permissions.length : 0 }} {{ t.staff.permissionCount }}
+                  <span></span> {{ s.permissions ? s.permissions.length : 0 }} {{ t.staff.permissionCount }}
                 </span>
               </td>
               <td class="px-6 py-4 font-mono text-slate-500 dark:text-slate-400">{{ s.created_at }}</td>
@@ -369,16 +369,16 @@ const confirmDeleteStaff = async () => {
     const res = await apiFetch(`/api/staff/${targetStaffForDelete.value.id}`, { method: 'DELETE' })
     if (res.ok) {
       deleteStaffModalVisible.value = false
-      showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.success)
+      showSuccessModal('' + t.value.common.success)
       targetStaffForDelete.value = null
       fetchStaff()
     } else {
       const err = await res.json()
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${t.value.common.error}: ${err.detail || 'Unknown'}`)
+      showSuccessModal(`${t.value.common.error}: ${err.detail || 'Unknown'}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
+    showSuccessModal('' + t.value.common.error)
   }
 }
 

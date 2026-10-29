@@ -4,9 +4,9 @@
     <!-- 顶部状态栏 -->
     <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-        <button @click="activeTab = 'orders'; resetOrderPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'orders' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']"><Package :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.tabOrders }}</button>
-        <button @click="activeTab = 'suggestions'; resetSuggestionPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suggestions' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.tabSuggestions }}</button>
-        <button @click="activeTab = 'suppliers'" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suppliers' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']"><Building2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.tabSuppliers }}</button>
+        <button @click="activeTab = 'orders'; resetOrderPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'orders' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabOrders }}</button>
+        <button @click="activeTab = 'suggestions'; resetSuggestionPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suggestions' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabSuggestions }}</button>
+        <button @click="activeTab = 'suppliers'" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suppliers' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabSuppliers }}</button>
       </div>
       
       <div class="flex items-center gap-3">
@@ -40,7 +40,7 @@
             <div v-if="selectedOrderIds.length > 0" class="flex items-center gap-3">
               <span class="text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded-md border border-blue-100">{{ tExt.selected }} {{ selectedOrderIds.length }}</span>
               <button @click="batchCancelOrders" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-3.5 py-2 rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm">
-                <Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchVoid }}
+                {{ tExt.batchVoid }}
               </button>
               <button @click="clearOrderSelection" class="text-xs text-slate-400 hover:text-slate-600 underline cursor-pointer transition-colors">{{ tExt.deselect }}</button>
             </div>
@@ -48,7 +48,7 @@
         </div>
 
         <button @click="fetchOrders" class="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
-          <RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.common.refresh }}
+          {{ t.common.refresh }}
         </button>
       </div>
 
@@ -152,7 +152,7 @@
       <div class="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 bg-white/50 shrink-0">
         <div class="flex items-center gap-6">
           <div>
-            <h3 class="font-bold text-slate-800 text-base"><Zap :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.suggestionTitle }}</h3>
+            <h3 class="font-bold text-slate-800 text-base">{{ tExt.suggestionTitle }}</h3>
             <p class="text-xs text-slate-400 mt-1">{{ tExt.suggestionSubtitle }}</p>
           </div>
           
@@ -160,7 +160,7 @@
             <div v-if="selectedSuggestionIds.length > 0" class="flex items-center gap-3">
               <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-200">{{ tExt.selected }} {{ selectedSuggestionIds.length }}</span>
               <button @click="generatePOFromSuggestions" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl font-bold transition-colors cursor-pointer shadow-sm">
-                <ShoppingCart :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.addToPo }}
+                {{ tExt.addToPo }}
               </button>
               <button @click="selectedSuggestionIds = []" class="text-xs text-slate-400 hover:text-slate-600 underline cursor-pointer transition-colors">{{ tExt.deselect }}</button>
             </div>
@@ -168,7 +168,7 @@
         </div>
 
         <button @click="fetchSuggestions" class="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
-          <RefreshCw :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ t.common.refresh }}
+          {{ t.common.refresh }}
         </button>
       </div>
 
@@ -285,7 +285,7 @@
         <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-3 bg-slate-50/50">
           <!-- 🌟 新增的 A4 打印按钮 -->
           <button @click="printA4PurchaseOrder(currentOrderDetail)" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer flex items-center gap-2">
-            <Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.btnPrintA4 }}
+            {{ tExt.btnPrintA4 }}
           </button>
           <div v-if="currentOrderDetail?.status === 'PENDING'" class="flex items-center gap-3">
             <button @click="cancelOrder(currentOrderDetail.id)" class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnVoid }}</button>
@@ -325,7 +325,7 @@
       </div>
       <template #footer>
         <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
-          <button @click="addSuggestionToCart" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer"><ShoppingCart :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.addToPo }}</button>
+          <button @click="addSuggestionToCart" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer">{{ tExt.addToPo }}</button>
         </div>
       </template>
     </SideDrawer>
@@ -335,7 +335,7 @@
       <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-[90vw] max-w-[1000px] h-[85vh] max-h-[850px] border border-slate-100 dark:border-slate-700 flex flex-col overflow-visible">
         <div class="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-700 p-6 pb-4 shrink-0 bg-slate-50/50 dark:bg-slate-800/50 rounded-t-3xl">
           <div class="flex items-center gap-2">
-            <span class="text-xl"><FileText :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
+            <span class="text-xl"></span>
             <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ tExt.createPoTitle }}</h3>
           </div>
           <button @click="isCreateModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-lg font-bold cursor-pointer">✕</button>
@@ -360,7 +360,7 @@
                     <div v-if="poForm.supplier_name.trim() && filteredSuppliers.length === 0" class="px-4 py-3 text-center text-xs text-slate-400">{{ tExt.noSupplierFound }}</div>
                   </div>
                 </div>
-                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 mb-0.5 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent border border-blue-200 dark:border-blue-800 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.newSupBtn }}</button>
+                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 mb-0.5 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent border border-blue-200 dark:border-blue-800 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0">{{ tExt.newSupBtn }}</button>
               </div>
             </div>
             
@@ -375,7 +375,7 @@
               <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">{{ tExt.poItemsLabel }}</label>
               <div class="flex items-center gap-3">
                 <button @click="$emit('navigate', 'parts')" class="text-xs text-amber-600 hover:text-amber-700 hover:underline cursor-pointer">{{ tExt.findPartLink }}</button>
-                <button @click="addPOLine" class="text-xs bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer"><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.addLineBtn }}</button>
+                <button @click="addPOLine" class="text-xs bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.addLineBtn }}</button>
               </div>
             </div>
             
@@ -422,7 +422,7 @@
                 </div>
                 
                 <div class="col-span-2 text-right font-mono font-bold text-slate-700 dark:text-slate-300 mt-2">$ {{ ((item.quantity || 0) * (item.unit_price || 0)).toFixed(2) }}</div>
-                <div class="col-span-1 text-center mt-2"><button @click="removePOLine(index)" class="text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 p-1.5 rounded-lg transition-colors cursor-pointer"><Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /></button></div>
+                <div class="col-span-1 text-center mt-2"><button @click="removePOLine(index)" class="text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 p-1.5 rounded-lg transition-colors cursor-pointer"></button></div>
               </div>
             </div>
           </div>
@@ -732,7 +732,7 @@ const batchCancelOrders = () => {
     const order = ordersList.value.find(o => o.id === id)
     return order && order.status === 'PENDING'
   })
-  if (pendingIds.length === 0) return showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.emptyCurrent)
+  if (pendingIds.length === 0) return showSuccessModal('' + tExt.value.emptyCurrent)
   showConfirm(
     tExt.value.confirmVoidTitle,
     tExt.value.confirmVoidMsg,
@@ -744,7 +744,7 @@ const batchCancelOrders = () => {
           if (res.ok) successCount++
         } catch (e) {}
       }
-      showSuccessModal(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastBatchVoided} ${successCount}`)
+      showSuccessModal(`${tExt.value.toastBatchVoided} ${successCount}`)
       selectedOrderIds.value = []
       fetchOrders()
     }
@@ -858,7 +858,7 @@ const addSuggestionToCart = () => {
     selectedSuggestionIds.value.push(currentSuggestion.value.oem)
   }
   isSuggestionDrawerVisible.value = false
-  showSuccessModal('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.addToPo)
+  showSuccessModal('' + tExt.value.addToPo)
 }
 
 const parsedDetailItems = computed(() => {
@@ -874,11 +874,11 @@ const cancelOrder = (id) => {
       try {
         const res = await apiFetch(`/api/purchase-orders/${id}/cancel`, { method: 'PUT' })
         if (res.ok) {
-          showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastOrderVoided)
+          showSuccessModal('' + tExt.value.toastOrderVoided)
           fetchOrders()
           if (currentOrderDetail.value?.id === id) isOrderDrawerVisible.value = false
         }
-      } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Error') }
+      } catch (e) { showSuccessModal('Error') }
     }
   )
 }
@@ -966,13 +966,13 @@ const receiveOrder = (id) => {
       try {
         const res = await apiFetch(`/api/purchase-orders/${id}/receive`, { method: 'POST' })
         if (res.ok) {
-          showSuccessModal('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastReceiveSuccess)
+          showSuccessModal('' + tExt.value.toastReceiveSuccess)
           fetchOrders()
           await fetchParts()
           await fetchSuppliers()
           if (currentOrderDetail.value?.id === id) isOrderDrawerVisible.value = false
         }
-      } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Error') }
+      } catch (e) { showSuccessModal('Error') }
     }
   )
 }
@@ -1036,24 +1036,24 @@ const openSupplierModal = () => {
 }
 
 const saveNewSupplier = async () => {
-  if (!newSupplierForm.value.name.trim()) return showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNoName)
+  if (!newSupplierForm.value.name.trim()) return showSuccessModal('' + tExt.value.toastNoName)
   isSavingSupplier.value = true
   try {
     const res = await apiFetch('/api/suppliers', { method: 'POST', body: JSON.stringify(newSupplierForm.value) })
     if (res.ok) {
       const data = await res.json()
-      showSuccessModal('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastSupCreated)
+      showSuccessModal('' + tExt.value.toastSupCreated)
       await fetchSuppliers()
       poForm.value.supplier_name = data.name
       isSupplierModalVisible.value = false
     }
-  } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Error') } finally { isSavingSupplier.value = false }
+  } catch (e) { showSuccessModal('Error') } finally { isSavingSupplier.value = false }
 }
 
 const submitPO = async () => {
   const finalSupplierName = poForm.value.supplier_name.trim() || 'Default'
   const validItems = poForm.value.items.filter(i => i.oem && i.quantity > 0)
-  if (validItems.length === 0) return showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Error')
+  if (validItems.length === 0) return showSuccessModal('Error')
 
   isSubmittingPO.value = true
   try {
@@ -1064,13 +1064,13 @@ const submitPO = async () => {
     }
     const res = await apiFetch('/api/purchase-orders', { method: 'POST', body: JSON.stringify(payload) })
     if (res.ok) {
-      showSuccessModal('<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastPoCreated)
+      showSuccessModal('' + tExt.value.toastPoCreated)
       isCreateModalVisible.value = false
       fetchOrders()
       fetchSuppliers()
       fetchSuggestions()
     }
-  } catch (e) { showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Error') } finally { isSubmittingPO.value = false }
+  } catch (e) { showSuccessModal('Error') } finally { isSubmittingPO.value = false }
 }
 
 // 🌟 新增：A4 打印控制

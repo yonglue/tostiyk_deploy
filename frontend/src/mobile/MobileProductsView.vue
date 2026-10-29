@@ -4,7 +4,6 @@
     <div class="sticky top-0 z-10 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-xl px-5 pt-6 pb-3 border-b border-slate-100 dark:border-slate-800/60">
       <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">{{ isZh ? '库存产品' : isEs ? 'Productos en stock' : 'Products in Stock' }}</h1>
       <div class="relative">
-        <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
         <input v-model="searchQuery" type="text" :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-accent dark:text-white transition-colors" />
       </div>
     </div>
@@ -69,8 +68,7 @@
     <div v-if="selectedPart" ref="panelRef" :style="swipeStyle" class="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col">
       <header class="px-5 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
         <button @click="selectedPart = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-          <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
-        </button>
+          </button>
         <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '产品详情' : isEs ? 'Detalles del producto' : 'Product Details' }}</h2>
         <div class="w-8"></div>
       </header>
@@ -162,7 +160,7 @@ const handleContinuousSubmit = (payload) => {
   
   // 计算总数并弹出提示
   const total = payload.reduce((s, p) => s + p.quantity, 0)
-  showToast(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 成功入库 ${total} 件商品`)
+  showToast(`成功入库 ${total} 件商品`)
 }
 
 const refreshParts = async () => {

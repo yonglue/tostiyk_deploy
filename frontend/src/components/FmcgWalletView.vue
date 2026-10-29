@@ -4,7 +4,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span><Wallet :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ title }}
+          <span></span> {{ title }}
         </h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ subtitle }}</p>
       </div>
@@ -86,7 +86,7 @@
       <div class="lg:col-span-2">
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-xs space-y-4">
           <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-            <span><Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ creditTitle }}
+            <span></span> {{ creditTitle }}
           </h3>
           <div class="space-y-3">
             <div>

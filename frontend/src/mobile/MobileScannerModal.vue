@@ -35,8 +35,7 @@
 
       <div v-if="hasCameraError" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white p-6 text-center z-10">
         <div class="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mb-4">
-          <XCircle :size="32" class="text-rose-500" />
-        </div>
+          </div>
         <h3 class="font-bold text-lg mb-2">无法开启摄像头</h3>
         <p class="text-xs text-slate-400 mb-6">当前环境不支持（如非 HTTPS 或权限被拒），请使用下方的手动输入。</p>
         <button @click="cameraInput?.click()" class="px-6 py-3 bg-accent rounded-xl font-bold text-sm">拍照扫码</button>
@@ -110,8 +109,7 @@
     <Transition name="fade">
       <div v-if="showSuccessOverlay" class="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center">
         <div class="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mb-6 animate-bounce shadow-sm">
-          <Check :size="48" class="text-white" />
-        </div>
+          </div>
         <h2 class="text-2xl font-black text-white mb-2">入库成功</h2>
         <p class="text-emerald-400 font-bold">数据已安全同步</p>
       </div>
@@ -124,8 +122,7 @@
           <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
             <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">入库清单（{{ cartItems.length }} 项 / {{ totalQty }} 件）</h3>
             <button @click="cartOpen = false" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-              <X :size="20" class="text-slate-400" />
-            </button>
+              </button>
           </div>
 
           <div class="flex-1 overflow-y-auto p-4 space-y-2">

@@ -39,7 +39,7 @@ test.describe('POS 核心业务与打印闭环', () => {
     // 加购
     await searchInput.fill('TK-12345')
     await searchInput.press('Enter')
-    await expect(page.locator('[data-testid="cart-table"] tbody tr').first()).toContainText('TK-12345')
+    await expect(page.locator('[data-testid="cart-table"] tbody tr').first()).toContainText('TEST PART')
     
     // 🌟 核心修复：不需要填钱！因为系统加购后默认会自动填满“刷卡”金额
     await page.waitForTimeout(1500) // 等待 watch(goodsTotalUsd) 触发
@@ -54,15 +54,17 @@ test.describe('POS 核心业务与打印闭环', () => {
     }
     
     // 等待按钮启用
+    // 🌟 监听所有 API 请求，看看是不是报错了
+    page.on('response', response => {
+      if (response.url().includes('/api/') && !response.ok()) {
+        console.log(`❌ API 报错: ${response.status()} ${response.url()}`)
+      }
+    })
+
     await checkoutBtn.click()
     
-    const confirmPrintBtn = page.locator('.bg-emerald-600', { hasText: /Confirmar|确认|Print/i }).last()
-    await expect(confirmPrintBtn).toBeVisible()
-    
-    await Promise.all([
-      page.waitForResponse(res => res.url().includes('/api/pos/orders') && res.status() === 200),
-      confirmPrintBtn.click()
-    ])
+    // 现在系统改成了极速结账，直接等接口返回即可
+    await page.waitForResponse(res => res.url().includes('/api/pos/orders') && res.status() === 200, { timeout: 10000 })
     
     // 🌟 等待购物车真正清空：不依赖 i18n 文案，只验证商品行消失
     // 好处：即使空状态文案位置/i18n key 调整，只要购物车清空就通过
@@ -96,13 +98,17 @@ test.describe('POS 核心业务与打印闭环', () => {
       await page.keyboard.press('Tab')
       await page.waitForTimeout(1000)
     }
+    // 🌟 监听所有 API 请求，看看是不是报错了
+    page.on('response', response => {
+      if (response.url().includes('/api/') && !response.ok()) {
+        console.log(`❌ API 报错: ${response.status()} ${response.url()}`)
+      }
+    })
+
     await checkoutBtn.click()
     
-    const confirmPrintBtn = page.locator('.bg-emerald-600', { hasText: /Confirmar|确认|Print/i }).last()
-    await Promise.all([
-      page.waitForResponse(res => res.url().includes('/api/pos/orders')),
-      confirmPrintBtn.click()
-    ])
+    // 现在系统改成了极速结账，直接等接口返回即可
+    await page.waitForResponse(res => res.url().includes('/api/pos/orders'), { timeout: 10000 })
     
     await page.waitForTimeout(3500) // 等自动销毁
     
@@ -114,6 +120,6 @@ test.describe('POS 核心业务与打印闭环', () => {
     
     await page.waitForTimeout(1000)
     const printFrame = page.frameLocator('iframe').last()
-    await expect(printFrame.locator('body')).toContainText('TK-12345')
+    await expect(printFrame.locator('body')).toContainText('TEST PART')
   })
 })

@@ -22,8 +22,7 @@
           :title="tExt.zoomIn" 
           class="hover:text-blue-400 transition-colors cursor-pointer px-1.5 py-0.5 font-bold text-sm"
         >
-          <Plus :size="18" class="inline-block align-middle mr-1 text-slate-500" />
-        </button>
+          </button>
         <button 
           @click="resetZoom" 
           :title="tExt.reset" 

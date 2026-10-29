@@ -8,10 +8,9 @@
           <p class="text-[11px] font-bold text-rose-100 uppercase tracking-wider">{{ isZh ? '客户总应收欠款' : isEs ? 'Total por cobrar' : 'Total Receivables' }}</p>
           <h2 class="text-2xl font-black text-white font-mono tabular-nums mt-1">$ {{ formatMoney(totalDebt) }}</h2>
         </div>
-        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><HandCoins :size="20" class="text-white" /></div>
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"></div>
       </div>
       <div class="relative">
-        <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
         <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索客户名称、店铺...' : isEs ? 'Buscar cliente o tienda...' : 'Search client or store...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-accent dark:text-white transition-colors" />
       </div>
     </div>
@@ -35,8 +34,7 @@
               <span class="text-sm font-black font-mono tabular-nums" :class="client.debt > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'">$ {{ formatMoney(client.debt) }}</span>
             </div>
           </div>
-          <ChevronRight :size="20" class="text-slate-300" />
-        </div>
+          </div>
       </div>
     </div>
 
@@ -44,8 +42,7 @@
     <div v-if="selectedClient" ref="panelRef" :style="swipeStyle" class="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col">
       <header class="px-5 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
         <button @click="selectedClient = null" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-          <ArrowLeft :size="20" class="text-slate-600 dark:text-slate-400" />
-        </button>
+          </button>
         <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ isZh ? '客户详情' : isEs ? 'Detalles del cliente' : 'Client Details' }}</h2>
         <div class="w-8"></div>
       </header>
@@ -193,13 +190,13 @@ const handleRepay = async (amount) => {
       if (clientInList) clientInList.debt = data.remaining_debt
       
       showPayModal.value = false
-      showSuccessModal(`<CheckCircle2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 收款成功！剩余欠款: $${data.remaining_debt.toFixed(2)}`)
+      showSuccessModal(`收款成功！剩余欠款: $${data.remaining_debt.toFixed(2)}`)
     } else {
       const err = await res.json()
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 收款失败: ${err.detail || '未知错误'}`)
+      showSuccessModal(`收款失败: ${err.detail || '未知错误'}`)
     }
   } catch (e) {
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络请求失败')
+    showSuccessModal('网络请求失败')
   } finally {
     isSubmittingPay.value = false
   }

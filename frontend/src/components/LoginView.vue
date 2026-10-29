@@ -33,7 +33,7 @@
 
         <div v-else-if="needsSetup">
           <div class="mb-7">
-            <h2 class="text-2xl font-black text-accent dark:text-accent">{{ isZh ? '<Rocket :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 欢迎使用' : isEs ? '<Rocket :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Bienvenido' : '<Rocket :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Welcome' }}</h2>
+            <h2 class="text-2xl font-black text-accent dark:text-accent">{{ isZh ? '欢迎使用' : isEs ? 'Bienvenido' : 'Welcome' }}</h2>
             <p class="text-xs text-slate-500 mt-1.5">{{ isZh ? '这是系统的首次启动，请设置您的超级管理员账号。' : isEs ? 'Primer inicio. Configure su super administrador.' : 'First start. Setup super admin.' }}</p>
           </div>
           <form @submit.prevent="handleSetupWrapper" class="space-y-5">

@@ -80,7 +80,7 @@
 
         <!-- 空状态 -->
         <div v-if="searchQuery && filteredParts.length === 0 && filteredClients.length === 0" class="text-center py-12 text-slate-400 text-sm">
-          <span class="text-3xl block mb-2"><Search :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span>
+          <span class="text-3xl block mb-2"></span>
           没有找到与 "{{ searchQuery }}" 相关的商品或客户
         </div>
         <div v-else-if="!searchQuery" class="text-center py-12 text-slate-400 text-sm">

@@ -9,7 +9,7 @@ const isEs = computed(() => currentLang.value === 'es')
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <span><Users :size="18" class="inline-block align-middle mr-1 text-slate-500" /></span> {{ t.clients.title }}
+          <span></span> {{ t.clients.title }}
         </h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '管理客户资料、赊账额度以及回款核销。' : isEs ? 'Gestión de clientes y créditos.' : 'Manage clients and credits.' }}</p>
       </div>
@@ -37,7 +37,7 @@ const isEs = computed(() => currentLang.value === 'es')
           @click="batchDeleteModalVisible = true" 
           class="flex items-center gap-2 bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
-          <span><Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> {{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
+          <span>{{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
         </button>
 
         <button
@@ -423,7 +423,7 @@ const isEs = computed(() => currentLang.value === 'es')
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">客户：{{ currentClient?.store_name || currentClient?.name }} | RIF: {{ currentClient?.rif_or_cedula || (isZh ? '无' : isEs ? 'Ninguno' : 'None') }}</p>
           </div>
           <div class="flex items-center gap-2">
-            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">{{ isZh ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 打印对账单' : isEs ? '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Imprimir estado' : '<Printer :size="18" class="inline-block align-middle mr-1 text-slate-500" /> Print Statement' }}</button>
+            <button @click="printStatement" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md transition-colors cursor-pointer">{{ isZh ? '打印对账单' : isEs ? 'Imprimir estado' : 'Print Statement' }}</button>
             <button @click="statementModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg font-bold p-1 cursor-pointer">✕</button>
           </div>
         </div>
@@ -645,11 +645,11 @@ const confirmBatchDelete = async () => {
     }
     batchDeleteModalVisible.value = false
     selectedIds.value = []
-    showSuccessModal('<Trash2 :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.success)
+    showSuccessModal('' + t.value.common.success)
     emit('refresh-data')
   } catch (e) {
     batchDeleteModalVisible.value = false
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + t.value.common.error)
+    showSuccessModal('' + t.value.common.error)
   }
 }
 
@@ -703,7 +703,7 @@ const switchToEdit = () => {
 // 🌟 保存编辑
 const saveClientEdit = async () => {
   if (!editForm.value.name) {
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 客户名称不能为空')
+    showSuccessModal('客户名称不能为空')
     return
   }
   
@@ -723,11 +723,11 @@ const saveClientEdit = async () => {
     } else {
       const err = await res.json().catch(() => ({}))
       const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail || '未知错误')
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 修改失败: ${errorMsg}`)
+      showSuccessModal(`修改失败: ${errorMsg}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 网络连接异常')
+    showSuccessModal('网络连接异常')
   } finally {
     isSavingEdit.value = false
   }
@@ -792,11 +792,11 @@ const submitRepayment = async () => {
       emit('refresh-data')
     } else {
       const err = await res.json().catch(() => ({}))
-      showSuccessModal(`<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ${tExt.value.toastRepayFailed}: ${err.detail || t.common.error}`)
+      showSuccessModal(`${tExt.value.toastRepayFailed}: ${err.detail || t.common.error}`)
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> ' + tExt.value.toastNetworkError)
+    showSuccessModal('' + tExt.value.toastNetworkError)
   } finally {
     isRepaying.value = false
   }
@@ -823,7 +823,7 @@ const openStatementModal = async () => {
     }
   } catch (e) {
     console.error(e)
-    showSuccessModal('<XCircle :size="18" class="inline-block align-middle mr-1 text-slate-500" /> 获取历史订单失败')
+    showSuccessModal('获取历史订单失败')
   }
 }
 
