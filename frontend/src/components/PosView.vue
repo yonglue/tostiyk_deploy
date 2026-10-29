@@ -46,6 +46,7 @@
       @open-shift="openShiftReportModal"
       @open-help="helpModalVisible = true"
       @confirm-exit="confirmExitPos"
+      @goToQuote="$emit('go-to-quote')"
     />
 
     <!-- 中间主工作区 -->
@@ -666,7 +667,7 @@ const props = defineProps({
   currentUser: Object
 })
 
-const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients'])
+const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients', 'go-to-quote'])
 
 const deskSearchQuery = ref('')
 const quoteClientName = ref('')
@@ -1321,6 +1322,25 @@ const confirmExitPos = () => { exitConfirmVisible.value = true }
 const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos') }
 
 const isFiadoMode = ref(false)
+
+// 🌟 补上这个函数，让结账事件有对应的处理逻辑
+const handleDirectCheckout = async () => {
+  if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
+    isFiadoMode.value = false
+    isProcessingCheckout.value = true
+    if (!pendingRequestId.value) pendingRequestId.value = makeRequestId()
+    
+    const delay = new Promise(resolve => setTimeout(resolve, 1400))
+    try {
+      await confirmAndPrint()
+    } catch (error) {
+      console.error("Checkout error:", error)
+    } finally {
+      await delay
+      isProcessingCheckout.value = false
+    }
+  }
+}
 
 const handleFiadoCheckout = async () => {
   if (!quoteClientId.value) return
