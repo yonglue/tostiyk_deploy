@@ -29,8 +29,8 @@
   --color-line-strong:    #cbd5e1; /* 强调边框 */
 
   /* 品牌色（按钮、高亮、聚焦） */
-  --color-accent:         #1e40af; /* 品牌主色（现在的蓝） */
-  --color-accent-hover:   #1e3a8a; /* 品牌主色悬浮态 */
+  --color-accent:         #1d4ed8; /* Tailwind blue-700 */
+  --color-accent-hover:   #1e40af; /* 悬浮态稍微深一点，用原来的 blue-800 */
 
   /* 状态色 */
   --color-danger:         #dc2626; /* 错误/危险（红） */
@@ -305,3 +305,39 @@ html.view-transition-active, html.view-transition-active body { overflow: hidden
 .animate-progress {
   animation: progress-fill 1.4s steps(10, end) forwards !important;
 }
+
+
+/* ==========================================================================
+   5. 🛠️ 暗黑模式终极修复：文字对比度与发光
+   ========================================================================== */
+
+/* 1. 拯救暗黑模式下的灰色文字（表头、副标题等） */
+.dark .text-slate-500, 
+.dark .text-slate-400,
+.dark .text-slate-300 {
+  color: #94a3b8 !important; /* 提亮到 slate-400，清晰可见 */
+}
+.dark .text-slate-600,
+.dark .text-slate-700 {
+  color: #cbd5e1 !important; /* 提亮到 slate-300 */
+}
+
+/* 2. 干掉输入框的“刺眼发光”光晕 */
+/* 只保留边框变色，去掉 box-shadow 发光 */
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: none !important; /* 干掉原有的强光晕 */
+}
+/* 但保留一点点极其微弱的底光，给暗黑模式增加质感 */
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+}
+
+/* 3. 干掉全局某些卡片在暗黑模式下过亮的问题 */
+.dark .bg-slate-100\/50, 
+.dark .bg-slate-50\/80,
+.dark .bg-white\/80 {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+

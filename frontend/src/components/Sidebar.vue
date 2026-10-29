@@ -70,7 +70,7 @@
               'w-full flex items-center rounded-md font-bold text-sm tracking-wide transition-all duration-200 cursor-pointer relative group',
               isCollapsed ? 'justify-center px-0 py-2.5 my-1' : 'px-2.5 py-2 my-0.5',
               activeTab === item.key 
-                ? 'bg-accent text-white shadow-sm dark:bg-accent/100/20 dark:text-accent' 
+                ? 'bg-accent text-white shadow-sm dark:bg-accent dark:text-white' 
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
             ]"
           >

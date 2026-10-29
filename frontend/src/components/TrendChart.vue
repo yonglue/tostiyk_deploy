@@ -1,67 +1,114 @@
-<template>
-  <div class="bg-white dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-4 border border-slate-200/50 dark:border-slate-700/50 shadow-sm">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-        <span class="w-1.5 h-3.5 bg-accent/100 rounded-full inline-block"></span>
-        {{ isZh ? '近 7 天销售趋势' : isEs ? 'Tendencia de ventas 7 días' : '7-day Sales Trend' }}
-      </h3>
-      <span class="text-[10px] bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent px-2 py-0.5 rounded-md font-bold">USD</span>
-    </div>
-    
-    <div v-if="isLoading" class="h-32 flex items-center justify-center text-xs text-slate-400">
-      {{ isZh ? '加载中...' : isEs ? 'Cargando...' : 'Loading...' }}
-    </div>
-    
-    <div v-else class="flex items-end justify-between h-32 gap-2 relative mt-2">
-      <!-- 背景辅助线 -->
-      <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
-        <div class="border-t border-slate-100 dark:border-slate-700/50 w-full"></div>
-        <div class="border-t border-slate-100 dark:border-slate-700/50 w-full"></div>
-        <div class="border-t border-slate-100 dark:border-slate-700/50 w-full"></div>
-      </div>
-      
-      <!-- 柱状图 -->
-      <div v-for="d in data" :key="d.date" class="flex-1 flex flex-col items-center justify-end h-full relative group">
-        <div class="opacity-0 group-hover:opacity-100 absolute -top-6 bg-slate-800 text-white text-[10px] py-1 px-2 rounded pointer-events-none transition-opacity whitespace-nowrap z-10">
-          $ {{ d.amount.toFixed(2) }}
-        </div>
-        <div 
-          class="w-full max-w-[24px] bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t-sm transition-all duration-500 ease-out" 
-          :style="{ height: `${getBarHeight(d.amount)}%` }"
-        ></div>
-        <div class="text-[9px] text-slate-400 mt-2 font-mono">{{ d.display_date }}</div>
-      </div>
-    </div>
-  </div>
-</template>
-
+<!-- src/components/TrendChart.vue -->
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { apiFetch } from '../utils/api'
-import { useI18n } from '../composables/useI18n'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import * as echarts from 'echarts'
 
-const { currentLang } = useI18n()
-const isZh = computed(() => currentLang.value === 'zh')
-const isEs = computed(() => currentLang.value === 'es')
-
-const data = ref([])
-const isLoading = ref(true)
-
-onMounted(async () => {
-  try {
-    const res = await apiFetch('/api/reports/trend-7days')
-    if (res.ok) data.value = await res.json()
-  } catch (e) {
-    console.error('获取趋势失败', e)
-  } finally {
-    isLoading.value = false
-  }
+const props = defineProps({
+  dates: { type: Array, default: () => [] },
+  amounts: { type: Array, default: () => [] }
 })
 
-const getBarHeight = (amount) => {
-  if (!data.value || data.value.length === 0) return 0
-  const max = Math.max(...data.value.map(d => d.amount), 1) 
-  const h = (amount / max) * 100
-  return Math.max(h, 5) // 最小高度 5%
+const chartRef = ref(null)
+let chartInstance = null
+let observer = null
+
+const getCssVar = (name) => {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 }
+
+const renderChart = () => {
+  if (!chartRef.value) return
+  if (!chartInstance) {
+    chartInstance = echarts.init(chartRef.value)
+  }
+
+  const accentColor = getCssVar('--color-accent') || '#1e40af'
+  const textColor = getCssVar('--color-secondary') || '#475569'
+  const lineColor = getCssVar('--color-line') || '#e2e8f0'
+  const isDark = document.documentElement.classList.contains('dark')
+
+  const option = {
+    grid: { top: 15, left: 10, right: 20, bottom: 5, containLabel: true },
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+      borderColor: lineColor,
+      borderWidth: 1,
+      textStyle: { color: isDark ? '#f1f5f9' : '#0f172a', fontSize: 12, fontWeight: 'bold' },
+      padding: [6, 10],
+      extraCssText: 'box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px;',
+      axisPointer: { type: 'line', lineStyle: { color: accentColor, type: 'dashed', width: 1 } }
+    },
+    xAxis: {
+      type: 'category',
+      data: props.dates,
+      boundaryGap: false,
+      axisLine: { lineStyle: { color: lineColor } },
+      axisLabel: { color: textColor, fontSize: 11, margin: 12 },
+      axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: { lineStyle: { color: lineColor, type: 'dashed', opacity: 0.5 } },
+      axisLabel: { color: textColor, fontSize: 11, formatter: '${value}' }
+    },
+    series: [
+      {
+        name: '销售额',
+        type: 'line',
+        smooth: 0.4, // 平滑度，0.4 刚刚好不夸张
+        showSymbol: false, // 默认不显示圆点，鼠标悬浮才显示
+        symbol: 'circle',
+        symbolSize: 8,
+        itemStyle: { 
+          color: accentColor, 
+          borderWidth: 2, 
+          borderColor: isDark ? '#1e293b' : '#ffffff' 
+        },
+        lineStyle: { 
+          width: 3, /* 从 2 改成 3，在深色背景下更凸显 */
+          color: accentColor
+        },
+        areaStyle: {
+          // 🌟 极淡的渐变阴影，只留一点点悬浮感
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: accentColor + (isDark ? '15' : '15') }, /* 暗色模式下也降到 15% */
+            { offset: 1, color: accentColor + '00' }
+          ])
+        },
+        data: props.amounts
+      }
+    ]
+  }
+
+  chartInstance.setOption(option, { notMerge: true })
+}
+
+onMounted(() => {
+  renderChart()
+  window.addEventListener('resize', () => chartInstance?.resize())
+  observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') renderChart()
+    })
+  })
+  observer.observe(document.documentElement, { attributes: true })
+})
+
+watch(() => [props.dates, props.amounts], () => {
+  renderChart()
+}, { deep: true })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', () => chartInstance?.resize())
+  if (observer) observer.disconnect()
+  if (chartInstance) {
+    chartInstance.dispose()
+    chartInstance = null
+  }
+})
 </script>
+
+<template>
+  <div ref="chartRef" class="w-full h-full min-h-[250px]"></div>
+</template>
