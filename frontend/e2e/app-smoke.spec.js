@@ -34,7 +34,7 @@ test('admin 登录后进入主界面', async ({ page }) => {
 // 🌟 侧边栏激活态 class：跨版本兼容
 // 老版本 bg-blue-600（实心蓝），新版本 bg-blue-50/80（浅蓝）+ text-blue-700（深蓝文字）
 // 用宽松正则同时兼容，避免主题升级反复修测试
-const ACTIVE_CLASS_RE = /bg-blue-(?:600|50\/80)/
+const ACTIVE_CLASS_RE = /(?:bg-blue-(?:600|50\/80)|bg-accent)/
 
 test('侧边栏能切换 tab 且激活状态正确', async ({ page }) => {
   await login(page)

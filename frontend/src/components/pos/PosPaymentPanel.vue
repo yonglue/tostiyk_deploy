@@ -106,7 +106,7 @@ const toggleCurrency = () => {
             <div class="flex items-center gap-1.5">
               <span class="text-muted font-bold text-xs">$</span>
               <div class="w-32 bg-surface border border-line rounded-lg px-3 py-1.5 shadow-inner focus-within:ring-2 focus-within:ring-success">
-                <input ref="cashUsdInputRef" v-model.number="paymentSplit.cashUsd" type="number" step="0.5" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-primary outline-none text-xl no-spinner" />
+                <input ref="cashUsdInputRef" data-testid="pay-cash-usd" v-model.number="paymentSplit.cashUsd" type="number" step="0.5" placeholder="0" class="w-full bg-transparent text-right font-mono font-black text-primary outline-none text-xl no-spinner" />
               </div>
             </div>
           </div>

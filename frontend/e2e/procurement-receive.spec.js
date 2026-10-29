@@ -51,10 +51,10 @@ test.describe('采购收货 B2', () => {
     await expect(poRow).toBeVisible({ timeout: 10000 })
 
     // 4. 点击收货
-    await poRow.locator('button.bg-blue-600').click()
+    await poRow.locator('button.bg-accent').click()
     
     // 5. 点击确认弹窗的红色按钮 (bg-rose-600 / bg-rose-500)
-    const confirmBtn = page.locator('.fixed button.bg-rose-600, .fixed button.bg-rose-500, .fixed button.bg-red-600').last()
+    const confirmBtn = page.locator('.fixed button.bg-danger, .fixed button.bg-rose-600, .fixed button.bg-rose-500, .fixed button.bg-red-600').last()
     await expect(confirmBtn).toBeVisible({ timeout: 3000 })
     await confirmBtn.click()
 

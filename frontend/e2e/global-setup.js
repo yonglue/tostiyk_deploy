@@ -46,7 +46,7 @@ if (!ADMIN_PASS) throw new Error('❌ 缺少环境变量 PW_ADMIN_PASS，拒绝�
   if (!token) throw new Error('[GlobalSetup] 登录成功但没拿到 token')
   console.log('✅ [GlobalSetup] admin 登录成功')
 
-  // 3. 商品 TK-12345 用 import_parts upsert（可重入，stock 强制回 999）
+/*  // 3. 商品 TK-12345 用 import_parts upsert（可重入，stock 强制回 999）
   const csv = [
     'oem,name,brand,category,stock,price,cost_price,bin_location,cross_references',
     'TK-12345,TEST PART,GENERAL,未分类,999,77.00,50.00,A-1,'
@@ -62,7 +62,7 @@ if (!ADMIN_PASS) throw new Error('❌ 缺少环境变量 PW_ADMIN_PASS，拒绝�
     const text = await partRes.text()
     throw new Error(`[GlobalSetup] 商品注入失败 HTTP ${partRes.status}: ${text}`)
   }
-  console.log('✅ [GlobalSetup] 商品 TK-12345 已 upsert（stock=999）')
+  console.log('✅ [GlobalSetup] 商品 TK-12345 已 upsert（stock=999）')*/
 
   // 4. 客户 elias（幂等：存在则跳过）
   const checkRes = await fetch(`${API_BASE}/api/clients`, {

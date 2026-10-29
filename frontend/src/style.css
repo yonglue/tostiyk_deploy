@@ -29,7 +29,7 @@
   --color-line-strong:    #cbd5e1; /* 强调边框 */
 
   /* 品牌色（按钮、高亮、聚焦） */
-    --color-accent:         #7e22ce; /* 紫色 */
+  --color-accent:         #1e40af; /* 品牌主色（现在的蓝） */
   --color-accent-hover:   #1e3a8a; /* 品牌主色悬浮态 */
 
   /* 状态色 */
