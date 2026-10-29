@@ -8,6 +8,7 @@
 
 from app.config import (
     ADMIN_PASSWORD_IS_EXPLICIT,
+    DEFAULT_ADMIN_PASSWORD,
     JWT_SECRET_SOURCE,
     MASTER_PIN_IS_EXPLICIT,
     MASTER_SECURITY_PIN,
@@ -15,6 +16,12 @@ from app.config import (
 )
 
 _BANNER = "=" * 68
+
+# 弱默认值清单（供告警文本展示）
+WEAK_DEFAULTS = {
+    "TK_ADMIN_PASSWORD": DEFAULT_ADMIN_PASSWORD,
+    "TK_MASTER_PIN": MASTER_SECURITY_PIN,
+}
 
 
 def config_warnings() -> list[str]:

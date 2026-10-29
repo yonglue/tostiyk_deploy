@@ -21,7 +21,7 @@ defineEmits(['close'])
       <div 
         :class="[
           'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl',
-          isErrorMessage ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-500' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-500'
+          isErrorMessage ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-500' : 'bg-accent/10 dark:bg-blue-900/30 text-blue-500'
         ]"
       >
         <span v-if="isErrorMessage">✕</span>

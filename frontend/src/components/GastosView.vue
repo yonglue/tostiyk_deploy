@@ -54,7 +54,7 @@
             <tr 
               v-for="item in filteredExpenses" 
               :key="item.id" 
-              class="hover:bg-blue-50/30 transition-colors cursor-pointer group"
+              class="hover:bg-accent/10/30 transition-colors cursor-pointer group"
               @click="openDetailDrawer(item)"
             >
               <td class="py-4 px-6 font-mono font-bold text-slate-700">{{ item.expense_date }}</td>
@@ -64,7 +64,7 @@
                 </span>
               </td>
               <td class="py-4 px-6 font-medium text-slate-900">{{ item.description || '-' }}</td>
-              <td class="py-4 px-6 font-mono font-black" :class="item.currency === 'USD' ? 'text-emerald-600' : 'text-blue-600'">
+              <td class="py-4 px-6 font-mono font-black" :class="item.currency === 'USD' ? 'text-emerald-600' : 'text-accent'">
                 {{ item.currency === 'USD' ? '$' : 'Bs.' }} {{ Number(item.amount).toFixed(2) }}
               </td>
               <td class="py-4 px-6 font-mono font-bold text-slate-500">
@@ -102,7 +102,7 @@
     >
       <template #header-actions>
         <template v-if="drawerMode === 'read' && currentExpense?.id">
-          <button @click="switchToEdit" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
+          <button @click="switchToEdit" class="text-xs bg-accent/10 hover:bg-blue-100 text-accent px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
             {{ t.common.edit }}
           </button>
         </template>

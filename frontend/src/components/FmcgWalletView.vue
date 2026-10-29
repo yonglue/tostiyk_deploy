@@ -17,19 +17,19 @@
             <div class="flex-1 min-w-[200px]">
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ phoneLabel }}</label>
               <input v-model="queryPhone" @keyup.enter="doQuery" type="text" :placeholder="phonePlaceholder"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white" />
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <div class="w-40">
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ currencyLabel }}</label>
               <select v-model="queryCurrency"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white">
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white">
                 <option value="USD">USD</option>
                 <option value="VES">VES</option>
                 <option value="USDT">USDT</option>
               </select>
             </div>
             <button @click="doQuery" :disabled="queryLoading" data-testid="fmcg-wallet-search"
-              class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-bold shadow-md shadow-blue-500/20 transition-all">
+              class="px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover disabled:opacity-50 text-white text-sm font-bold shadow-md shadow-blue-500/20 transition-all">
               {{ queryLoading ? loadingLabel : searchLabel }}
             </button>
           </div>
@@ -92,18 +92,18 @@
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ phoneLabel }}</label>
               <input v-model="form.phone" type="text" :placeholder="phonePlaceholder"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white" />
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ amountLabel }}</label>
                 <input v-model="form.amount" type="number" step="0.0001" min="0.0001"
-                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-mono font-bold dark:text-white" />
+                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-mono font-bold dark:text-white" />
               </div>
               <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ currencyLabel }}</label>
                 <select v-model="form.currency"
-                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white">
+                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white">
                   <option value="USD">USD</option>
                   <option value="VES">VES</option>
                   <option value="USDT">USDT</option>
@@ -113,17 +113,17 @@
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ refTypeLabel }}</label>
               <input v-model="form.ref_type" type="text" :placeholder="refTypePlaceholder"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white" />
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ refIdLabel }}</label>
               <input v-model="form.ref_id" type="text" :placeholder="refIdPlaceholder"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white" />
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ noteLabel }}</label>
               <input v-model="form.note" type="text" :placeholder="notePlaceholder"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 font-bold dark:text-white" />
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-accent font-bold dark:text-white" />
             </div>
             <button @click="doCredit" :disabled="creditLoading" data-testid="fmcg-wallet-credit"
               class="w-full px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-bold shadow-md shadow-emerald-500/20 transition-all">

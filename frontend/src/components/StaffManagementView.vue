@@ -54,7 +54,7 @@
               <button 
                 type="button" 
                 @click="toggleGroup(group.permissions)" 
-                class="text-[10px] text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline font-bold cursor-pointer transition-colors"
+                class="text-[10px] text-accent dark:text-accent hover:text-blue-800 dark:hover:text-blue-300 hover:underline font-bold cursor-pointer transition-colors"
               >
                 {{ isGroupAllSelected(group.permissions) ? t.common.clearAll : t.common.selectAll }}
               </button>
@@ -69,9 +69,9 @@
                   type="checkbox" 
                   :checked="newStaff.permissions.includes(p.key)"
                   @change="(e) => handleCheckboxChange(p.key, e.target.checked)"
-                  class="mt-0.5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer transition-all" 
+                  class="mt-0.5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer transition-all" 
                 />
-                <span class="font-medium group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors leading-tight">{{ p.label }}</span>
+                <span class="font-medium group-hover:text-accent dark:group-hover:text-blue-400 transition-colors leading-tight">{{ p.label }}</span>
               </label>
             </div>
           </div>
@@ -88,7 +88,7 @@
             <span>✅</span> {{ successMessage }}
           </p>
         </div>
-        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2">
+        <button type="submit" class="px-6 py-3 bg-accent hover:bg-accent-hover text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2">
           <span>💾</span> {{ t.staff.createBtn }}
         </button>
       </div>
@@ -112,7 +112,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-xs">
-            <tr v-for="s in staffList" :key="s.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
+            <tr v-for="s in staffList" :key="s.id" class="hover:bg-accent/10/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="px-6 py-4 font-mono text-slate-400 dark:text-slate-500">#{{ s.id }}</td>
               <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm">{{ s.username }}</td>
               <td class="px-6 py-4">
@@ -263,7 +263,7 @@ const getRoleColorClass = (roleVal) => {
   if (roleVal === 'cashier') return 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
   if (roleVal === 'warehouse') return 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
   if (roleVal === 'manager') return 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800'
-  return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+  return 'bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent border-blue-200 dark:border-blue-800'
 }
 
 const newStaff = ref({ 

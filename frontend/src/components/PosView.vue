@@ -67,17 +67,17 @@
               @keydown="handleSearchKeydown"
               type="text" 
               :placeholder="t.pos.searchPlaceholder" 
-              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
+              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
             />
           </div>
           
           <div class="w-1/4">
-            <div v-if="quoteClientName" class="flex items-center justify-between bg-blue-50/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
+            <div v-if="quoteClientName" class="flex items-center justify-between bg-accent/10/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
               <div class="flex items-center gap-2 flex-1 truncate">
-                <span class="text-blue-600 text-lg"></span>
+                <span class="text-accent text-lg"></span>
                 <div class="truncate">
                   <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
-                  <div class="text-[10px] text-blue-600/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
+                  <div class="text-[10px] text-accent/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
                 </div>
               </div>
               <button @click="quoteClientName = ''; quoteClientId = null" class="text-slate-400 hover:text-rose-500 hover:bg-rose-100 rounded-md p-1 transition-colors cursor-pointer shrink-0 ml-1">
@@ -93,7 +93,7 @@
             <button 
               @click="openClientSearchModal" 
               type="button"
-              class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+              class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
                 <span class="text-blue-500">🔍</span>
@@ -166,12 +166,12 @@
         <div class="flex-1 overflow-y-auto p-5 space-y-3 bg-white dark:bg-slate-800/20 flex flex-col">
           <div v-for="order in heldOrders" :key="order.id" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:bg-slate-800 transition-all flex items-center justify-between shadow-2xs shrink-0">
             <div class="space-y-1">
-              <div class="font-bold text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2"><span class="font-mono text-blue-600 font-black text-sm">{{ order.hold_no }}</span><span class="text-slate-700 dark:text-slate-300"> {{ order.client_name || 'Cliente General' }}</span></div>
+              <div class="font-bold text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2"><span class="font-mono text-accent font-black text-sm">{{ order.hold_no }}</span><span class="text-slate-700 dark:text-slate-300"> {{ order.client_name || 'Cliente General' }}</span></div>
               <div class="text-[11px] text-slate-400 font-mono">{{ tExt.recallTime }} {{ order.timestamp }}</div>
             </div>
             <div class="flex items-center gap-4">
               <span class="text-base font-mono font-black text-slate-900 dark:text-white">${{ order.total_amount.toFixed(2) }}</span>
-              <button @click="recallOrder(order)" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm">{{ tExt.recallBtn }}</button>
+              <button @click="recallOrder(order)" class="px-4 py-2 bg-accent hover:bg-accent/100 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm">{{ tExt.recallBtn }}</button>
               <button @click="deleteHeldOrder(order.id)" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition-all cursor-pointer">{{ tExt.recallVoid }}</button>
             </div>
           </div>
@@ -328,29 +328,29 @@
           <button @click="newClientModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 font-bold text-base p-1">✕</button>
         </div>
         <div class="p-5 space-y-4">
-          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colName }} *</label><input v-model="newClientForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-bold text-slate-900 dark:text-white" placeholder="Ej: Auto Taller Valencia" /></div>
+          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colName }} *</label><input v-model="newClientForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-accent font-bold text-slate-900 dark:text-white" placeholder="Ej: Auto Taller Valencia" /></div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colRif }}</label>
               <div class="flex gap-2">
-                <select v-model="newClientForm.rif_type" class="w-16 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-2.5 text-sm outline-none focus:border-blue-500 font-bold text-slate-900 dark:text-white cursor-pointer"><option value="V">V</option><option value="E">E</option><option value="J">J</option><option value="G">G</option></select>
-                <input v-model="newClientForm.rif_number" @input="formatRifNumber" type="text" maxlength="9" class="flex-1 w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-mono text-slate-900 dark:text-white" placeholder="12345678" />
+                <select v-model="newClientForm.rif_type" class="w-16 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-2.5 text-sm outline-none focus:border-accent font-bold text-slate-900 dark:text-white cursor-pointer"><option value="V">V</option><option value="E">E</option><option value="J">J</option><option value="G">G</option></select>
+                <input v-model="newClientForm.rif_number" @input="formatRifNumber" type="text" maxlength="9" class="flex-1 w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-accent font-mono text-slate-900 dark:text-white" placeholder="12345678" />
               </div>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colPhone }}</label>
               <div class="flex">
                 <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-sm font-mono font-bold">+58</span>
-                <input v-model="newClientForm.phone" @input="formatPhoneNumber" type="text" maxlength="10" class="flex-1 w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-r-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-mono text-slate-900 dark:text-white" placeholder="4121234567" />
+                <input v-model="newClientForm.phone" @input="formatPhoneNumber" type="text" maxlength="10" class="flex-1 w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-r-xl px-3.5 py-2.5 text-sm outline-none focus:border-accent font-mono text-slate-900 dark:text-white" placeholder="4121234567" />
               </div>
             </div>
           </div>
-          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colType }}</label><select v-model="newClientForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-semibold text-slate-900 dark:text-white cursor-pointer"><option value="Regular">{{ tExt.clientTypeRegular }}</option><option value="Taller">{{ tExt.clientTypeTaller }}</option><option value="Mayorista">{{ tExt.clientTypeMayorista }}</option></select></div>
+          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colType }}</label><select v-model="newClientForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-accent font-semibold text-slate-900 dark:text-white cursor-pointer"><option value="Regular">{{ tExt.clientTypeRegular }}</option><option value="Taller">{{ tExt.clientTypeTaller }}</option><option value="Mayorista">{{ tExt.clientTypeMayorista }}</option></select></div>
           <div class="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 p-3 rounded-xl"><input type="checkbox" id="specialTax" v-model="newClientForm.is_special_taxpayer" class="w-4 h-4 text-amber-600 rounded border-amber-300 focus:ring-amber-500 cursor-pointer" /><label for="specialTax" class="text-xs font-bold text-amber-900 cursor-pointer">{{ tExt.isSpecialTaxpayer }}</label></div>
         </div>
         <div class="p-5 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900/50">
           <button @click="newClientModalVisible = false" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-200 text-slate-600 dark:text-slate-400 hover:bg-slate-300 transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-          <button @click="saveNewClient" :disabled="isSavingClient" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md transition-colors cursor-pointer disabled:opacity-50">{{ isSavingClient ? '...' : t.common.save }}</button>
+          <button @click="saveNewClient" :disabled="isSavingClient" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-accent text-white hover:bg-accent-hover shadow-md transition-colors cursor-pointer disabled:opacity-50">{{ isSavingClient ? '...' : t.common.save }}</button>
         </div>
       </div>
     </div>
@@ -445,7 +445,7 @@
           </div>
           <div class="p-4 border-t border-slate-200 flex gap-3 bg-white shrink-0">
             <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">{{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}</button>
-            <button @click="printFromPreview" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-bold text-white shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
+            <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
               <span>🖨️</span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
           </div>
         </div>
@@ -474,7 +474,7 @@
             v-model="pinInput" 
             type="password" 
             :placeholder="isZh ? '请输入店长安全 PIN 码' : isEs ? 'Ingrese PIN de gerente' : 'Enter Manager PIN'"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
             @keyup.enter="submitOverridePin"
           />
         </div>
@@ -483,7 +483,7 @@
           <button @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
             {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
           </button>
-          <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">
+          <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">
             {{ isZh ? '授权放行' : isEs ? 'Autorizar' : 'Authorize' }}
           </button>
         </div>

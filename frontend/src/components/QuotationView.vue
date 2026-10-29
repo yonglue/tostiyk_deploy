@@ -41,12 +41,12 @@
       </div>
       
       <div class="flex items-center space-x-2.5">
-        <button @click="helpModalVisible = true" class="bg-white dark:bg-slate-800/70 hover:bg-white dark:bg-slate-800/90 text-blue-600 border border-slate-200 dark:border-slate-700 hover:border-blue-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
+        <button @click="helpModalVisible = true" class="bg-white dark:bg-slate-800/70 hover:bg-white dark:bg-slate-800/90 text-accent border border-slate-200 dark:border-slate-700 hover:border-blue-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
           <span>⌨️ {{ t.pos.shortcutGuide }}</span>
         </button>
 
         <div class="flex items-center gap-2.5 pl-2.5 border-l border-slate-200 dark:border-slate-700/60">
-          <div class="flex items-center gap-2 bg-white dark:bg-slate-800/70 hover:bg-blue-50/90 border border-slate-200 dark:border-slate-700 hover:border-blue-300 pl-2 pr-3.5 py-1.5 rounded-xl shadow-2xs backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02]">
+          <div class="flex items-center gap-2 bg-white dark:bg-slate-800/70 hover:bg-accent/10/90 border border-slate-200 dark:border-slate-700 hover:border-blue-300 pl-2 pr-3.5 py-1.5 rounded-xl shadow-2xs backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02]">
             <div class="relative flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs uppercase shrink-0 shadow-md shadow-blue-500/20">
               {{ currentUser?.username ? currentUser.username.charAt(0) : 'U' }}
               <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
@@ -77,17 +77,17 @@
               @keydown="handleSearchKeydown"
               type="text" 
               :placeholder="t.pos.searchPlaceholder" 
-              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
+              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent focus:ring-2 focus:ring-blue-500/30 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
             />
           </div>
           
           <div class="w-1/4">
-            <div v-if="quoteClientName" class="flex items-center justify-between bg-blue-50/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
+            <div v-if="quoteClientName" class="flex items-center justify-between bg-accent/10/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
               <div class="flex items-center gap-2 flex-1 truncate">
-                <span class="text-blue-600 text-lg">👤</span>
+                <span class="text-accent text-lg">👤</span>
                 <div class="truncate">
                   <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
-                  <div class="text-[10px] text-blue-600/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
+                  <div class="text-[10px] text-accent/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
                 </div>
               </div>
               <button @click="quoteClientName = ''; quoteClientId = null" :title="tExt.clearClient" class="text-slate-400 hover:text-rose-500 hover:bg-rose-100 rounded-md p-1 transition-colors cursor-pointer shrink-0 ml-1">
@@ -103,7 +103,7 @@
             <button 
               @click="openClientSearchModal" 
               type="button"
-              class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+              class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <div class="flex items-center gap-1.5 truncate">
                 <span class="text-blue-500">🔍</span>
@@ -132,11 +132,11 @@
                 :key="item.oem" 
                 @click="selectedCartIndex = index"
                 :class="[
-                  selectedCartIndex === index ? 'bg-blue-500/15 border-blue-400 ring-1 ring-blue-400' : (index % 2 === 0 ? 'bg-white dark:bg-slate-800/80' : 'bg-slate-50 dark:bg-slate-900/70'),
-                  'border-b border-slate-200 dark:border-slate-700/70 hover:bg-blue-50/50 transition-all shadow-2xs cursor-pointer'
+                  selectedCartIndex === index ? 'bg-accent/100/15 border-blue-400 ring-1 ring-blue-400' : (index % 2 === 0 ? 'bg-white dark:bg-slate-800/80' : 'bg-slate-50 dark:bg-slate-900/70'),
+                  'border-b border-slate-200 dark:border-slate-700/70 hover:bg-accent/10/50 transition-all shadow-2xs cursor-pointer'
                 ]"
               >
-                <td class="py-3 px-3 font-mono font-black text-blue-600 text-sm">{{ item.oem }}</td>
+                <td class="py-3 px-3 font-mono font-black text-accent text-sm">{{ item.oem }}</td>
                 <td class="py-3 px-3 text-slate-900 dark:text-white font-bold">{{ item.name }}</td>
                 <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold">
                   <div>${{ item.price.toFixed(2) }}</div>
@@ -188,7 +188,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 PDF
               </button>
-              <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-2">
+              <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-accent hover:bg-accent/100 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 打印
               </button>
@@ -205,13 +205,13 @@
     <!-- 底部快捷键导航栏 -->
     <footer class="absolute bottom-0 left-0 right-0 h-11 bg-white dark:bg-slate-800/75 backdrop-blur-xl border-t border-white/60 px-3 flex items-center justify-between z-30 shadow-md">
       <div class="grid grid-cols-6 gap-2 w-full">
-        <div @click="focusSearch" class="bg-white dark:bg-slate-800/70 hover:bg-blue-500/10 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
+        <div @click="focusSearch" class="bg-white dark:bg-slate-800/70 hover:bg-accent/100/10 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
           <span class="text-slate-800 dark:text-slate-200 font-bold">{{ t.pos.keyFocus }} [/]</span>
-          <span class="bg-blue-500/15 text-blue-700 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">{{ isZh ? '搜索' : isEs ? 'Buscar' : 'Search' }}</span>
+          <span class="bg-accent/100/15 text-accent font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">{{ isZh ? '搜索' : isEs ? 'Buscar' : 'Search' }}</span>
         </div>
-        <div @click="openClientSearchModal" class="bg-white dark:bg-slate-800/70 hover:bg-blue-500/10 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
+        <div @click="openClientSearchModal" class="bg-white dark:bg-slate-800/70 hover:bg-accent/100/10 border border-slate-200 dark:border-slate-700 hover:border-blue-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
           <span class="text-slate-800 dark:text-slate-200 font-bold">{{ t.pos.keyClient }}</span>
-          <span class="bg-blue-500/15 text-blue-700 font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">Ctrl+F</span>
+          <span class="bg-accent/100/15 text-accent font-mono font-bold px-1.5 py-0.5 rounded text-[10px]">Ctrl+F</span>
         </div>
         <div @click="generateQuotationPDF" class="bg-white dark:bg-slate-800/70 hover:bg-amber-500/10 border border-slate-200 dark:border-slate-700 hover:border-amber-300 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs cursor-pointer transition-all shadow-2xs">
           <span class="text-slate-800 dark:text-slate-200 font-bold">{{ isZh ? '保存报价' : isEs ? 'Guardar Cotización' : 'Save Quote' }}</span>
@@ -242,14 +242,14 @@
           <button @click="clientModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 font-bold text-base p-1">✕</button>
         </div>
         <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 shrink-0">
-          <input ref="clientModalInputRef" v-model="clientFilterQuery" @keydown="handleClientModalKeydown" type="text" :placeholder="tExt.clientModalSearch" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 shadow-sm font-bold text-slate-900 dark:text-white" />
+          <input ref="clientModalInputRef" v-model="clientFilterQuery" @keydown="handleClientModalKeydown" type="text" :placeholder="tExt.clientModalSearch" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-accent shadow-sm font-bold text-slate-900 dark:text-white" />
         </div>
         <div class="flex-1 overflow-y-auto p-3 space-y-2 bg-white dark:bg-slate-800">
-          <div v-for="c in filteredModalClients" :key="c.id" @click="selectClient(c)" class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all flex items-center justify-between text-xs shadow-2xs">
+          <div v-for="c in filteredModalClients" :key="c.id" @click="selectClient(c)" class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:bg-accent/10 hover:border-blue-300 transition-all flex items-center justify-between text-xs shadow-2xs">
             <div>
               <div class="font-black text-slate-900 dark:text-white text-sm">🏢 {{ c.name }}</div>
             </div>
-            <span class="text-blue-600 font-bold bg-blue-100/50 px-3 py-1.5 rounded-lg">{{ tExt.clientSelectBtn }} ↵</span>
+            <span class="text-accent font-bold bg-blue-100/50 px-3 py-1.5 rounded-lg">{{ tExt.clientSelectBtn }} ↵</span>
           </div>
         </div>
       </div>
@@ -280,13 +280,13 @@
                 type="password" 
                 autocomplete="new-password"
                 placeholder="请输入店长安全 PIN 码"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
               />
             </div>
             
             <div class="flex gap-3">
               <button type="button" @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">取消</button>
-              <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">授权放行</button>
+              <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-lg shadow-blue-500/30 transition-all active:scale-95 cursor-pointer">授权放行</button>
             </div>
           </form>
           

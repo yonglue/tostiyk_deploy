@@ -15,11 +15,11 @@
       <div class="p-4 border-b border-slate-200/60 bg-white/40 shrink-0 flex flex-wrap gap-4 items-center">
         <div class="relative flex-1 min-w-[200px]">
           <Search class="absolute left-3.5 top-3 text-slate-400" :size="16" />
-          <input v-model="searchQuery" type="text" :placeholder="tExt.searchPlaceholder" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-blue-500 font-bold text-slate-900 transition-colors" />
+          <input v-model="searchQuery" type="text" :placeholder="tExt.searchPlaceholder" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-accent font-bold text-slate-900 transition-colors" />
         </div>
         
         <div class="flex items-center gap-2">
-          <input type="date" v-model="filterDate" class="bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs outline-none focus:border-blue-500 font-mono font-bold text-slate-700" />
+          <input type="date" v-model="filterDate" class="bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs outline-none focus:border-accent font-mono font-bold text-slate-700" />
           <AppButton variant="primary" @click="filterDate = todayStr">{{ tExt.todayBtn }}</AppButton>
           <AppButton variant="secondary" @click="filterDate = ''">{{ tExt.allBtn }}</AppButton>
         </div>
@@ -30,7 +30,7 @@
         <div v-for="order in filteredOrders" :key="order.dbId" class="bg-white/90 p-4 rounded-2xl border border-slate-200/80 hover:bg-white transition-all flex flex-wrap items-center justify-between gap-4 shadow-2xs">
           <div class="space-y-1">
             <div class="font-black text-sm text-slate-900 flex items-center gap-2">
-              <span class="text-blue-600 font-mono">{{ order.orderId }}</span>
+              <span class="text-accent font-mono">{{ order.orderId }}</span>
               <span>👤 {{ order.clientName }}</span>
             </div>
             <div class="text-xs text-slate-500 font-mono">{{ order.time }}</div>

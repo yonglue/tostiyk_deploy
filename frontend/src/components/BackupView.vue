@@ -43,13 +43,13 @@
         </div>
 
         <!-- 汇率配置专区 -->
-        <div class="bg-blue-50/40 dark:bg-blue-900/20 p-5 rounded-2xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
+        <div class="bg-accent/10/40 dark:bg-blue-900/20 p-5 rounded-2xl border border-blue-100 dark:border-blue-800/50 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
               <label class="block text-sm font-black text-blue-900 dark:text-blue-300">{{ tExt.rateTitle }}</label>
-              <span class="bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase">{{ tExt.offlineMode }}</span>
+              <span class="bg-blue-100 dark:bg-blue-800 text-accent dark:text-blue-300 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase">{{ tExt.offlineMode }}</span>
             </div>
-            <p class="text-xs text-blue-700/80 dark:text-blue-400/80 mb-4 leading-relaxed">
+            <p class="text-xs text-accent/80 dark:text-accent/80 mb-4 leading-relaxed">
               {{ tExt.rateDesc }}
             </p>
             <div class="flex items-center gap-3">
@@ -59,7 +59,7 @@
                   v-model.number="rateInput" 
                   type="number" 
                   step="0.01" 
-                  class="w-full bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-700 rounded-xl pl-12 pr-4 py-2.5 text-lg outline-none focus:border-blue-500 font-black font-mono text-blue-900 dark:text-blue-300 transition-colors" 
+                  class="w-full bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-700 rounded-xl pl-12 pr-4 py-2.5 text-lg outline-none focus:border-accent font-black font-mono text-blue-900 dark:text-blue-300 transition-colors" 
                 />
               </div>
               <div class="text-xs font-bold text-slate-400 dark:text-slate-500">/ 1 USD</div>
@@ -67,10 +67,10 @@
           </div>
           
           <div class="flex gap-2 mt-4 pt-4 border-t border-blue-100 dark:border-blue-800/50">
-            <button @click="saveRate" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+            <button @click="saveRate" class="flex-1 bg-accent hover:bg-accent-hover text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
               💾 {{ tExt.btnSaveRate }}
             </button>
-            <button @click="autoFetchRate" :disabled="isFetchingRate" class="bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <button @click="autoFetchRate" :disabled="isFetchingRate" class="bg-white dark:bg-slate-800 hover:bg-accent/10 dark:hover:bg-slate-700 text-accent dark:text-accent border border-blue-200 dark:border-blue-700 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span v-if="isFetchingRate">⏳ {{ tExt.fetching }}</span>
               <span v-else>🌐 {{ tExt.btnFetchOnline }}</span>
             </button>
@@ -111,7 +111,7 @@
               <p class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">{{ bf.filename }}</p>
               <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">{{ bf.created_at }} | {{ bf.size_mb }} MB</p>
             </div>
-            <button @click="downloadBackup(bf.filename)" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 font-bold px-2 py-1 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">{{ isZh ? '📥 下载' : isEs ? '📥 Descargar' : '📥 Download' }}</button>
+            <button @click="downloadBackup(bf.filename)" class="text-xs text-accent dark:text-accent hover:text-blue-800 font-bold px-2 py-1 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">{{ isZh ? '📥 下载' : isEs ? '📥 Descargar' : '📥 Download' }}</button>
           </div>
           <div v-if="backupList.length === 0" class="text-center py-6 text-slate-400 text-xs">{{ isZh ? '暂无备份记录' : isEs ? 'Sin copias de seguridad' : 'No backups' }}</div>
         </div>
@@ -120,7 +120,7 @@
       <!-- 模块 2：数据导出与备份 -->
       <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-5">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
-          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg shadow-sm">📦</div>
+          <div class="w-10 h-10 rounded-xl bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent flex items-center justify-center font-bold text-lg shadow-sm">📦</div>
           <div>
             <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ tExt.exportTitle }}</h3>
             <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ tExt.exportSub }}</p>
@@ -163,7 +163,7 @@
             ref="fileInputRef"
             accept=".csv, .xlsx, .xls" 
             @change="handleFileSelect" 
-            class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-slate-700 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 cursor-pointer" 
+            class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-accent/10 dark:file:bg-slate-700 file:text-accent dark:file:text-blue-300 hover:file:bg-blue-100 cursor-pointer" 
           />
           <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-2">{{ tExt.fileHint }}</p>
         </div>

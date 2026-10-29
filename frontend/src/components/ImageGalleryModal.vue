@@ -61,14 +61,14 @@
     <template v-if="images && images.length > 1">
       <button 
         @click="prev" 
-        class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:bg-blue-600 text-white flex items-center justify-center text-xl font-bold transition-all cursor-pointer shadow-lg backdrop-blur-md"
+        class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:bg-accent text-white flex items-center justify-center text-xl font-bold transition-all cursor-pointer shadow-lg backdrop-blur-md"
       >
         ❮
       </button>
 
       <button 
         @click="next" 
-        class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:bg-blue-600 text-white flex items-center justify-center text-xl font-bold transition-all cursor-pointer shadow-lg backdrop-blur-md"
+        class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:bg-accent text-white flex items-center justify-center text-xl font-bold transition-all cursor-pointer shadow-lg backdrop-blur-md"
       >
         ❯
       </button>

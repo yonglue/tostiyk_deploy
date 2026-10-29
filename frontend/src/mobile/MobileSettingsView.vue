@@ -14,7 +14,7 @@
         </div>
         <div>
           <h2 class="text-base font-bold text-slate-800 dark:text-slate-100">{{ currentUserObj.username || 'Unknown' }}</h2>
-          <p class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mt-0.5">{{ currentUserObj.role || 'Staff' }}</p>
+          <p class="text-[11px] font-bold text-accent dark:text-accent uppercase tracking-wider mt-0.5">{{ currentUserObj.role || 'Staff' }}</p>
         </div>
       </div>
     </section>
@@ -36,7 +36,7 @@
           <button 
             @click="setTheme(isDark ? 'light' : 'dark')"
             class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none"
-            :class="isDark ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'"
+            :class="isDark ? 'bg-accent' : 'bg-slate-200 dark:bg-slate-700'"
           >
             <span 
               class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-200 shadow-sm"
@@ -84,7 +84,7 @@
                 :key="lang.value"
                 @click="selectLanguage(lang.value)"
                 class="w-full py-4 text-center font-bold text-base rounded-xl transition-colors flex items-center justify-center gap-2"
-                :class="currentLang === lang.value ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-slate-700 dark:text-slate-300 active:bg-slate-200 dark:active:bg-slate-800'"
+                :class="currentLang === lang.value ? 'text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/20' : 'text-slate-700 dark:text-slate-300 active:bg-slate-200 dark:active:bg-slate-800'"
               >
                 {{ lang.label }}
                 <Check v-if="currentLang === lang.value" :size="18" />

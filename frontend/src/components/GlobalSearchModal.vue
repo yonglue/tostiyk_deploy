@@ -34,11 +34,11 @@
             @mouseenter="selectedIndex = index"
             :class="[
               'flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
-              selectedIndex === index ? 'bg-blue-50 border border-blue-100' : 'border border-transparent hover:bg-slate-50'
+              selectedIndex === index ? 'bg-accent/10 border border-blue-100' : 'border border-transparent hover:bg-slate-50'
             ]"
           >
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-accent flex items-center justify-center shrink-0">
                 <Package :size="16" />
               </div>
               <div>
@@ -46,7 +46,7 @@
                 <p class="text-xs font-mono text-slate-500">{{ part.oem }} <span class="text-slate-300 mx-1">|</span> 库存: {{ part.stock }}</p>
               </div>
             </div>
-            <span class="text-sm font-mono font-bold text-blue-600">${{ Number(part.price || 0).toFixed(2) }}</span>
+            <span class="text-sm font-mono font-bold text-accent">${{ Number(part.price || 0).toFixed(2) }}</span>
           </div>
         </div>
 
@@ -60,7 +60,7 @@
             @mouseenter="selectedIndex = filteredParts.length + index"
             :class="[
               'flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-colors',
-              selectedIndex === (filteredParts.length + index) ? 'bg-blue-50 border border-blue-100' : 'border border-transparent hover:bg-slate-50'
+              selectedIndex === (filteredParts.length + index) ? 'bg-accent/10 border border-blue-100' : 'border border-transparent hover:bg-slate-50'
             ]"
           >
             <div class="flex items-center gap-3">

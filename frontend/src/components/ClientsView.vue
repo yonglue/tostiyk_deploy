@@ -49,7 +49,7 @@ const isEs = computed(() => currentLang.value === 'es')
         </button>
         <button
           @click="$emit('open-add-client')"
-          class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+          class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
         >
           <Plus :size="16" />
           <span>{{ t.clients.addBtn }}</span>
@@ -68,7 +68,7 @@ const isEs = computed(() => currentLang.value === 'es')
                   type="checkbox" 
                   :checked="isAllSelected" 
                   @change="toggleSelectAll" 
-                  class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </th>
               <th class="py-4 px-6 w-1/4">{{ isZh ? '客户 / 店铺' : isEs ? 'Cliente / Tienda' : 'Client / Store' }}</th>
@@ -90,7 +90,7 @@ const isEs = computed(() => currentLang.value === 'es')
             <tr 
               v-for="c in paginatedClients" 
               :key="c.id" 
-              class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors cursor-pointer group h-16"
+              class="hover:bg-accent/10/30 dark:hover:bg-slate-700/50 transition-colors cursor-pointer group h-16"
               @click="openDetailDrawer(c)"
             >
               <!-- 单选框 -->
@@ -99,7 +99,7 @@ const isEs = computed(() => currentLang.value === 'es')
                   type="checkbox" 
                   :checked="selectedIds.includes(c.id)" 
                   @change="toggleSelect(c.id)" 
-                  class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </td>
               
@@ -116,7 +116,7 @@ const isEs = computed(() => currentLang.value === 'es')
               <!-- 类型：固定不换行 -->
               <td class="py-2.5 px-3 whitespace-nowrap">
                 <span :class="['inline-flex px-2.5 py-1 rounded-md text-xs font-semibold',
-                  c.client_type === 'Mayorista' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : (c.client_type === 'Taller' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400')]">
+                  c.client_type === 'Mayorista' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : (c.client_type === 'Taller' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent')]">
                   {{ getClientTypeLabel(c.client_type) }}
                 </span>
               </td>
@@ -169,12 +169,12 @@ const isEs = computed(() => currentLang.value === 'es')
               :max="totalPages" 
               v-model.number="jumpPageInput" 
               @keyup.enter="handleJumpPage"
-              class="w-12 text-center font-mono font-bold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-blue-500 text-xs" 
+              class="w-12 text-center font-mono font-bold text-accent dark:text-accent bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-accent text-xs" 
             />
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} 页</span>
             <button 
               @click="handleJumpPage" 
-              class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
+              class="bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-accent dark:text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
             >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
@@ -242,7 +242,7 @@ const isEs = computed(() => currentLang.value === 'es')
             <div>
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ t.clients.colType }}</p>
               <span :class="['inline-flex px-2.5 py-1 rounded-md text-xs font-semibold',
-                currentClient?.client_type === 'Mayorista' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : (currentClient?.client_type === 'Taller' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400')]">
+                currentClient?.client_type === 'Mayorista' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : (currentClient?.client_type === 'Taller' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent')]">
                 {{ getClientTypeLabel(currentClient?.client_type) }}
               </span>
             </div>
@@ -258,9 +258,9 @@ const isEs = computed(() => currentLang.value === 'es')
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ t.clients.colAddress }}</p>
               <p class="text-slate-700 dark:text-slate-300">{{ currentClient?.address || '-' }}</p>
             </div>
-            <div class="col-span-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800/30">
-              <p class="text-[11px] font-semibold text-blue-500 dark:text-blue-400 uppercase mb-1">{{ isZh ? '信用额度上限' : isEs ? 'Límite de Crédito' : 'Credit Limit' }}</p>
-              <p class="text-lg font-black text-blue-700 dark:text-blue-300">$ {{ (currentClient?.credit_limit || 0).toFixed(2) }}</p>
+            <div class="col-span-2 bg-accent/10 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800/30">
+              <p class="text-[11px] font-semibold text-blue-500 dark:text-accent uppercase mb-1">{{ isZh ? '信用额度上限' : isEs ? 'Límite de Crédito' : 'Credit Limit' }}</p>
+              <p class="text-lg font-black text-accent dark:text-blue-300">$ {{ (currentClient?.credit_limit || 0).toFixed(2) }}</p>
             </div>
             <div class="col-span-2" v-if="currentClient?.notes">
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ isZh ? '备注' : isEs ? 'Notas' : 'Notes' }}</p>
@@ -304,20 +304,20 @@ const isEs = computed(() => currentLang.value === 'es')
                 type="number" 
                 step="0.01" 
                 min="0"
-                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" 
+                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-lg font-black font-mono text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-1 focus:ring-blue-500 transition-colors" 
               />
             </div>
             <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0 mb-0.5">
               <button 
                 @click="repayForm.currency = 'USD'"
-                :class="repayForm.currency === 'USD' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+                :class="repayForm.currency === 'USD' ? 'bg-white dark:bg-slate-700 shadow-sm text-accent dark:text-accent' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
                 class="px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer"
               >
                 USD ($)
               </button>
               <button 
                 @click="repayForm.currency = 'BS'"
-                :class="repayForm.currency === 'BS' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+                :class="repayForm.currency === 'BS' ? 'bg-white dark:bg-slate-700 shadow-sm text-accent dark:text-accent' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
                 class="px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer"
               >
                 Bs.
@@ -325,9 +325,9 @@ const isEs = computed(() => currentLang.value === 'es')
             </div>
           </div>
 
-          <div class="flex items-center justify-between bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/50">
-            <span class="text-xs text-blue-700 dark:text-blue-400 font-semibold">{{ tExt.usdEquivalent }}:</span>
-            <span class="text-sm font-black text-blue-700 dark:text-blue-400 font-mono">
+          <div class="flex items-center justify-between bg-accent/10/50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/50">
+            <span class="text-xs text-accent dark:text-accent font-semibold">{{ tExt.usdEquivalent }}:</span>
+            <span class="text-sm font-black text-accent dark:text-accent font-mono">
               $ {{ repayForm.currency === 'USD' ? (repayForm.amount_paid || 0).toFixed(2) : ((repayForm.amount_paid || 0) / bcvRate).toFixed(2) }}
             </span>
           </div>
@@ -353,7 +353,7 @@ const isEs = computed(() => currentLang.value === 'es')
                 v-model="repayForm.reference_no" 
                 type="text" 
                 :placeholder="tExt.optional"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" 
+                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono outline-none focus:border-accent focus:ring-1 focus:ring-blue-500 dark:text-white" 
               />
             </div>
           </div>
@@ -388,7 +388,7 @@ const isEs = computed(() => currentLang.value === 'es')
           <button 
             @click="saveClientEdit" 
             :disabled="isSavingEdit"
-            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+            class="px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:bg-blue-300 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
           >
             {{ isSavingEdit ? (isZh ? '保存中...' : isEs ? 'Guardando...' : 'Saving...') : (isZh ? '保存修改' : isEs ? 'Guardar cambios' : 'Save changes') }}
           </button>
@@ -448,7 +448,7 @@ const isEs = computed(() => currentLang.value === 'es')
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
               <tr v-for="tx in clientStatementList" :key="tx.orderId || tx.dbId" class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                 <td class="py-2 px-3 font-mono text-xs text-slate-500 dark:text-slate-400">{{ tx.time ? tx.time.split(' ')[0] : '-' }}</td>
-                <td class="py-2 px-3 font-mono font-bold text-blue-600 dark:text-blue-400">{{ tx.orderId || tx.dbId }}</td>
+                <td class="py-2 px-3 font-mono font-bold text-accent dark:text-accent">{{ tx.orderId || tx.dbId }}</td>
                 <td class="py-2 px-3 text-xs dark:text-slate-300">{{ tx.paymentMethod }}</td>
                 <td class="py-2 px-3 text-right font-mono font-bold" :class="tx.paymentMethod.includes('Fiado') ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'">
                   $ {{ Number(tx.totalUsd || 0).toFixed(2) }}

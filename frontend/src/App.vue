@@ -29,7 +29,7 @@
         
         <header v-if="activeTab !== 'pos'" class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 px-6 flex items-center justify-between shrink-0 z-10 transition-all">
           <div class="flex items-center space-x-4">
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-blue-50/90 rounded-2xl transition-colors cursor-pointer">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-accent/10/90 rounded-2xl transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
           </div>
@@ -69,7 +69,7 @@
             </div>
 
             <div class="flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-slate-700 h-5">
-              <div class="relative flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs uppercase shadow-sm cursor-default" title="User">
+              <div class="relative flex items-center justify-center w-7 h-7 rounded-full bg-accent text-white font-bold text-xs uppercase shadow-sm cursor-default" title="User">
                 {{ currentUserObj.username ? currentUserObj.username.charAt(0) : 'U' }}
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 rounded-full"></span>
               </div>
@@ -178,7 +178,7 @@
         </main>
 
         <Transition name="fade">
-          <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-blue-600 hover:bg-blue-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
+          <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-accent hover:bg-accent-hover text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
             <span class="whitespace-nowrap font-bold text-sm ml-2 transition-all duration-300" :class="isFabExpanded ? 'opacity-100 translate-x-0 w-auto' : 'opacity-0 translate-x-4 w-0'">{{ isZh ? '返回顶部' : isEs ? 'Volver arriba' : 'Back to Top' }}</span>
           </button>
@@ -209,7 +209,7 @@
             <button type="button" @click="txDialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }}
             </button>
-            <button type="submit" :disabled="isSubmittingTx" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
+            <button type="submit" :disabled="isSubmittingTx" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
               {{ isSubmittingTx ? '...' : t.common.save }}
             </button>
           </div>
@@ -264,20 +264,20 @@
               v-model="newPart.cross_references" 
               rows="3" 
               :placeholder="tExt.placeholderCrossRef" 
-              class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 font-mono leading-relaxed resize-none"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-accent font-mono leading-relaxed resize-none"
             ></textarea>
           </div>
 
           <div>
             <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.labelImages }}</label>
-            <input type="file" @change="handleFileChange" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1.5" />
+            <input type="file" @change="handleFileChange" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1.5" />
           </div>
 
           <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/20">
             <button type="button" @click="dialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
               {{ t.common.cancel }} (ESC)
             </button>
-            <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+            <button type="submit" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
               {{ t.common.save }} (Enter)
             </button>
           </div>
@@ -322,7 +322,7 @@
         
         <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
           <button @click="clientDialogVisible = false" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors">{{ t.common.cancel }}</button>
-          <button @click="handleAddClient(tExt)" class="px-5 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-md">{{ t.common.save }}</button>
+          <button @click="handleAddClient(tExt)" class="px-5 py-2 rounded-xl text-sm font-medium bg-accent text-white hover:bg-accent-hover shadow-md">{{ t.common.save }}</button>
         </div>
       </div>
     </div>

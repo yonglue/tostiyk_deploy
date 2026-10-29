@@ -22,7 +22,7 @@
         class="relative p-2 rounded-full bg-white/10 text-white backdrop-blur-md"
       >
         <ShoppingCart :size="22" />
-        <span v-if="totalQty > 0" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-blue-600 rounded-full text-[10px] font-bold flex items-center justify-center">
+        <span v-if="totalQty > 0" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-accent rounded-full text-[10px] font-bold flex items-center justify-center">
           {{ totalQty }}
         </span>
       </button>
@@ -39,7 +39,7 @@
         </div>
         <h3 class="font-bold text-lg mb-2">无法开启摄像头</h3>
         <p class="text-xs text-slate-400 mb-6">当前环境不支持（如非 HTTPS 或权限被拒），请使用下方的手动输入。</p>
-        <button @click="cameraInput?.click()" class="px-6 py-3 bg-blue-600 rounded-xl font-bold text-sm">📷 拍照扫码</button>
+        <button @click="cameraInput?.click()" class="px-6 py-3 bg-accent rounded-xl font-bold text-sm">📷 拍照扫码</button>
       </div>
 
       <div v-show="isCameraReady && !hasCameraError" class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
@@ -48,7 +48,7 @@
           <div class="absolute -top-0.5 -right-0.5 w-8 h-8 border-t-4 border-r-4 border-blue-500 rounded-tr-3xl"></div>
           <div class="absolute -bottom-0.5 -left-0.5 w-8 h-8 border-b-4 border-l-4 border-blue-500 rounded-bl-3xl"></div>
           <div class="absolute -bottom-0.5 -right-0.5 w-8 h-8 border-b-4 border-r-4 border-blue-500 rounded-br-3xl"></div>
-          <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 shadow-[0_0_15px_3px_rgba(59,130,246,0.8)] animate-[scan_2.5s_ease-in-out_infinite]"></div>
+          <div class="absolute top-0 left-0 w-full h-1 bg-accent/100 shadow-[0_0_15px_3px_rgba(59,130,246,0.8)] animate-[scan_2.5s_ease-in-out_infinite]"></div>
         </div>
         <p class="text-white/60 text-xs mt-6 tracking-widest">将条码放入框内</p>
       </div>
@@ -150,7 +150,7 @@
 
           <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex gap-3 shrink-0">
             <button @click="clearCart" :disabled="cartItems.length === 0" class="px-4 py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl disabled:opacity-40">清空</button>
-            <button @click="submitCart" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl disabled:opacity-40 active:scale-[0.98] transition-transform">
+            <button @click="submitCart" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-3 bg-accent text-white font-bold rounded-xl disabled:opacity-40 active:scale-[0.98] transition-transform">
               {{ isSubmitting ? '提交中...' : `提交入库（${totalQty} 件）` }}
             </button>
           </div>

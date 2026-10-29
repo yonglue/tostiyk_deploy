@@ -62,7 +62,7 @@
 
         <button
           @click="$emit('open-add-modal')"
-          class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+          class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer"
         >
           <Plus :size="16" />
           <span>{{ t.inventory.addBtn }}</span>
@@ -77,7 +77,7 @@
           <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               <th class="py-2.5 px-3 w-12 text-center">
-                <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" />
+                <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" />
               </th>
               <th class="py-2.5 px-3">{{ t.inventory.colImage }}</th>
               <th class="py-2.5 px-3">{{ t.inventory.colOem }}</th>
@@ -91,9 +91,9 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
-            <tr v-for="item in paginatedParts" :key="item.id || item.oem" class="hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer group border-b border-slate-100 dark:border-slate-800" @click="openDetailDrawer(item)">
+            <tr v-for="item in paginatedParts" :key="item.id || item.oem" class="hover:bg-accent/10/50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer group border-b border-slate-100 dark:border-slate-800" @click="openDetailDrawer(item)">
               <td class="py-2.5 px-3 text-center" @click.stop>
-                <input type="checkbox" :checked="selectedIds.includes(item.id)" @change="toggleSelect(item.id)" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" />
+                <input type="checkbox" :checked="selectedIds.includes(item.id)" @change="toggleSelect(item.id)" class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" />
               </td>
               <td class="py-2.5 px-3" @click.stop>
                 <div class="flex items-center gap-1.5">
@@ -112,7 +112,7 @@
                 <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-semibold font-mono border border-emerald-200/60">📍 {{ item.bin_location || '—' }}</span>
               </td>
               <td class="py-2.5 px-3 font-bold" :class="item.stock <= 5 ? 'text-rose-600' : 'text-slate-800'">{{ item.stock }}</td>
-              <td class="py-2.5 px-3 font-bold text-blue-600">$ {{ Number(item.price || 0).toFixed(2) }}</td>
+              <td class="py-2.5 px-3 font-bold text-accent">$ {{ Number(item.price || 0).toFixed(2) }}</td>
               <td class="py-2.5 px-3 font-bold text-amber-600">$ {{ Number(item.cost_price || 0).toFixed(2) }}</td>
               <td class="py-2.5 px-3 font-black">
                 <span :class="(item.price - (item.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">$ {{ Number((item.price || 0) - (item.cost_price || 0)).toFixed(2) }}</span>
@@ -138,9 +138,9 @@
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-2xs">
             <span class="text-slate-400 text-[11px]">{{ tExt.jumpTo }}</span>
-            <input type="number" min="1" :max="totalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpPage" class="w-12 text-center font-mono font-bold text-blue-600 bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-blue-500 text-xs" />
+            <input type="number" min="1" :max="totalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpPage" class="w-12 text-center font-mono font-bold text-accent bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-accent text-xs" />
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} {{ tExt.page }}</span>
-            <button @click="handleJumpPage" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
+            <button @click="handleJumpPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
           <div class="flex items-center gap-1.5">
             <button @click="currentPage--" :disabled="currentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.prevPage }}</button>
@@ -155,7 +155,7 @@
     <SideDrawer :visible="detailDrawerVisible" :title="drawerMode === 'read' ? t.inventory.detailTitle : tExt.editTitle" :icon="drawerMode === 'read' ? '📋' : '✏️'" @close="closeDrawer">
       <template #header-actions>
         <template v-if="drawerMode === 'read'">
-          <button @click="switchToEdit" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">{{ t.common.edit }}</button>
+          <button @click="switchToEdit" class="text-xs bg-accent/10 hover:bg-blue-100 text-accent px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">{{ t.common.edit }}</button>
           <button @click="onDeleteFromDrawer" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">{{ t.common.delete }}</button>
         </template>
       </template>
@@ -189,7 +189,7 @@
             </div>
             <div>
               <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ t.inventory.colPriceUsd }}</p>
-              <p class="font-bold text-blue-600">$ {{ Number(editingPart.price || 0).toFixed(2) }}</p>
+              <p class="font-bold text-accent">$ {{ Number(editingPart.price || 0).toFixed(2) }}</p>
             </div>
             <div>
               <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ t.inventory.costPrice }}</p>
@@ -247,7 +247,7 @@
       <template #footer>
         <div v-if="drawerMode === 'edit'" class="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
           <button @click="switchToRead" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-          <button @click="saveEditedPart" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">{{ tExt.saveChanges }}</button>
+          <button @click="saveEditedPart" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">{{ tExt.saveChanges }}</button>
         </div>
       </template>
     </SideDrawer>

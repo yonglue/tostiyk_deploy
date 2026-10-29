@@ -29,7 +29,7 @@
   --color-line-strong:    #cbd5e1; /* 强调边框 */
 
   /* 品牌色（按钮、高亮、聚焦） */
-  --color-accent:         #1e40af; /* 品牌主色（现在的蓝） */
+    --color-accent:         #7e22ce; /* 紫色 */
   --color-accent-hover:   #1e3a8a; /* 品牌主色悬浮态 */
 
   /* 状态色 */
@@ -187,8 +187,8 @@ textarea {
 input:focus, select:focus, textarea:focus {
   outline: none !important;
   background-color: var(--color-surface) !important;
-  border-color: var(--color-brand) !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent) !important;
 }
 .dark input:focus, .dark select:focus, .dark textarea:focus {
   background-color: var(--color-surface-sunken) !important;

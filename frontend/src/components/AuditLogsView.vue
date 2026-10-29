@@ -81,10 +81,10 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-xs">
-            <tr v-for="log in paginatedLogs" :key="log.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
+            <tr v-for="log in paginatedLogs" :key="log.id" class="hover:bg-accent/10/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="px-6 py-4 font-mono text-slate-400 dark:text-slate-500">#{{ log.id }}</td>
               <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span class="w-2 h-2 rounded-full bg-accent/100"></span>
                 {{ log.username }}
               </td>
               <td class="px-6 py-4">
@@ -129,12 +129,12 @@
               :max="totalPages" 
               v-model.number="jumpPageInput" 
               @keyup.enter="handleJumpPage"
-              class="w-12 text-center font-mono font-bold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-blue-500 text-xs" 
+              class="w-12 text-center font-mono font-bold text-accent dark:text-accent bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-accent text-xs" 
             />
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} 页</span>
             <button 
               @click="handleJumpPage" 
-              class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
+              class="bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-accent dark:text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
             >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
@@ -277,7 +277,7 @@ const getActionColorClass = (code) => {
     return 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800'
   }
   if (['UPDATE_STOCK', 'CLIENT_REPAYMENT', 'UPDATE_CLIENT'].includes(code)) {
-    return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+    return 'bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent border-blue-200 dark:border-blue-800'
   }
   return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
 }
@@ -285,7 +285,7 @@ const getActionColorClass = (code) => {
 // 角色标签配色
 const getRoleColorClass = (role) => {
   if (role === 'super_admin') return 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800'
-  if (role === 'admin') return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+  if (role === 'admin') return 'bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent border-blue-200 dark:border-blue-800'
   if (role === 'cashier') return 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
   return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
 }

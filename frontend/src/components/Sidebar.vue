@@ -19,7 +19,7 @@
       
       <!-- 展开状态：显示 Logo 和标题 -->
       <div v-show="!isCollapsed" @click.stop.prevent="handleMenuClick('dashboard')" class="flex items-center gap-3 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" title="返回主页">
-        <div class="w-8 h-8 min-w-[32px] rounded bg-blue-600 flex items-center justify-center text-white shadow-sm shrink-0">
+        <div class="w-8 h-8 min-w-[32px] rounded bg-accent flex items-center justify-center text-white shadow-sm shrink-0">
           <Cpu :size="20" />
         </div>
         <div class="whitespace-nowrap transition-opacity duration-300">
@@ -31,7 +31,7 @@
       <!-- 桌面端折叠/展开按钮 (常驻原位) -->
       <button type="button" @click.stop="toggleSidebar" class="hidden md:flex p-1.5 text-slate-400 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:text-slate-500 rounded-lg cursor-pointer transition-colors" :title="isCollapsed ? '展开' : '折叠'">
         <!-- 图标根据折叠状态切换 -->
-        <svg v-if="isCollapsed" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-500 hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg v-if="isCollapsed" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-500 hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
         </svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,14 +70,14 @@
               'w-full flex items-center rounded-md font-bold text-sm tracking-wide transition-all duration-200 cursor-pointer relative group',
               isCollapsed ? 'justify-center px-0 py-2.5 my-1' : 'px-2.5 py-2 my-0.5',
               activeTab === item.key 
-                ? 'bg-blue-600 text-white shadow-sm dark:bg-blue-500/20 dark:text-blue-400' 
+                ? 'bg-accent text-white shadow-sm dark:bg-accent/100/20 dark:text-accent' 
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
             ]"
           >
             <!-- 激活态左侧小竖条 -->
-            <div v-if="activeTab === item.key" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-white dark:bg-blue-500 rounded-r-full pointer-events-none hidden dark:block"></div>
+            <div v-if="activeTab === item.key" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-white dark:bg-accent/100 rounded-r-full pointer-events-none hidden dark:block"></div>
             
-            <component :is="item.icon" :size="18" :class="['shrink-0 transition-colors', activeTab === item.key ? 'text-white dark:text-blue-400' : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300']" />
+            <component :is="item.icon" :size="18" :class="['shrink-0 transition-colors', activeTab === item.key ? 'text-white dark:text-accent' : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300']" />
             <span v-show="!isCollapsed" class="truncate leading-tight text-left whitespace-nowrap ml-3">
               {{ t.menu[item.labelKey || item.key] }}
             </span>

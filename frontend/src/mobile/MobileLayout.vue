@@ -19,7 +19,7 @@
         v-for="tab in tabs" :key="tab.key"
         @click="activeTab = tab.key"
         class="flex flex-col items-center justify-center w-full h-[68px] gap-1 transition-colors"
-        :class="activeTab === tab.key ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'"
+        :class="activeTab === tab.key ? 'text-accent dark:text-accent' : 'text-slate-400 dark:text-slate-500'"
       >
         <component :is="tab.icon" :size="20" :stroke-width="activeTab === tab.key ? 2.4 : 1.8" />
         <span class="text-[10px] font-semibold">{{ tab.label }}</span>

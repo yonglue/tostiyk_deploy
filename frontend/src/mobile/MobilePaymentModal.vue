@@ -34,7 +34,7 @@
                 placeholder="0.00"
               />
               <!-- 快捷全额按钮 -->
-              <button @click="amount = clientDebt" class="text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md shrink-0">{{ isZh ? '全额' : isEs ? 'Monto total' : 'Full amount' }}</button>
+              <button @click="amount = clientDebt" class="text-xs font-bold text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-1 rounded-md shrink-0">{{ isZh ? '全额' : isEs ? 'Monto total' : 'Full amount' }}</button>
             </div>
             <p v-if="isOverpay" class="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1">{{ isZh ? '⚠️ 收款金额不能大于当前欠款' : isEs ? '⚠️ El monto no puede exceder la deuda' : '⚠️ Amount cannot exceed debt' }}</p>
           </div>

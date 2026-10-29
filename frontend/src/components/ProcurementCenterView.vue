@@ -4,13 +4,13 @@
     <!-- 顶部状态栏 -->
     <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-        <button @click="activeTab = 'orders'; resetOrderPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'orders' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">📦 {{ tExt.tabOrders }}</button>
-        <button @click="activeTab = 'suggestions'; resetSuggestionPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suggestions' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">⚡ {{ tExt.tabSuggestions }}</button>
-        <button @click="activeTab = 'suppliers'" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suppliers' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">🏢 {{ tExt.tabSuppliers }}</button>
+        <button @click="activeTab = 'orders'; resetOrderPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'orders' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">📦 {{ tExt.tabOrders }}</button>
+        <button @click="activeTab = 'suggestions'; resetSuggestionPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suggestions' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">⚡ {{ tExt.tabSuggestions }}</button>
+        <button @click="activeTab = 'suppliers'" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suppliers' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">🏢 {{ tExt.tabSuppliers }}</button>
       </div>
       
       <div class="flex items-center gap-3">
-        <button @click="openCreateModal" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+        <button @click="openCreateModal" class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md font-bold text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer">
           <Plus :size="16" /> {{ tExt.newPo }}
         </button>
       </div>
@@ -24,13 +24,13 @@
           <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-lg">
             <button 
               @click="orderSubTab = 'current'; resetOrderPagination(); clearOrderSelection()"
-              :class="['px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer', orderSubTab === 'current' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
+              :class="['px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer', orderSubTab === 'current' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:text-slate-700']"
             >
               {{ tExt.subTabCurrent }}
             </button>
             <button 
               @click="orderSubTab = 'history'; resetOrderPagination(); clearOrderSelection()"
-              :class="['px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer', orderSubTab === 'history' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
+              :class="['px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer', orderSubTab === 'history' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:text-slate-700']"
             >
               {{ tExt.subTabHistory }}
             </button>
@@ -38,7 +38,7 @@
           
           <transition name="fade">
             <div v-if="selectedOrderIds.length > 0" class="flex items-center gap-3">
-              <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">{{ tExt.selected }} {{ selectedOrderIds.length }}</span>
+              <span class="text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded-md border border-blue-100">{{ tExt.selected }} {{ selectedOrderIds.length }}</span>
               <button @click="batchCancelOrders" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-3.5 py-2 rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm">
                 🗑️ {{ tExt.batchVoid }}
               </button>
@@ -61,7 +61,7 @@
                   type="checkbox" 
                   :checked="isAllOrdersSelected" 
                   @change="toggleSelectAllOrders" 
-                  class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </th>
               <th class="py-2 px-3">{{ tExt.colPoNo }}</th>
@@ -86,7 +86,7 @@
               @click="openOrderDrawer(order)"
               :class="[
                 'transition-colors cursor-pointer',
-                selectedOrderIds.includes(order.id) ? 'bg-blue-50/60 border-blue-200' : 'hover:bg-slate-50/80'
+                selectedOrderIds.includes(order.id) ? 'bg-accent/10/60 border-blue-200' : 'hover:bg-slate-50/80'
               ]"
             >
               <td class="py-2 px-3 text-center" @click.stop>
@@ -94,10 +94,10 @@
                   type="checkbox" 
                   :checked="selectedOrderIds.includes(order.id)" 
                   @change="toggleSelectOrder(order)"
-                  class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </td>
-              <td class="py-2 px-3 font-mono font-bold text-blue-600">{{ order.po_no }}</td>
+              <td class="py-2 px-3 font-mono font-bold text-accent">{{ order.po_no }}</td>
               <td class="py-2 px-3 font-bold text-slate-800">{{ getSupplierName(order.supplier_id) }}</td>
               <td class="py-2 px-3 font-mono font-bold text-rose-500">$ {{ getSupplierDebt(order.supplier_id).toFixed(2) }}</td>
               <td class="py-2 px-3 text-slate-600">{{ getItemsCount(order.items_json) }} SKUs</td>
@@ -114,7 +114,7 @@
               <td class="py-2 px-3 text-right space-x-2" @click.stop>
                 <button @click="openOrderDrawer(order)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.btnDetail }}</button>
                 <button v-if="order.status === 'PENDING'" @click="cancelOrder(order.id)" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.btnVoid }}</button>
-                <button v-if="order.status === 'PENDING'" @click="receiveOrder(order.id)" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.btnReceive }}</button>
+                <button v-if="order.status === 'PENDING'" @click="receiveOrder(order.id)" class="text-xs bg-accent hover:bg-accent-hover text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ tExt.btnReceive }}</button>
               </td>
             </tr>
           </tbody>
@@ -132,9 +132,9 @@
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-2xs">
             <span class="text-slate-400 text-[11px]">{{ tExt.jumpTo }}</span>
-            <input type="number" min="1" :max="ordersTotalPages" v-model.number="jumpOrdersPageInput" @keyup.enter="handleJumpOrdersPage" class="w-12 text-center font-mono font-bold text-blue-600 bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-blue-500 text-xs" />
+            <input type="number" min="1" :max="ordersTotalPages" v-model.number="jumpOrdersPageInput" @keyup.enter="handleJumpOrdersPage" class="w-12 text-center font-mono font-bold text-accent bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-accent text-xs" />
             <span class="text-slate-400 text-[11px]">/ {{ ordersTotalPages }} {{ tExt.page }}</span>
-            <button @click="handleJumpOrdersPage" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
+            <button @click="handleJumpOrdersPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -205,7 +205,7 @@
               </td>
               <td class="py-2 px-3">
                 <div class="font-bold text-slate-800">{{ item.name }}</div>
-                <div class="text-xs text-blue-600 font-mono">{{ item.oem }}</div>
+                <div class="text-xs text-accent font-mono">{{ item.oem }}</div>
               </td>
               <td class="py-2 px-3"><span class="bg-rose-50 text-rose-600 px-2.5 py-1 rounded-lg text-xs font-bold">{{ item.current_stock }} {{ tExt.unit }}</span></td>
               <td class="py-2 px-3 font-mono font-bold text-emerald-600">+ {{ item.suggested_qty }}</td>
@@ -262,7 +262,7 @@
           </div>
           <div>
             <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">PO NO.</p>
-            <p class="font-mono font-bold text-blue-600">{{ currentOrderDetail.po_no }}</p>
+            <p class="font-mono font-bold text-accent">{{ currentOrderDetail.po_no }}</p>
           </div>
         </div>
 
@@ -278,7 +278,7 @@
         
         <div class="flex justify-between items-center pt-4 border-t border-slate-200">
           <span class="text-sm font-bold text-slate-800">{{ tExt.totalAmount }}</span>
-          <span class="text-xl font-black font-mono text-blue-600">$ {{ currentOrderDetail.total_amount_usd.toFixed(2) }}</span>
+          <span class="text-xl font-black font-mono text-accent">$ {{ currentOrderDetail.total_amount_usd.toFixed(2) }}</span>
         </div>
       </div>
       <template #footer>
@@ -289,7 +289,7 @@
           </button>
           <div v-if="currentOrderDetail?.status === 'PENDING'" class="flex items-center gap-3">
             <button @click="cancelOrder(currentOrderDetail.id)" class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ tExt.btnVoid }}</button>
-            <button @click="receiveOrder(currentOrderDetail.id)" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer">{{ tExt.btnReceive }}</button>
+            <button @click="receiveOrder(currentOrderDetail.id)" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer">{{ tExt.btnReceive }}</button>
           </div>
         </div>
       </template>
@@ -307,7 +307,7 @@
           <div class="col-span-2">
             <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ tExt.colPart }}</p>
             <p class="font-bold text-slate-800">{{ currentSuggestion.name }}</p>
-            <p class="font-mono text-blue-600 text-xs mt-1">{{ currentSuggestion.oem }}</p>
+            <p class="font-mono text-accent text-xs mt-1">{{ currentSuggestion.oem }}</p>
           </div>
           <div>
             <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ tExt.colStock }}</p>
@@ -353,14 +353,14 @@
                     :placeholder="tExt.phSupplier" 
                   />
                   <div v-if="showSupplierDropdown" class="absolute top-full left-0 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 py-1 max-h-48 overflow-y-auto">
-                    <div v-for="sup in filteredSuppliers" :key="sup.id" @mousedown.prevent="selectSupplier(sup)" class="px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer transition-colors flex items-center justify-between border-b border-slate-50 dark:border-slate-700 last:border-0">
+                    <div v-for="sup in filteredSuppliers" :key="sup.id" @mousedown.prevent="selectSupplier(sup)" class="px-4 py-2.5 hover:bg-accent/10 dark:hover:bg-slate-700 cursor-pointer transition-colors flex items-center justify-between border-b border-slate-50 dark:border-slate-700 last:border-0">
                       <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ sup.name }}</div>
                       <div class="text-[10px] text-slate-400 font-mono">{{ tExt.colSupplierDebt }}: ${{ sup.debt_usd || 0 }}</div>
                     </div>
                     <div v-if="poForm.supplier_name.trim() && filteredSuppliers.length === 0" class="px-4 py-3 text-center text-xs text-slate-400">{{ tExt.noSupplierFound }}</div>
                   </div>
                 </div>
-                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 mb-0.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0">➕ {{ tExt.newSupBtn }}</button>
+                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 mb-0.5 bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent border border-blue-200 dark:border-blue-800 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0">➕ {{ tExt.newSupBtn }}</button>
               </div>
             </div>
             
@@ -375,7 +375,7 @@
               <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">{{ tExt.poItemsLabel }}</label>
               <div class="flex items-center gap-3">
                 <button @click="$emit('navigate', 'parts')" class="text-xs text-amber-600 hover:text-amber-700 hover:underline cursor-pointer">{{ tExt.findPartLink }}</button>
-                <button @click="addPOLine" class="text-xs bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">➕ {{ tExt.addLineBtn }}</button>
+                <button @click="addPOLine" class="text-xs bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 text-accent dark:text-accent px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">➕ {{ tExt.addLineBtn }}</button>
               </div>
             </div>
             
@@ -393,7 +393,7 @@
                       :placeholder="tExt.searchPartDropdown" 
                     />
                     <div class="max-h-64 overflow-y-auto space-y-1">
-                      <div v-for="p in getFilteredParts(item.searchQuery)" :key="p.id" @click="selectPartForItem(item, p)" class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer transition-colors border border-transparent hover:border-blue-200">
+                      <div v-for="p in getFilteredParts(item.searchQuery)" :key="p.id" @click="selectPartForItem(item, p)" class="p-2 rounded-lg hover:bg-accent/10 dark:hover:bg-slate-700 cursor-pointer transition-colors border border-transparent hover:border-blue-200">
                         <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ p.oem }} - {{ p.name }}</div>
                         <div class="text-[10px] text-slate-500 font-mono">{{ tExt.stockLabel }}: {{ p.stock }} | {{ tExt.lastPriceLabel }}: ${{ p.cost_price || 0 }}</div>
                       </div>
@@ -428,10 +428,10 @@
           </div>
         </div>
         <div class="flex items-center justify-between border-t border-slate-200/60 dark:border-slate-700 p-6 pt-4 bg-slate-50/50 dark:bg-slate-800/50 shrink-0 rounded-b-3xl">
-          <div class="text-sm text-slate-600 dark:text-slate-400">{{ tExt.poTotalLabel }}: <span class="font-black text-blue-600 dark:text-blue-400 text-xl font-mono">$ {{ totalPOAmount.toFixed(2) }}</span></div>
+          <div class="text-sm text-slate-600 dark:text-slate-400">{{ tExt.poTotalLabel }}: <span class="font-black text-accent dark:text-accent text-xl font-mono">$ {{ totalPOAmount.toFixed(2) }}</span></div>
           <div class="flex items-center gap-3">
             <button @click="isCreateModalVisible = false" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-            <button @click="submitPO" :disabled="isSubmittingPO" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">{{ isSubmittingPO ? tExt.creating : tExt.createPoBtn }}</button>
+            <button @click="submitPO" :disabled="isSubmittingPO" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">{{ isSubmittingPO ? tExt.creating : tExt.createPoBtn }}</button>
           </div>
         </div>
       </div>
@@ -460,7 +460,7 @@
           <button @click="isSupplierModalVisible = false" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">
             {{ t.common.cancel }}
           </button>
-          <button @click="saveNewSupplier" :disabled="isSavingSupplier" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
+          <button @click="saveNewSupplier" :disabled="isSavingSupplier" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
             {{ isSavingSupplier ? '...' : tExt.saveSupBtn }}
           </button>
         </div>

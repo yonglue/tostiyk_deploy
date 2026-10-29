@@ -12,11 +12,11 @@
       
       <div class="flex items-center gap-3">
         <span class="text-xs font-bold text-slate-600">{{ tExt.selectDate }}:</span>
-        <input type="date" v-model="selectedDate" class="bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 outline-none focus:border-blue-500 font-mono font-bold text-slate-700" />
-        <button @click="selectedDate = todayStr" :class="selectedDate === todayStr ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+        <input type="date" v-model="selectedDate" class="bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 outline-none focus:border-accent font-mono font-bold text-slate-700" />
+        <button @click="selectedDate = todayStr" :class="selectedDate === todayStr ? 'bg-accent text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
           {{ tExt.todayBtn }}
         </button>
-        <button @click="selectedDate = ''" :class="selectedDate === '' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+        <button @click="selectedDate = ''" :class="selectedDate === '' ? 'bg-accent text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
           {{ tExt.allBtn }}
         </button>
       </div>
@@ -92,7 +92,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
-            <tr v-for="(r, i) in shiftRecords" :key="i" class="hover:bg-blue-50/30 transition-colors">
+            <tr v-for="(r, i) in shiftRecords" :key="i" class="hover:bg-accent/10/30 transition-colors">
               <td class="py-4 px-6 font-mono text-xs text-slate-500">{{ r.closed_at }}</td>
               <td class="py-4 px-6 font-bold text-slate-800">{{ r.operator }}</td>
               <td class="py-4 px-6 font-mono text-slate-600">$ {{ formatNum(r.system_cash_usd) }}</td>

@@ -17,11 +17,11 @@
           :key="item.oem" 
           @click="$emit('select-item', index)"
           :class="[
-            selectedCartIndex === index ? 'bg-blue-50 dark:bg-blue-900/30 border-l-4 border-l-blue-500' : (index % 2 === 0 ? 'bg-white dark:bg-slate-800/80' : 'bg-slate-50 dark:bg-slate-900/70 border-l-4 border-l-transparent'),
-            'border-b border-slate-200 dark:border-slate-700/70 hover:bg-blue-50/50 transition-all shadow-2xs cursor-pointer'
+            selectedCartIndex === index ? 'bg-accent/10 dark:bg-blue-900/30 border-l-4 border-l-blue-500' : (index % 2 === 0 ? 'bg-white dark:bg-slate-800/80' : 'bg-slate-50 dark:bg-slate-900/70 border-l-4 border-l-transparent'),
+            'border-b border-slate-200 dark:border-slate-700/70 hover:bg-accent/10/50 transition-all shadow-2xs cursor-pointer'
           ]"
         >
-          <td class="py-3 px-3 font-mono font-black text-blue-600 text-sm">{{ item.oem }}</td>
+          <td class="py-3 px-3 font-mono font-black text-accent text-sm">{{ item.oem }}</td>
           <td class="py-3 px-3 text-slate-900 dark:text-white font-bold">{{ item.name }}</td>
           <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold">
             <div>${{ item.price.toFixed(2) }}</div>

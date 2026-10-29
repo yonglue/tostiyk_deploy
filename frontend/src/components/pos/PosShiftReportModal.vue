@@ -83,7 +83,7 @@ const submit = () => {
       </div>
 
       <!-- 2. 实盘录入 -->
-      <div class="bg-blue-50/50 dark:bg-blue-900/10 p-5 rounded-xl border border-blue-200/50 dark:border-blue-900/30 space-y-4 font-mono shadow-sm">
+      <div class="bg-accent/10/50 dark:bg-blue-900/10 p-5 rounded-xl border border-blue-200/50 dark:border-blue-900/30 space-y-4 font-mono shadow-sm">
         <div class="text-xs font-black text-accent uppercase tracking-wider border-b border-blue-200/50 pb-2 flex justify-between items-center">
           <span>{{ tExt.shiftActualTitle }}</span>
           <span class="text-[11px] font-normal text-secondary">{{ tExt.shiftActualDesc }}</span>

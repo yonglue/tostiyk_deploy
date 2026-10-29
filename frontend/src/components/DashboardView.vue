@@ -17,7 +17,7 @@
       <div class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-blue-400 dark:hover:border-blue-600 transition-colors duration-200 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t.dashboard.assetTitle }}</span>
-          <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-accent/100/10 text-accent dark:text-accent flex items-center justify-center">
             <Package :size="20" />
           </div>
         </div>
@@ -97,7 +97,7 @@
         <button 
           @click="$emit('navigate', 'pos')" 
           :title="tExt.btnPos"
-          class="bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
+          class="bg-accent/10/60 dark:bg-blue-900/20 hover:bg-accent dark:hover:bg-accent hover:text-white text-accent dark:text-accent border border-blue-200/80 dark:border-blue-800 p-4 rounded-lg font-bold text-xs flex flex-col items-center gap-2 transition-all cursor-pointer shadow-sm hover:border-transparent hover:shadow-md group"
         >
           <span class="text-2xl group-hover:scale-110 transition-transform">🛒</span>
           <span>{{ tExt.btnPos }}</span>

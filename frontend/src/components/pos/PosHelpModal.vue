@@ -16,19 +16,19 @@
         
         <!-- 搜索与点选 -->
         <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-2xs">
-          <div class="font-extrabold text-blue-600 uppercase tracking-wider mb-1 text-sm">🔍 {{ tExt.groupSearch }}</div>
+          <div class="font-extrabold text-accent uppercase tracking-wider mb-1 text-sm">🔍 {{ tExt.groupSearch }}</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-700">
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.hkFocus }}</span>
-              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-blue-600 font-bold">{{ tExt.keySlash }}</span>
+              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-accent font-bold">{{ tExt.keySlash }}</span>
             </div>
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.hkSelectResult }}</span>
-              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-blue-600 font-bold">↑ / ↓</span>
+              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-accent font-bold">↑ / ↓</span>
             </div>
             <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
               <span class="font-bold">{{ tExt.hkConfirmAdd }}</span>
-              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-blue-600 font-bold">{{ tExt.keyEnter }}</span>
+              <span class="font-mono bg-slate-100 px-2.5 py-1 rounded text-accent font-bold">{{ tExt.keyEnter }}</span>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@
             </div>
           </div>
           <div class="bg-white p-3 rounded-xl border border-slate-200/80 text-slate-600 text-center shadow-2xs mt-2">
-            💡 {{ tExt.tipAutoFill1 }} <span class="font-mono font-bold text-blue-600">Space</span> {{ tExt.tipAutoFill2 }} <span class="font-mono font-bold text-blue-600">[=]</span> {{ tExt.tipAutoFill3 }}
+            💡 {{ tExt.tipAutoFill1 }} <span class="font-mono font-bold text-accent">Space</span> {{ tExt.tipAutoFill2 }} <span class="font-mono font-bold text-accent">[=]</span> {{ tExt.tipAutoFill3 }}
           </div>
         </div>
 

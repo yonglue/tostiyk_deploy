@@ -12,7 +12,7 @@
       </div>
       <div class="relative">
         <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
-        <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索客户名称、店铺...' : isEs ? 'Buscar cliente o tienda...' : 'Search client or store...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
+        <input v-model="searchQuery" type="text" placeholder="{{ isZh ? '搜索客户名称、店铺...' : isEs ? 'Buscar cliente o tienda...' : 'Search client or store...' }}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-accent dark:text-white transition-colors" />
       </div>
     </div>
 
@@ -93,7 +93,7 @@
           class="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-[0.98] transition-transform"
         >
           <HandCoins :size="18" />{{ isZh ? '极速收款' : isEs ? 'Cobro rápido' : 'Quick Collection' }}</button>
-        <a v-if="selectedClient.phone" :href="`tel:${selectedClient.phone}`" class="w-14 h-[50px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl font-bold flex items-center justify-center active:scale-[0.98] transition-transform">
+        <a v-if="selectedClient.phone" :href="`tel:${selectedClient.phone}`" class="w-14 h-[50px] bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent rounded-xl font-bold flex items-center justify-center active:scale-[0.98] transition-transform">
           <Phone :size="20" />
         </a>
         <a v-if="selectedClient.phone" :href="`https://wa.me/${selectedClient.phone.replace(/[^0-9]/g, '')}`" target="_blank" class="w-14 h-[50px] bg-[#25D366]/10 text-[#25D366] rounded-xl font-bold flex items-center justify-center active:scale-[0.98] transition-transform">

@@ -15,9 +15,9 @@
             @click="isDatePickerVisible = !isDatePickerVisible"
             class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 rounded-md px-3 py-1.5 cursor-pointer shadow-sm transition-colors select-none"
           >
-            <span class="text-sm font-bold font-mono text-blue-600 dark:text-blue-400">{{ startDate }}</span>
+            <span class="text-sm font-bold font-mono text-accent dark:text-accent">{{ startDate }}</span>
             <span class="text-slate-400 dark:text-slate-500 text-xs font-bold">{{ tExt.to }}</span>
-            <span class="text-sm font-bold font-mono text-blue-600 dark:text-blue-400">{{ endDate }}</span>
+            <span class="text-sm font-bold font-mono text-accent dark:text-accent">{{ endDate }}</span>
             <svg class="w-4 h-4 text-slate-400 dark:text-slate-500 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
           </div>
 
@@ -45,8 +45,8 @@
                 @click.stop="handleDateClick(day)"
                 :class="[
                   'h-8 rounded-lg text-xs font-bold transition-all flex items-center justify-center',
-                  isSelected(day) ? 'bg-blue-600 text-white shadow-md' : 
-                  isToday(day) ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  isSelected(day) ? 'bg-accent text-white shadow-md' : 
+                  isToday(day) ? 'text-accent bg-accent/10 dark:bg-blue-900/30 dark:text-accent' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 ]"
               >
                 {{ day }}
@@ -54,7 +54,7 @@
             </div>
 
             <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between">
-              <button @click.stop="setThisMonth" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">{{ tExt.thisMonth }}</button>
+              <button @click.stop="setThisMonth" class="text-xs font-bold text-accent dark:text-accent hover:underline">{{ tExt.thisMonth }}</button>
               <button @click.stop="isDatePickerVisible = false" class="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">{{ tExt.close }}</button>
             </div>
           </div>
@@ -74,7 +74,7 @@
       <!-- 营收 -->
       <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2 transition-colors duration-200 hover:border-blue-400 dark:hover:border-blue-500 cursor-default">
         <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ tExt.revenue }}</p>
-        <h3 class="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono">$ {{ formatNum(analytics.total_revenue_usd) }}</h3>
+        <h3 class="text-2xl font-black text-accent dark:text-accent font-mono">$ {{ formatNum(analytics.total_revenue_usd) }}</h3>
         <p class="text-xs text-slate-400 dark:text-slate-500 font-mono">Bs. {{ formatNum(analytics.total_revenue_usd * bcvRate) }}</p>
       </div>
 
@@ -124,7 +124,7 @@
           <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base flex items-center gap-2">
             <span>💳</span> {{ tExt.paymentBreakdown }}
           </h3>
-          <span class="text-xs bg-blue-500/10 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-200/60 dark:border-blue-500/30 px-3 py-1 rounded-xl font-mono font-bold shadow-2xs">
+          <span class="text-xs bg-accent/100/10 dark:bg-accent/100/20 text-accent dark:text-accent border border-blue-200/60 dark:border-blue-500/30 px-3 py-1 rounded-xl font-mono font-bold shadow-2xs">
             BCV: {{ bcvRate }}
           </span>
         </div>
@@ -158,19 +158,19 @@
             <tr 
               v-for="row in dailyAuditList" 
               :key="row.id" 
-              class="hover:bg-blue-50/60 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer group border-l-4 border-transparent hover:border-blue-500"
+              class="hover:bg-accent/10/60 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer group border-l-4 border-transparent hover:border-blue-500"
             >
-              <td class="py-2 px-3 font-mono font-bold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+              <td class="py-2 px-3 font-mono font-bold text-accent dark:text-accent group-hover:text-accent dark:group-hover:text-blue-300 transition-colors">
                 #{{ row.id }}
               </td>
               <td class="py-2 px-3 text-xs text-slate-500 dark:text-slate-400 font-mono">{{ row.date }}</td>
               <td class="py-2 px-3">
-                <span class="bg-blue-500/10 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-200/60 dark:border-blue-500/30 px-2.5 py-1 rounded-lg text-xs font-bold font-mono shadow-2xs group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                <span class="bg-accent/100/10 dark:bg-accent/100/20 text-accent dark:text-accent border border-blue-200/60 dark:border-blue-500/30 px-2.5 py-1 rounded-lg text-xs font-bold font-mono shadow-2xs group-hover:bg-accent dark:group-hover:bg-accent/100 group-hover:text-white transition-colors">
                   {{ getPaymentMethodLabel(row.payment_method) }}
                 </span>
               </td>
               <td class="py-2 px-3 font-mono font-bold text-slate-900 dark:text-slate-100">$ {{ formatNum(row.revenue_usd) }}</td>
-              <td class="py-2 px-3 font-mono text-slate-600 dark:text-slate-300 font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Bs. {{ formatNum(row.revenue_usd * bcvRate) }}</td>
+              <td class="py-2 px-3 font-mono text-slate-600 dark:text-slate-300 font-bold group-hover:text-accent dark:group-hover:text-blue-400 transition-colors">Bs. {{ formatNum(row.revenue_usd * bcvRate) }}</td>
               <td class="py-2 px-3 font-mono text-slate-500 dark:text-slate-400 font-bold">$ {{ formatNum(row.cost_usd) }}</td>
               <td class="py-2 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
                 $ {{ formatNum(row.profit_usd) }}

@@ -14,12 +14,12 @@
       <div class="flex bg-slate-200/60 dark:bg-slate-800 p-1 rounded-xl shrink-0">
         <button 
           @click="activeTab = 'audit'"
-          :class="activeTab === 'audit' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
+          :class="activeTab === 'audit' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
         >{{ isZh ? '盘点操作' : isEs ? 'Operación' : 'Operation' }}</button>
         <button 
           @click="activeTab = 'history'; fetchHistory()"
-          :class="activeTab === 'history' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
+          :class="activeTab === 'history' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
         >{{ isZh ? '历史盘点记录' : isEs ? 'Historial' : 'History' }}</button>
       </div>
@@ -51,7 +51,7 @@
               v-model="searchQuery" 
               type="text" 
               :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" 
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 dark:text-white"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-accent dark:text-white"
             />
           </div>
           
@@ -65,7 +65,7 @@
           <button 
             @click="submitAudit" 
             :disabled="hasNoChanges || isSubmitting"
-            class="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2"
+            class="bg-accent hover:bg-accent-hover disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2"
           >
             <span>💾</span> {{ isSubmitting ? '提交中...' : '提交盘点结果' }}
           </button>
@@ -99,10 +99,10 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
-            <tr v-for="item in paginatedParts" :key="item.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
+            <tr v-for="item in paginatedParts" :key="item.id" class="hover:bg-accent/10/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="py-4 px-6">
                 <div class="font-bold text-slate-800 dark:text-slate-200">{{ item.name }}</div>
-                <div class="text-xs font-mono text-blue-600 dark:text-blue-400 mt-1">{{ item.oem }} <span class="text-slate-400 dark:text-slate-500 ml-1">| {{ item.brand }}</span></div>
+                <div class="text-xs font-mono text-accent dark:text-accent mt-1">{{ item.oem }} <span class="text-slate-400 dark:text-slate-500 ml-1">| {{ item.brand }}</span></div>
                 <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">进价: ${{ (item.cost_price || 0).toFixed(2) }}</div>
               </td>
               <td class="py-4 px-6 text-center font-mono font-bold text-slate-500 dark:text-slate-400">
@@ -114,7 +114,7 @@
                   type="number" 
                   min="0"
                   :placeholder="isZh ? '未盘' : isEs ? 'No auditado' : 'Not audited'"
-                  class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                  class="w-24 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 font-mono font-black text-slate-900 dark:text-white outline-none focus:border-accent focus:ring-2 focus:ring-blue-500/20 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                 />
               </td>
               <td class="py-4 px-6 text-center font-mono font-black">
@@ -128,7 +128,7 @@
                   v-model="reasons[item.id]" 
                   type="text" 
                   :placeholder="isZh ? '例如：破损、丢失...' : isEs ? 'Ej: Dañado, perdido...' : 'Ex: Damaged, lost...'"
-                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-blue-500 dark:text-white disabled:opacity-50 dark:disabled:bg-slate-800"
+                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-accent dark:text-white disabled:opacity-50 dark:disabled:bg-slate-800"
                   :disabled="auditForm[item.id] === null || auditForm[item.id] === '' || getDiff(item) === 0"
                 />
               </td>
@@ -154,12 +154,12 @@
               :max="totalPages" 
               v-model.number="jumpPageInput" 
               @keyup.enter="handleJumpPage"
-              class="w-12 text-center font-mono font-bold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-blue-500 text-xs" 
+              class="w-12 text-center font-mono font-bold text-accent dark:text-accent bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-accent text-xs" 
             />
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} 页</span>
             <button 
               @click="handleJumpPage" 
-              class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
+              class="bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-accent dark:text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]"
             >{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
           </div>
 
@@ -202,10 +202,10 @@
             <tr v-else-if="historyList.length === 0" class="text-center">
               <td colspan="5" class="py-16 text-slate-400 text-xs font-bold"><ClipboardList :size="40" class="mx-auto text-slate-300 dark:text-slate-600 mb-3" stroke-width="1.5" />{{ isZh ? '暂无历史盘点记录' : isEs ? 'Sin historial de inventario' : 'No inventory history' }}</td>
             </tr>
-            <tr v-for="tx in historyList" :key="tx.id" class="hover:bg-blue-50/30 dark:hover:bg-slate-700/50 transition-colors">
+            <tr v-for="tx in historyList" :key="tx.id" class="hover:bg-accent/10/30 dark:hover:bg-slate-700/50 transition-colors">
               <td class="py-4 px-6">
                 <div class="font-mono text-xs text-slate-600 dark:text-slate-400">{{ tx.timestamp }}</div>
-                <div class="text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-1">批次: {{ parseTxInfo(tx.customer_or_supplier).batch }}</div>
+                <div class="text-[10px] text-accent dark:text-accent font-bold mt-1">批次: {{ parseTxInfo(tx.customer_or_supplier).batch }}</div>
                 <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">经办: {{ parseTxInfo(tx.customer_or_supplier).operator }}</div>
               </td>
               <td class="py-4 px-6">

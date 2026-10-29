@@ -5,7 +5,7 @@
       <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3">{{ isZh ? '库存产品' : isEs ? 'Productos en stock' : 'Products in Stock' }}</h1>
       <div class="relative">
         <Search :size="18" class="absolute left-3.5 top-3 text-slate-400" />
-        <input v-model="searchQuery" type="text" :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white transition-colors" />
+        <input v-model="searchQuery" type="text" :placeholder="isZh ? '搜索 OEM 或 配件名称...' : isEs ? 'Buscar OEM o nombre...' : 'Search OEM or name...'" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-accent dark:text-white transition-colors" />
       </div>
     </div>
 
@@ -22,7 +22,7 @@
       >
         <div class="flex justify-between items-start">
           <div class="flex-1 min-w-0 pr-3">
-            <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">{{ part.brand || 'GENERAL' }}</span>
+            <span class="text-[10px] font-bold text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-0.5 rounded">{{ part.brand || 'GENERAL' }}</span>
             <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 mt-2 truncate">{{ part.name }}</h3>
             <p class="text-xs font-mono text-slate-400 mt-0.5">{{ part.oem }}</p>
           </div>
@@ -83,7 +83,7 @@
 
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">{{ selectedPart.brand || 'GENERAL' }}</span>
+            <span class="text-xs font-bold text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-0.5 rounded">{{ selectedPart.brand || 'GENERAL' }}</span>
             <span class="text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ selectedPart.category || '未分类' }}</span>
           </div>
           <h1 class="text-xl font-black text-slate-800 dark:text-slate-100">{{ selectedPart.name }}</h1>

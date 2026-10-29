@@ -30,9 +30,9 @@
               v-for="q in quotations" 
               :key="q.id" 
               @click="openDrawer(q)"
-              class="border-b border-slate-100 hover:bg-blue-50/40 transition-colors cursor-pointer group"
+              class="border-b border-slate-100 hover:bg-accent/10/40 transition-colors cursor-pointer group"
             >
-              <td class="py-4 px-6 font-mono font-black text-blue-600 group-hover:text-blue-700 transition-colors">
+              <td class="py-4 px-6 font-mono font-black text-accent group-hover:text-accent transition-colors">
                 {{ q.quotation_no }}
               </td>
               <td class="py-4 px-6 text-slate-900 font-bold">👤 {{ q.client_name }}</td>
@@ -90,7 +90,7 @@
         <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 grid grid-cols-2 gap-4 text-sm">
           <div class="col-span-2 pb-3 border-b border-slate-200/60">
             <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ tExt.colQuoteNo }}</p>
-            <p class="font-mono text-lg font-black text-blue-600">{{ currentQuote.quotation_no }}</p>
+            <p class="font-mono text-lg font-black text-accent">{{ currentQuote.quotation_no }}</p>
           </div>
           <div>
             <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ tExt.colClient }}</p>

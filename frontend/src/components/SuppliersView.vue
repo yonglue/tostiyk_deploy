@@ -13,7 +13,7 @@
         <div class="flex items-center gap-3">
           <transition name="fade">
             <div v-if="selectedIds.length > 0" class="flex items-center gap-3 mr-2">
-              <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800">
+              <span class="text-xs font-bold text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800">
                 {{ tExt.selected }} {{ selectedIds.length }} {{ tExt.items }}
               </span>
               <!-- 🌟 增加权限判断 -->
@@ -37,7 +37,7 @@
           <button
             v-if="hasPermission('procurement:manage')"
             @click="openDetailDrawer(null)"
-            class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
+            class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
           >
             <Plus :size="16" />
             <span>{{ tExt.addBtn }}</span>
@@ -55,7 +55,7 @@
                   type="checkbox" 
                   :checked="isAllSelected" 
                   @change="toggleSelectAll" 
-                  class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </th>
               <th class="py-3.5 px-6">{{ tExt.colName }}</th>
@@ -76,7 +76,7 @@
               @click="openDetailDrawer(s)"
               :class="[
                 'transition-colors cursor-pointer',
-                selectedIds.includes(s.id) ? 'bg-blue-50/60 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'hover:bg-slate-50/80 dark:hover:bg-slate-700/50'
+                selectedIds.includes(s.id) ? 'bg-accent/10/60 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'hover:bg-slate-50/80 dark:hover:bg-slate-700/50'
               ]"
             >
               <td class="py-4 px-4 text-center" @click.stop>
@@ -84,7 +84,7 @@
                   type="checkbox" 
                   :checked="selectedIds.includes(s.id)" 
                   @change="toggleSelect(s.id)"
-                  class="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" 
+                  class="rounded border-slate-300 dark:border-slate-600 text-accent focus:ring-blue-500 w-4 h-4 cursor-pointer" 
                 />
               </td>
               <td class="py-4 px-6 font-bold text-slate-900 dark:text-slate-200">🏢 {{ s.name }}</td>
@@ -97,7 +97,7 @@
                 <div class="flex items-center justify-center gap-2">
                   <!-- 🌟 增加权限判断 -->
                   <template v-if="hasPermission('procurement:manage')">
-                    <button @click="downloadStatement(s)" class="text-xs bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer mr-2">{{ isZh ? '📄 对账单' : isEs ? '📄 Estado de cuenta' : '📄 Statement' }}</button>
+                    <button @click="downloadStatement(s)" class="text-xs bg-accent/10 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-accent dark:text-accent border border-blue-200 dark:border-blue-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer mr-2">{{ isZh ? '📄 对账单' : isEs ? '📄 Estado de cuenta' : '📄 Statement' }}</button>
                     <button v-if="(s.debt_usd || 0) > 0" @click="openDrawerPayMode(s)" class="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">💰 {{ tExt.payBtn }}</button>
                     <button @click="openDrawerEditMode(s)" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ t.common.edit }}</button>
                     <button @click="promptDelete(s)" class="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">{{ t.common.delete }}</button>
@@ -121,9 +121,9 @@
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-2 py-1 shadow-2xs">
             <span class="text-slate-400 text-[11px]">{{ tExt.jumpTo }}</span>
-            <input type="number" min="1" :max="totalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpPage" class="w-12 text-center font-mono font-bold text-blue-600 dark:text-blue-400 bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-blue-500 text-xs" />
+            <input type="number" min="1" :max="totalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpPage" class="w-12 text-center font-mono font-bold text-accent dark:text-accent bg-slate-50 dark:bg-slate-900 rounded-lg py-1 outline-none border border-slate-200 dark:border-slate-600 focus:border-accent text-xs" />
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} {{ tExt.page }}</span>
-            <button @click="handleJumpPage" class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
+            <button @click="handleJumpPage" class="bg-accent/10 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800 text-accent dark:text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
 
           <div class="flex items-center gap-1.5">
@@ -154,7 +154,7 @@
             >
               💰 {{ tExt.payBtn }}
             </button>
-            <button @click="switchToEdit" class="text-xs bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
+            <button @click="switchToEdit" class="text-xs bg-accent/10 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-accent dark:text-accent px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
               {{ t.common.edit }}
             </button>
             <button @click="promptDelete(currentSupplier)" class="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer">
@@ -234,7 +234,7 @@
           <button @click="switchToRead" class="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">
             {{ t.common.cancel }}
           </button>
-          <button v-if="drawerMode === 'edit'" @click="saveSupplier" :disabled="isSubmitting" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer disabled:opacity-50">
+          <button v-if="drawerMode === 'edit'" @click="saveSupplier" :disabled="isSubmitting" class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer disabled:opacity-50">
             {{ isSubmitting ? tExt.saving : t.common.save }}
           </button>
           <button v-if="drawerMode === 'pay'" @click="submitPay" :disabled="isSubmittingPay" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer disabled:opacity-50">

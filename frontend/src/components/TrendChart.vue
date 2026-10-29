@@ -2,10 +2,10 @@
   <div class="bg-white dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-4 border border-slate-200/50 dark:border-slate-700/50 shadow-sm">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-        <span class="w-1.5 h-3.5 bg-blue-500 rounded-full inline-block"></span>
+        <span class="w-1.5 h-3.5 bg-accent/100 rounded-full inline-block"></span>
         {{ isZh ? '近 7 天销售趋势' : isEs ? 'Tendencia de ventas 7 días' : '7-day Sales Trend' }}
       </h3>
-      <span class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-md font-bold">USD</span>
+      <span class="text-[10px] bg-accent/10 dark:bg-blue-900/30 text-accent dark:text-accent px-2 py-0.5 rounded-md font-bold">USD</span>
     </div>
     
     <div v-if="isLoading" class="h-32 flex items-center justify-center text-xs text-slate-400">

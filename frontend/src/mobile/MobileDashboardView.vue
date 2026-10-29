@@ -44,7 +44,7 @@ cat > frontend/src/mobile/MobileDashboardView.vue << 'EOF'
           <!-- 卡片 1：库存总资产 -->
           <div class="w-[100vw] shrink-0 snap-center px-5 h-[170px]">
             <div class="h-full flex flex-col justify-between relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-blue-950 dark:via-slate-900 dark:to-slate-900 p-6 shadow-xl">
-              <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-blue-500/20 blur-3xl"></div>
+              <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-accent/100/20 blur-3xl"></div>
               <div class="relative flex flex-col justify-between h-full">
                 <div>
                   <p class="text-[11px] font-bold text-blue-300/80 uppercase tracking-widest">{{ isZh ? '库存总资产 (USD)' : isEs ? 'Valor del inventario (USD)' : 'Total Inventory (USD)' }}</p>

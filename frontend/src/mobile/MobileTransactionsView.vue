@@ -10,7 +10,7 @@
         <button 
           v-for="tab in tabs" :key="tab.value"
           @click="switchTab(tab.value)"
-          :class="currentTab === tab.value ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'"
+          :class="currentTab === tab.value ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400'"
           class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all"
         >
           {{ tab.label }}
@@ -84,7 +84,7 @@
         <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-xs font-semibold text-slate-500">OEM</span>
-            <span class="font-mono font-bold text-blue-600 dark:text-blue-400">{{ selectedTx.part_oem }}</span>
+            <span class="font-mono font-bold text-accent dark:text-accent">{{ selectedTx.part_oem }}</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-xs font-semibold text-slate-500">{{ isZh ? '名称' : isEs ? 'Nombre' : 'Name' }}</span>

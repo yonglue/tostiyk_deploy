@@ -16,7 +16,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-2">
         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ tExt.totalTx }}</p>
-        <h3 class="text-2xl font-black text-blue-600 font-mono" data-testid="tx-total">
+        <h3 class="text-2xl font-black text-accent font-mono" data-testid="tx-total">
           {{ meta.total || 0 }} <span class="text-sm">{{ tExt.unit }}</span>
         </h3>
       </div>
@@ -40,7 +40,7 @@
         <button
           data-testid="tx-tab-all"
           @click="switchTab('ALL')"
-          :class="currentTab === 'ALL' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          :class="currentTab === 'ALL' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabAll }}
@@ -48,7 +48,7 @@
         <button
           data-testid="tx-tab-out"
           @click="switchTab('OUT')"
-          :class="currentTab === 'OUT' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          :class="currentTab === 'OUT' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabOut }}
@@ -56,7 +56,7 @@
         <button
           data-testid="tx-tab-in"
           @click="switchTab('IN')"
-          :class="currentTab === 'IN' ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
+          :class="currentTab === 'IN' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
           class="px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer"
         >
           {{ tExt.tabIn }}
@@ -67,7 +67,7 @@
         <button @click="$emit('export-transactions')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 px-3 py-1.5 rounded-md text-sm font-bold shadow-xs transition-all cursor-pointer">
           📥 {{ tExt.exportExcel }}
         </button>
-        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
+        <button @click="$emit('open-tx-modal')" class="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer">
           ➕ {{ tExt.newTx }}
         </button>
       </div>
@@ -80,7 +80,7 @@
           <thead>
             <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
               <th class="py-2 px-3 w-12 text-center">
-                <input type="checkbox" class="rounded border-slate-300 text-blue-600 w-4 h-4 pointer-events-none" />
+                <input type="checkbox" class="rounded border-slate-300 text-accent w-4 h-4 pointer-events-none" />
               </th>
               <th class="py-2 px-3">{{ tExt.colTime }}</th>
               <th class="py-2 px-3">{{ tExt.colOem }}</th>
@@ -94,12 +94,12 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
-            <tr v-for="tx in transactionsList" :key="tx.id" class="hover:bg-blue-50/30 transition-colors cursor-pointer group" @click="openDetailDrawer(tx)">
+            <tr v-for="tx in transactionsList" :key="tx.id" class="hover:bg-accent/10/30 transition-colors cursor-pointer group" @click="openDetailDrawer(tx)">
               <td class="py-2 px-3 text-center" @click.stop>
-                <input type="checkbox" class="rounded border-slate-300 text-blue-600 w-4 h-4" />
+                <input type="checkbox" class="rounded border-slate-300 text-accent w-4 h-4" />
               </td>
               <td class="py-2 px-3 text-xs text-slate-500 dark:text-slate-400 font-mono">{{ tx.timestamp }}</td>
-              <td class="py-2 px-3 font-mono font-bold text-blue-600">{{ tx.part_oem }}</td>
+              <td class="py-2 px-3 font-mono font-bold text-accent">{{ tx.part_oem }}</td>
               <td class="py-2 px-3 font-bold text-slate-800">{{ tx.part_name }}</td>
               <td class="py-2 px-3">
                 <span
@@ -148,7 +148,7 @@
             :key="p"
             :data-testid="`tx-page-${p}`"
             @click="gotoPage(p)"
-            :class="p === (meta.page || 1) ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-500 dark:border-blue-500 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'"
+            :class="p === (meta.page || 1) ? 'bg-accent text-white border-blue-600 dark:bg-accent/100 dark:border-blue-500 shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'"
             class="min-w-[34px] px-2 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer"
           >
             {{ p }}
@@ -192,7 +192,7 @@
         <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100 space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-xs font-semibold text-slate-500">{{ tExt.colOem }}</span>
-            <span class="font-mono font-bold text-blue-600">{{ currentTx.part_oem }}</span>
+            <span class="font-mono font-bold text-accent">{{ currentTx.part_oem }}</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-xs font-semibold text-slate-500">{{ tExt.colName }}</span>

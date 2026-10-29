@@ -40,7 +40,7 @@ const iconEl = computed(() => {
 
 const pillClass = computed(() => {
   const base = 'flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-bold transition-colors cursor-pointer select-none'
-  if (syncing.value) return base + ' bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+  if (syncing.value) return base + ' bg-accent/10 text-accent dark:bg-blue-900/30 dark:text-accent'
   if (!isOnline.value) return base + ' bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
   if (pendingCount.value > 0) return base + ' bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
   return base + ' hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400'
