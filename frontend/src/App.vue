@@ -164,6 +164,7 @@
             @exit-pos="handleExitPos" 
             @clear-cart="cartItems = []"
             @refresh-clients="fetchClients"
+            @go-to-pos="activeTab = 'pos'"
           />
 
           <BackupView 

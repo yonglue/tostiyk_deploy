@@ -2,16 +2,12 @@
 <template>
   <div class="fixed inset-0 bg-slate-950/25 backdrop-blur-md z-40 flex flex-col overflow-hidden text-slate-900 dark:text-white font-sans transition-all">
     
-    
     <!-- 🌟 正在出单的进度条遮罩层 -->
     <Teleport to="body">
       <div v-if="isProcessingCheckout" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center">
         <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4 border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-200">
-          <!-- 旋转圈圈 -->
           <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-          <!-- 提示文字 -->
           <div class="text-slate-900 dark:text-white font-black text-lg">正在打印发票...</div>
-          <!-- 进度条 -->
           <div class="w-56 h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
             <div class="h-full bg-emerald-500 rounded-full animate-progress"></div>
           </div>
@@ -58,8 +54,14 @@
       <!-- 左侧：商品搜索与购物车 -->
       <div class="flex-1 flex flex-col bg-white dark:bg-slate-800/75 backdrop-blur-xl rounded-xl border border-white/60 overflow-hidden shadow-lg">
         
-        <div class="p-2.5 border-b border-slate-200 dark:border-slate-700/60 flex gap-2 bg-white dark:bg-slate-800/40 backdrop-blur-md items-center w-full">
-          <div class="relative w-1/2">
+        <!-- 搜索框与客户框完美对齐 70/30 -->
+        <div class="p-2.5 border-b border-slate-200 dark:border-slate-700/60 flex gap-3 bg-white dark:bg-slate-800/40 backdrop-blur-md items-stretch w-full">
+          
+          <!-- 1. 搜索框 (70%) -->
+          <div class="flex-[7] relative flex items-center min-w-0">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Search class="h-5 w-5 text-slate-400" />
+            </div>
             <input
               data-testid="pos-search-input"  
               ref="searchInputRef"
@@ -67,41 +69,54 @@
               @keydown="handleSearchKeydown"
               type="text" 
               :placeholder="t.pos.searchPlaceholder" 
-              class="w-full bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 focus:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-accent  focus:ring-0 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-2xs transition-all font-bold"
+              class="w-full h-12 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 focus:bg-white dark:focus:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-accent focus:ring-2 focus:ring-accent/20 rounded-xl pl-11 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none font-mono shadow-sm transition-all font-bold"
             />
           </div>
           
-          <div class="w-1/4">
-            <div v-if="quoteClientName" class="flex items-center justify-between bg-accent/10/80 border border-blue-200/80 px-3 py-1.5 rounded-lg shadow-2xs w-full">
-              <div class="flex items-center gap-2 flex-1 truncate">
-                <span class="text-accent text-lg"></span>
-                <div class="truncate">
-                  <div class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">{{ quoteClientName }}</div>
-                  <div class="text-[10px] text-accent/70 font-semibold truncate">{{ tExt.clientSelected }}</div>
+          <!-- 2. 客户选择框 (30%) -->
+          <div class="flex-[3] flex items-center min-w-0">
+            <!-- 状态 1：已选择客户 (极简卡片) -->
+            <button 
+              v-if="quoteClientName" 
+              @click="openClientSearchModal"
+              type="button"
+              class="w-full h-12 flex items-center justify-between bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-100/80 dark:hover:bg-blue-900/40 border border-blue-200/60 dark:border-blue-700/50 px-3.5 rounded-xl shadow-sm transition-all group overflow-hidden cursor-pointer"
+            >
+              <div class="flex items-center gap-3 truncate w-full">
+                <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-800/50 flex items-center justify-center shrink-0">
+                  <User :size="16" class="text-blue-600 dark:text-blue-400" />
+                </div>
+                <div class="flex flex-col text-left truncate leading-tight flex-1">
+                  <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">
+                    {{ selectedClientDetails?.store_name || quoteClientName }}
+                  </div>
+                  <div class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-2 mt-0.5 truncate">
+                    <span v-if="selectedClientDetails?.store_name" class="truncate">👤 {{ quoteClientName }}</span>
+                    <span v-if="selectedClientDetails?.phone" class="truncate">📞 {{ selectedClientDetails.phone }}</span>
+                    <span v-if="selectedClientDetails?.debt > 0" class="text-rose-500 font-bold shrink-0">欠款: ${{ selectedClientDetails.debt.toFixed(2) }}</span>
+                  </div>
                 </div>
               </div>
-              <button @click="quoteClientName = ''; quoteClientId = null" class="text-slate-400 hover:text-rose-500 hover:bg-rose-100 rounded-md p-1 transition-colors cursor-pointer shrink-0 ml-1">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
-            </div>
-            <div v-else class="flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2.5 text-slate-400 text-xs font-semibold w-full">
-              {{ tExt.noClientSelected }}
-            </div>
-          </div>
+              <div class="shrink-0 text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 ml-2">
+                <ChevronDown :size="18" />
+              </div>
+            </button>
 
-          <div class="w-1/4">
+            <!-- 状态 2：未选择客户 -->
             <button 
+              v-else
               @click="openClientSearchModal" 
               type="button"
-              class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-accent/10 text-slate-600 dark:text-slate-400 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+              class="w-full h-12 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl px-4 text-sm font-bold transition-all shadow-sm cursor-pointer"
             >
-              <div class="flex items-center gap-1.5 truncate">
-                <span class="text-blue-500"></span>
+              <div class="flex items-center gap-2 truncate">
+                <Search :size="16" />
                 <span class="truncate">{{ t.pos.selectClient }}</span>
               </div>
-              <span class="text-slate-400 font-mono text-[10px] hidden sm:inline">Ctrl+F</span>
+              <span class="text-slate-400 font-mono text-[10px] hidden sm:inline shrink-0">Ctrl+F</span>
             </button>
           </div>
+
         </div>
 
         <PosCartTable 
@@ -120,6 +135,7 @@
       <!-- 右侧面板容器：收银区 -->
       <PosPaymentPanel
         ref="paymentPanelRef"
+        :isOverCreditLimit="isOverCreditLimit"
         :cartItems="cartItems"
         :bcvRate="bcvRate"
         :paymentSplit="paymentSplit"
@@ -134,9 +150,11 @@
         :isFullyPaid="isFullyPaid"
         :isSubmitting="isSubmitting"
         :isProcessingCheckout="isProcessingCheckout"
+        :hasClient="!!quoteClientId" 
         :t="t"
         :tExt="tExt"
         @checkout="handleDirectCheckout"
+        @checkout-fiado="handleFiadoCheckout"
         @focus-channel="focusPaymentChannel"
       />
 
@@ -156,33 +174,6 @@
     <!-- 销售历史弹窗 -->
     <PosHistoryModal :visible="historyModalVisible" :orders="completedOrders" @close="historyModalVisible = false" @preview="previewOrderTicket" @reprint="reprintOrderTicket" @return="processReturnOrder" />
     
-    <!-- 挂单池 -->
-    <div v-if="recallModalVisible" @click.self="recallModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
-      <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-4xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
-        <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span> {{ tExt.recallTitle }} ({{ heldOrders.length }})</span></h3>
-          <button @click="recallModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
-        </div>
-        <div class="flex-1 overflow-y-auto p-5 space-y-3 bg-white dark:bg-slate-800/20 flex flex-col">
-          <div v-for="order in heldOrders" :key="order.id" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:bg-slate-800 transition-all flex items-center justify-between shadow-2xs shrink-0">
-            <div class="space-y-1">
-              <div class="font-bold text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2"><span class="font-mono text-accent font-black text-sm">{{ order.hold_no }}</span><span class="text-slate-700 dark:text-slate-300"> {{ order.client_name || 'Cliente General' }}</span></div>
-              <div class="text-[11px] text-slate-400 font-mono">{{ tExt.recallTime }} {{ order.timestamp }}</div>
-            </div>
-            <div class="flex items-center gap-4">
-              <span class="text-base font-mono font-black text-slate-900 dark:text-white">${{ order.total_amount.toFixed(2) }}</span>
-              <button @click="recallOrder(order)" class="px-4 py-2 bg-accent hover:bg-accent/100 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm">{{ tExt.recallBtn }}</button>
-              <button @click="deleteHeldOrder(order.id)" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition-all cursor-pointer">{{ tExt.recallVoid }}</button>
-            </div>
-          </div>
-          <div v-if="heldOrders.length === 0" class="flex-1 flex flex-col items-center justify-center py-20 text-slate-400 text-xs font-bold"><span class="text-4xl mb-2">📭</span><span>{{ tExt.recallEmpty }}</span></div>
-        </div>
-        <div class="p-5 bg-white dark:bg-slate-800/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between shrink-0">
-          <span class="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">{{ tExt.recallFound }}: <strong class="text-slate-900 dark:text-white">{{ heldOrders.length }}</strong></span>
-          <button @click="recallModalVisible = false" class="px-6 py-2 bg-slate-200/80 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-        </div>
-      </div>
-    </div>
     <!-- 挂单池 -->
     <PosRecallModal 
       v-model:visible="recallModalVisible" 
@@ -211,9 +202,7 @@
           <button @click="previewModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
         <div id="receipt-preview-content" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50">
-          <!-- 极简 80mm 打印纸预览开始 -->
           <div class="w-[300px] mx-auto bg-white text-black font-mono text-[11px] leading-tight pb-6 pt-4 px-2 shadow-md border border-slate-200">
-            <!-- 抬头 -->
             <div class="text-center mb-2">
               <div class="text-[15px] font-black uppercase tracking-tight">{{ printData.company_name }}</div>
               <div class="text-[10px] mt-0.5">RIF: {{ printData.rif || 'J-00000000-0' }}</div>
@@ -223,7 +212,6 @@
             
             <div class="border-t border-black border-dashed my-1"></div>
             
-            <!-- 信息区 -->
             <div class="flex flex-col space-y-0.5 text-[10px]">
               <div>Factura: {{ printData.order_no }}</div>
               <div>Fecha  : {{ printData.date }}</div>
@@ -235,9 +223,8 @@
             
             <div class="border-t border-black border-dashed my-1"></div>
             
-            <!-- 商品明细 -->
             <div class="space-y-1">
-              <div v-for="item in printData.items" :key="item.oem" class="flex flex-col">
+              <div v-for="(item, idx) in printData.items" :key="idx" class="flex flex-col">
                 <div class="uppercase truncate">{{ item.name }}</div>
                 <div class="flex justify-between">
                   <span class="pl-2">x{{ item.quantity }} @ {{ item.price.toFixed(2) }} <span v-if="item.oem">[{{ item.oem }}]</span></span>
@@ -248,7 +235,6 @@
             
             <div class="border-t border-black border-dashed my-1"></div>
             
-            <!-- 汇总 -->
             <div class="flex flex-col space-y-0.5 text-[10px]">
               <div class="flex justify-between"><span>Subtotal:</span> <span>${{ printData.base_usd.toFixed(2) }}</span></div>
               <div class="flex justify-between"><span>IVA:</span> <span>${{ printData.tax_usd.toFixed(2) }}</span></div>
@@ -259,7 +245,6 @@
             
             <div class="border-t border-black border-dashed my-1"></div>
             
-            <!-- 支付明细 -->
             <div class="flex flex-col space-y-0.5 text-[10px]">
               <div>Pagos:</div>
               <div v-if="printData.payment.cardPos > 0" class="flex justify-between"><span> - Punto de Venta</span> <span>Bs.{{ printData.payment.cardPos.toFixed(2) }}</span></div>
@@ -273,7 +258,6 @@
             
             <div class="border-t border-black border-dashed my-1"></div>
             
-            <!-- 底部 -->
             <div class="text-center text-[10px] space-y-0.5 mt-2">
               <div>¡Gracias por su compra!</div>
               <div>Cambios dentro de 7 dias con recibo</div>
@@ -281,7 +265,6 @@
               <div class="font-bold">Tostiyk (TK) ERP</div>
             </div>
             
-            <!-- 模拟条形码 -->
             <div class="mt-4 flex flex-col items-center">
               <div class="h-8 w-4/5 bg-[repeating-linear-gradient(90deg,#000,#000_2px,transparent_2px,transparent_4px)]"></div>
               <div class="text-[9px] mt-1">{{ printData.order_no }}</div>
@@ -298,27 +281,109 @@
 
     <PosHelpModal :visible="helpModalVisible" @close="helpModalVisible = false" />
 
-    <!-- 客户快速搜索 Modal -->
-    <BaseModal 
-      v-model:visible="clientModalVisible" 
-      :title="tExt.clientModalTitle" 
-      size="md"
-    >
-      <div class="p-4 space-y-4">
-        <input 
-          ref="clientModalInputRef" 
-          v-model="clientFilterQuery" 
-          @keydown="handleClientModalKeydown" 
-          type="text" 
-          :placeholder="tExt.clientModalSearch" 
-          class="w-full bg-surface-raised border border-line rounded-md px-4 py-2 text-sm outline-none focus:border-accent shadow-sm font-bold text-primary" 
-        />
+    <!-- ✅ 客户快速搜索 Modal (完美复刻图1大尺寸 + 丰富细节) -->
+    <div v-if="clientModalVisible" @click.self="clientModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-[60] p-6 cursor-pointer">
+      <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-5xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
         
-        <div v-for="c in filteredModalClients" :key="c.id" @click="selectClient(c)" class="p-3 rounded-md border border-line bg-surface-raised cursor-pointer hover:bg-surface-muted transition-all flex items-center justify-between text-xs shadow-sm">
-          <!-- 客户信息 -->
+        <!-- 弹窗头部 -->
+        <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>{{ tExt.clientModalTitle }}</span></h3>
+          <button @click="clientModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
+        </div>
+
+        <!-- 弹窗内容 -->
+        <div class="flex-1 flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-900/20 p-5">
+          <div class="space-y-4 shrink-0">
+            <!-- 搜索框 -->
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Search class="h-5 w-5 text-slate-400" />
+              </div>
+              <input 
+                ref="clientModalInputRef" 
+                v-model="clientFilterQuery" 
+                @keydown="handleClientModalKeydown" 
+                type="text" 
+                :placeholder="tExt.clientModalSearch" 
+                class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-11 pr-4 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 shadow-sm font-bold text-slate-900 dark:text-white transition-all" 
+              />
+            </div>
+            
+            <!-- 已选客户提示与清除 -->
+            <div v-if="quoteClientId" class="flex items-center justify-between text-sm px-1">
+              <span class="text-slate-500 font-medium">已选: <strong class="text-slate-800 dark:text-slate-200">{{ quoteClientName }}</strong></span>
+              <button @click="clearClient(); clientModalVisible = false" class="text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1 transition-colors">
+                <XCircle :size="16" />
+                清除客户
+              </button>
+            </div>
+          </div>
+
+          <!-- 客户列表（改为三段式信息网格） -->
+          <div class="flex-1 overflow-y-auto mt-4 space-y-3 pb-4">
+            <div 
+              v-for="c in filteredModalClients" 
+              :key="c.id" 
+              @click="selectClient(c)" 
+              class="p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:border-accent hover:shadow-md transition-all flex items-center justify-between gap-6"
+            >
+              <!-- 左侧区：基本资料 -->
+              <div class="flex items-center gap-4 w-[35%] shrink-0">
+                <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                  <Building2 :size="20" class="text-slate-500 dark:text-slate-400" />
+                </div>
+                <div class="flex flex-col truncate">
+                  <span class="font-bold text-base text-slate-900 dark:text-white truncate">{{ c.store_name || c.name }}</span>
+                  <span class="text-xs text-slate-500 font-medium flex flex-wrap gap-2 mt-1">
+                    <span v-if="c.store_name" class="truncate">👤 {{ c.name }}</span>
+                    <span v-if="c.phone" class="truncate">📞 {{ c.phone }}</span>
+                    <span v-if="c.rif" class="truncate font-mono">ID: {{ c.rif }}</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 中间区：属性与地址 -->
+              <div class="flex-1 flex flex-col min-w-0 border-l border-slate-100 dark:border-slate-700/50 pl-6">
+                <div class="flex flex-wrap gap-1.5 mb-1">
+                  <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded">
+                    {{ c.client_type || 'Regular' }}
+                  </span>
+                  <span v-if="c.is_special_taxpayer" class="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold rounded border border-amber-200 dark:border-amber-800">
+                    Contribuyente Especial
+                  </span>
+                </div>
+                <span class="text-xs text-slate-400 truncate">📍 {{ c.address || 'No hay dirección registrada' }}</span>
+              </div>
+
+              <!-- 右侧区：财务与操作 -->
+              <div class="w-[30%] shrink-0 flex items-center justify-end gap-4 border-l border-slate-100 dark:border-slate-700/50 pl-6">
+                <div class="flex flex-col items-end gap-0.5">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Deuda Actual</span>
+                  <span :class="Number(c.debt) > 0 ? 'text-rose-500' : 'text-slate-400'" class="font-black font-mono text-base">
+                    ${{ Number(c.debt || 0).toFixed(2) }}
+                  </span>
+                  <span v-if="c.credit_limit" class="text-[9px] text-slate-400 font-medium">Límite: ${{ Number(c.credit_limit).toFixed(2) }}</span>
+                </div>
+                <button class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors shrink-0">{{ tExt.clientSelectBtn }}</button>
+              </div>
+            </div>
+            
+            <div v-if="filteredModalClients.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 text-sm font-bold gap-3 py-10">
+              <span>{{ tExt.clientNotFound }}</span>
+              <button v-if="clientFilterQuery.trim()" @click="prepareCreateClient(clientFilterQuery)" class="px-6 py-3 bg-accent text-white rounded-xl font-bold text-sm shadow-md hover:bg-accent-hover transition-colors">
+                + {{ tExt.createThisClient }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 弹窗底部 -->
+        <div class="p-5 bg-white dark:bg-slate-800/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between shrink-0">
+          <span class="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">Encontrados: <strong class="text-slate-900 dark:text-white">{{ filteredModalClients.length }}</strong></span>
+          <button @click="clientModalVisible = false" class="px-6 py-2 bg-slate-200/80 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
         </div>
       </div>
-    </BaseModal>
+    </div>
 
     <!-- 新建客户 Modal -->
     <div v-if="newClientModalVisible" @click.self="newClientModalVisible = false" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[60] p-6">
@@ -379,7 +444,7 @@
         <div class="border-t border-dashed border-black my-1"></div>
 
         <div class="text-[10px]">
-          <div v-for="item in printData.items" :key="item.oem" class="mb-1">
+          <div v-for="(item, idx) in printData.items" :key="idx" class="mb-1">
             <div class="font-bold">{{ item.name }}</div>
             <div class="flex justify-between">
               <span>{{ item.oem }} x {{ item.quantity }} @ ${{ item.price.toFixed(2) }}</span>
@@ -421,13 +486,7 @@
       </div>
     </div>
 
-  </div>
-
-
-  
-
-
-    <!-- 小票预览弹窗 -->
+    <!-- 小票预览弹窗 (iframe) -->
     <Transition name="fade">
       <div v-if="receiptPreviewVisible" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden h-[85vh]">
@@ -436,7 +495,6 @@
             <button @click="receiptPreviewVisible = false" class="text-slate-400 hover:text-rose-500 text-2xl leading-none font-bold">&times;</button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 flex justify-center bg-slate-200/50">
-            <!-- iframe 模拟真实的 80mm 纸张宽度，高度自适应撑满 -->
             <iframe 
               ref="previewIframe" 
               class="bg-white shadow-xl border border-slate-300 rounded-sm" 
@@ -452,45 +510,45 @@
       </div>
     </Transition>
 
-
-  <!-- 🌟 店长授权超额挂账弹窗 -->
-  <div v-if="showPinModal" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200/80 dark:border-slate-700">
-      <div class="p-6">
-        <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">
-          {{ isZh ? '超出信用额度' : isEs ? 'Límite Excedido' : 'Credit Limit Exceeded' }}
-        </h3>
-        <p class="text-xs text-center text-slate-500 dark:text-slate-400 mb-6 leading-relaxed px-2">
-          {{ pendingOverrideError }}
-        </p>
-        
-        <div class="relative mb-6">
-          <input 
-            v-model="pinInput" 
-            type="password" 
-            :placeholder="isZh ? '请输入店长安全 PIN 码' : isEs ? 'Ingrese PIN de gerente' : 'Enter Manager PIN'"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
-            @keyup.enter="submitOverridePin"
-          />
-        </div>
-        
-        <div class="flex gap-3">
-          <button @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
-            {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
-          </button>
-          <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">
-            {{ isZh ? '授权放行' : isEs ? 'Autorizar' : 'Authorize' }}
-          </button>
+    <!-- 🌟 店长授权超额挂账弹窗 -->
+    <div v-if="showPinModal" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200/80 dark:border-slate-700">
+        <div class="p-6">
+          <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">
+            {{ isZh ? '超出信用额度' : isEs ? 'Límite Excedido' : 'Credit Limit Exceeded' }}
+          </h3>
+          <p class="text-xs text-center text-slate-500 dark:text-slate-400 mb-6 leading-relaxed px-2">
+            {{ pendingOverrideError }}
+          </p>
+          
+          <div class="relative mb-6">
+            <input 
+              v-model="pinInput" 
+              type="password" 
+              :placeholder="isZh ? '请输入店长安全 PIN 码' : isEs ? 'Ingrese PIN de gerente' : 'Enter Manager PIN'"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              @keyup.enter="submitOverridePin"
+            />
+          </div>
+          
+          <div class="flex gap-3">
+            <button @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
+              {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
+            </button>
+            <button @click="submitOverridePin" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">
+              {{ isZh ? '授权放行' : isEs ? 'Autorizar' : 'Authorize' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
+  </div>
 </template>
 
 <script setup>
@@ -502,15 +560,12 @@ import PosShiftReportModal from './pos/PosShiftReportModal.vue'
 import { generateReceiptHtml } from '../utils/pos/receipt'
 import { goodsTotalUsd as calcGoodsTotal, baseTotalUsd as calcBaseTotal, taxTotalUsd as calcTaxTotal, paidTotalUsd as calcPaidTotal, balanceUsd as calcBalance } from '../utils/pos/calc'
 import { fmtPrimary, fmtBsChannel, fmtUsdChannel } from '../utils/pos/format'
-import { Package, Lock, CreditCard, Search, Banknote, Minus, Receipt, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, DollarSign, Wallet } from 'lucide-vue-next';
+import { Package, Lock, CreditCard, Search, Banknote, Minus, Receipt, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, DollarSign, Wallet, User, ChevronDown, Building2 } from 'lucide-vue-next';
 
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
 const paymentPanelRef = ref(null)
-
-
-
 
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiFetch } from '../utils/api'
@@ -518,7 +573,7 @@ import { useI18n } from '../composables/useI18n'
 import PosCartTable from './pos/PosCartTable.vue'
 import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 import ConfirmDialog from './ConfirmDialog.vue'
-import BaseModal from './ui/BaseModal.vue' // 👈 加上这一行
+import BaseModal from './ui/BaseModal.vue'
 import PosHelpModal from './pos/PosHelpModal.vue'
 import PosHistoryModal from './pos/PosHistoryModal.vue'
 
@@ -676,6 +731,19 @@ const totalUsd = computed(() => {
 const totalPaidUsd = computed(() => calcPaidTotal(paymentSplit.value, props.bcvRate))
 const balanceRemaining = computed(() => calcBalance(totalUsd.value, totalPaidUsd.value))
 const isFullyPaid = computed(() => totalUsd.value > 0 && totalPaidUsd.value >= totalUsd.value)
+
+// 🌟 实时计算 POS 客户是否超额
+const isOverCreditLimit = computed(() => {
+  if (!quoteClientId.value || !props.clientsList) return false
+  const client = props.clientsList.find(c => c.id === quoteClientId.value)
+  if (!client) return false
+  
+  const currentDebt = Number(client.debt) || 0
+  const limit = Number(client.credit_limit) || 500
+  const projectedDebt = currentDebt + totalUsd.value
+  
+  return projectedDebt > limit
+})
 
 const handlePaymentKeydown = (e, channelKey) => {
   const orderSequence = ['cardPos', 'pagoMovil', 'cashBs', 'cashUsd', 'reference']
@@ -894,8 +962,23 @@ const clientModalVisible = ref(false)
 const clientFilterQuery = ref('')
 const clientModalInputRef = ref(null)
 
+// 🌟 新增：本地变量，专门用于弹窗显示
+const localClientsList = ref([])
+
 const openClientSearchModal = async () => {
   clientFilterQuery.value = quoteClientName.value || ''
+  
+  // 🌟 强制向后端请求最新的客户数据，不再依赖父组件
+  try {
+    const res = await apiFetch('/api/clients')
+    if (res.ok) {
+      localClientsList.value = await res.json()
+    }
+  } catch (e) {
+    console.error('拉取客户列表失败', e)
+    localClientsList.value = props.clientsList || []
+  }
+
   clientModalVisible.value = true
   await nextTick()
   if (clientModalInputRef.value) {
@@ -923,11 +1006,28 @@ const handleClientModalKeydown = (e) => {
 }
 
 const filteredModalClients = computed(() => {
-  if (!props.clientsList) return []
-  if (!clientFilterQuery.value.trim()) return props.clientsList
+  if (!localClientsList.value) return []
+  if (!clientFilterQuery.value.trim()) return localClientsList.value
   const q = clientFilterQuery.value.toUpperCase()
-  return props.clientsList.filter(c => c.name.toUpperCase().includes(q) || (c.phone && c.phone.toUpperCase().includes(q)))
+  return localClientsList.value.filter(c => 
+    (c.name && c.name.toUpperCase().includes(q)) || 
+    (c.phone && c.phone.toUpperCase().includes(q))
+  )
 })
+
+// 🌟 提取当前选中客户的详细信息（用于顶部展示）
+const selectedClientDetails = computed(() => {
+  if (!quoteClientId.value) return null
+  const list = localClientsList.value.length > 0 ? localClientsList.value : props.clientsList
+  return list?.find(c => c.id === quoteClientId.value) || null
+})
+
+// 🌟 清除当前选中的客户
+const clearClient = () => {
+  quoteClientName.value = ''
+  quoteClientId.value = null
+  quoteClientRif.value = ''
+}
 
 const newClientModalVisible = ref(false)
 const isSavingClient = ref(false)
@@ -1220,25 +1320,27 @@ const processReturnOrder = async (dbId) => {
 const confirmExitPos = () => { exitConfirmVisible.value = true }
 const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos') }
 
-const handleDirectCheckout = async () => {
-  if (props.cartItems.length === 0 || !isFullyPaid.value || isSubmitting.value || isProcessingCheckout.value) return
+const isFiadoMode = ref(false)
+
+const handleFiadoCheckout = async () => {
+  if (!quoteClientId.value) return
+  if (props.cartItems.length === 0) return
+
+  // 🌟 开启全屏进度条
+  isProcessingCheckout.value = true
+  isFiadoMode.value = true
   if (!pendingRequestId.value) pendingRequestId.value = makeRequestId()
 
-  // 🌟 1. 开启全屏进度条
-  isProcessingCheckout.value = true
-  
-  // 🌟 2. 强制平滑等待 1000ms（保证动画质感，同时允许后台提交）
   const delay = new Promise(resolve => setTimeout(resolve, 1400))
 
   try {
-    // 🌟 3. 在动画进行的同时，发起真实的后端提交
     await confirmAndPrint()
   } catch (error) {
-    console.error("Checkout error:", error)
+    console.error("Fiado error:", error)
   } finally {
-    // 🌟 4. 动画走完（或发生错误时），关闭进度条
     await delay 
     isProcessingCheckout.value = false
+    isFiadoMode.value = false
   }
 }
 
@@ -1265,10 +1367,16 @@ const confirmAndPrint = async (overridePin = null) => {
   try {
     let dominantMethod = 'Cash_USD'
     const split = paymentSplit.value
-    if ((split.cardPos || 0) > 0) dominantMethod = 'Card_POS'
-    if ((split.pagoMovil || 0) > 0) dominantMethod = 'Pago_Movil'
-    if ((split.cashBs || 0) > 0) dominantMethod = 'Cash_Bs'
-    if ((split.cashUsd || 0) > 0) dominantMethod = 'Cash_USD'
+    if (isFiadoMode.value) {
+      dominantMethod = 'Fiado_USD'
+    } else {
+      if ((split.cardPos || 0) > 0) dominantMethod = 'Card_POS'
+      if ((split.pagoMovil || 0) > 0) dominantMethod = 'Pago_Movil'
+      if ((split.cashBs || 0) > 0) dominantMethod = 'Cash_Bs'
+      if ((split.cashUsd || 0) > 0) dominantMethod = 'Cash_USD'
+      const activeChannelsCount = Object.values(split).filter(v => Number(v) > 0).length
+      if (activeChannelsCount > 1) dominantMethod = 'Pago_Mixto'
+    }
 
     const activeChannelsCount = Object.values(split).filter(v => Number(v) > 0).length
     if (activeChannelsCount > 1) {
@@ -1328,15 +1436,20 @@ const confirmAndPrint = async (overridePin = null) => {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
-      if (!overridePin && res.status === 400 && errorData.detail && errorData.detail.includes('超出客户信用额度')) {
+      const errMsg = errorData.detail || tExt.value.toastCheckoutError
+      
+      isProcessingCheckout.value = false 
+      isSubmitting.value = false 
+      
+      if (!overridePin && res.status === 400 && errMsg.includes('信用额度')) {
         pendingPinPayload.value = payload
-        pendingOverrideError.value = errorData.detail
+        pendingOverrideError.value = errMsg
         pinInput.value = ''
         showPinModal.value = true
-        isSubmitting.value = false // 释放按钮加载状态
         return 
       }
-      throw new Error(errorData.detail || tExt.value.toastCheckoutError)
+      
+      throw new Error(errMsg)
     }
     
     const data = await res.json()
@@ -1449,7 +1562,7 @@ const handleGlobalKeydown = (e) => {
   if (e.key === 'F6') { e.preventDefault(); focusPaymentChannel('cashBs'); return; }
   if (e.key === 'F7') { e.preventDefault(); focusPaymentChannel('cashUsd'); return; }
 
-  // 挂单: F8 (这里的函数名如果依然报错，我们下一步再修)
+  // 挂单: F8 
   if (e.key === 'F8') {
     e.preventDefault()
     if (typeof saveHeldOrder === 'function') saveHeldOrder()
@@ -1482,20 +1595,18 @@ const handleGlobalKeydown = (e) => {
   }
 }
 
-
-  // F9 唤起打印机设置
-  const handleKeydown = (e) => {
-    if (e.key === 'F9') {
-      e.preventDefault()
-      
-    }
+// F9 唤起打印机设置
+const handleKeydown = (e) => {
+  if (e.key === 'F9') {
+    e.preventDefault()
   }
-  onMounted(() => {
-    window.addEventListener('keydown', handleKeydown)
-  })
-  onUnmounted(() => {
-    window.removeEventListener('keydown', handleKeydown)
-  })
+}
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
@@ -1509,10 +1620,6 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
   if (toastTimer) clearTimeout(toastTimer)
 })
-
-
-
-
 
 // ================= 打印系统核心逻辑 =================
 const receiptPreviewVisible = ref(false)

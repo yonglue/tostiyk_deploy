@@ -4,7 +4,8 @@ import { useNotifications } from './useNotifications'
 import { useInventory } from './useInventory'
 import { useI18n } from './useI18n'
 
-export function useClientActions() {
+// 接收一个回调函数
+export function useClientActions(onRefresh) { 
   const { showSuccessModal } = useNotifications()
   const { fetchClients } = useInventory()
   const { t, currentLang } = useI18n()
@@ -13,7 +14,6 @@ export function useClientActions() {
   const deleteClientModalVisible = ref(false)
   const targetClient = ref(null)
   
-  // 核心字段：包含 store_name
   const newClient = ref({ 
     name: '', 
     store_name: '', 
@@ -21,10 +21,10 @@ export function useClientActions() {
     address: '', 
     rif_or_cedula: '', 
     client_type: 'Regular', 
-    notes: '' 
+    notes: '',
+    credit_limit: 500 // 🌟 确保有这个默认值
   })
 
-  // 🌟 内部工具：直接获取翻译，不需要从外部传 tExt 进来
   const getToastMsg = (key) => {
     const isZh = currentLang.value === 'zh'
     const isEs = currentLang.value === 'es'
@@ -37,9 +37,10 @@ export function useClientActions() {
     return msgs[key] || key
   }
 
-  // 🌟 移除了 tExt 参数
   const handleAddClient = async () => {
-    if (!newClient.value.name) return
+    if (!newClient.value.name?.trim()) {
+      return showSuccessModal('❌ ' + (currentLang.value === 'zh' ? '请输入客户名称' : 'Ingrese nombre del cliente'))
+    }
     
     try {
       const res = await apiFetch('/api/clients', {
@@ -49,18 +50,22 @@ export function useClientActions() {
       
       if (res.ok) {
         clientDialogVisible.value = false
-        // 重置表单时包含 store_name
+        // 重置表单
         newClient.value = { name: '', store_name: '', phone: '', address: '', rif_or_cedula: '', client_type: 'Regular', notes: '', credit_limit: 500 }
         fetchClients()
+        
+        // 🌟 关键修复：通知 App.vue 刷新全局客户列表
+        if (onRefresh) onRefresh() 
+        
         showSuccessModal('✨ ' + getToastMsg('toastClientAdded'))
       } else {
         const err = await res.json().catch(() => ({}))
-        const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail || '未知错误')
-        showSuccessModal(`❌ 新建客户失败: ${errorMsg}`) 
+        const errorMsg = typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail || getToastMsg('toastErrorUnknown'))
+        showSuccessModal(`❌ ${currentLang.value === 'zh' ? '新建失败' : 'Error'}: ${errorMsg}`) 
       }
     } catch (e) {
       console.error(e)
-      showSuccessModal('❌ 网络连接异常')
+      showSuccessModal('❌ ' + getToastMsg('toastServerError'))
     }
   }
 
@@ -69,7 +74,6 @@ export function useClientActions() {
     deleteClientModalVisible.value = true
   }
 
-  // 🌟 移除了 tExt 参数
   const confirmDeleteClient = async () => {
     if (!targetClient.value) return
     try {
@@ -78,6 +82,10 @@ export function useClientActions() {
         deleteClientModalVisible.value = false
         targetClient.value = null
         fetchClients()
+        
+        // 🌟 同样通知外层刷新
+        if (onRefresh) onRefresh() 
+        
         showSuccessModal('🗑️ ' + getToastMsg('toastClientDeleted'))
       } else {
         const err = await res.json()

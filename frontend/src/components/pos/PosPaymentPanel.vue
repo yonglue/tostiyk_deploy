@@ -1,7 +1,7 @@
 <!-- src/components/pos/PosPaymentPanel.vue -->
 <script setup>
 import { ref } from 'vue'
-import { CreditCard, Banknote, Zap, RefreshCw, DollarSign } from 'lucide-vue-next';
+import { CreditCard, Banknote, Zap, RefreshCw, DollarSign, FileText } from 'lucide-vue-next';
 import { fmtPrimary, fmtBsChannel, fmtUsdChannel } from '../../utils/pos/format'
 
 const props = defineProps({
@@ -17,13 +17,14 @@ const props = defineProps({
   isFullyPaid: { type: Boolean, required: true },
   isSubmitting: { type: Boolean, default: false },
   isProcessingCheckout: { type: Boolean, default: false },
+  isOverCreditLimit: { type: Boolean, default: false },
+  hasClient: { type: Boolean, default: false },
   t: { type: Object, required: true },
   tExt: { type: Object, required: true },
   paymentReference: { type: String, default: '' }
 })
-const emit = defineEmits(['update:primaryCurrency', 'checkout', 'update:reference'])
+const emit = defineEmits(['update:primaryCurrency', 'checkout', 'checkout-fiado', 'update:reference', 'focus-channel'])
 
-// 暴露给父组件的 refs，用于 F4-F7 快捷键聚焦
 const cardPosInputRef = ref(null)
 const pagoMovilInputRef = ref(null)
 const cashBsInputRef = ref(null)
@@ -126,28 +127,24 @@ const toggleCurrency = () => {
               <div class="font-mono text-primary font-extrabold text-sm">{{ fmtPrimary(totalBaseUsd, bcvRate, primaryCurrency) }}</div>
             </div>
           </div>
-
           <div class="flex justify-between items-start text-sm font-bold text-secondary">
             <span class="font-bold pt-0.5">{{ t.pos.ivaTax }}:</span>
             <div class="text-right">
               <div class="font-mono text-primary font-extrabold text-sm">{{ fmtPrimary(totalTaxUsd, bcvRate, primaryCurrency) }}</div>
             </div>
           </div>
-
           <div class="flex justify-between items-start text-sm font-bold">
             <span class="font-extrabold text-primary pt-0.5">{{ t.pos.totalPayable }}:</span>
             <div class="text-right">
               <div class="font-mono text-primary text-base font-black">{{ fmtPrimary(totalUsd, bcvRate, primaryCurrency) }}</div>
             </div>
           </div>
-
           <div class="flex justify-between items-start text-sm font-bold">
             <span class="font-extrabold text-primary pt-0.5">{{ t.pos.totalPaid }}:</span>
             <div class="text-right">
               <div class="font-mono text-success text-base font-black">{{ fmtPrimary(totalPaidUsd, bcvRate, primaryCurrency) }}</div>
             </div>
           </div>
-
           <div class="pt-2 border-t border-line flex justify-between items-start">
             <span class="text-base font-black pt-0.5" :class="balanceRemaining > 0 ? 'text-danger' : 'text-success'">
               {{ balanceRemaining > 0 ? '🔴 ' + t.pos.balanceDue + ':' : '🟢 ' + t.pos.changeDue + ':' }}
@@ -162,14 +159,43 @@ const toggleCurrency = () => {
       </div>
 
       <div class="p-3 bg-surface border-t border-line shrink-0">
-        <button
-          data-testid="pos-checkout-btn"  
-          @click="$emit('checkout')"
-          :disabled="!isFullyPaid || cartItems.length === 0 || isProcessingCheckout"
-          class="w-full h-14 bg-success hover:bg-success/90 disabled:bg-surface-muted disabled:text-muted text-white rounded-lg font-black text-base shadow-lg shadow-success/20 transition-all cursor-pointer flex items-center justify-center active:scale-[0.98]"
-        >
-          <span>{{ isSubmitting ? '...' : t.pos.checkoutBtn || '结账' }}</span>
-        </button>
+        <!-- 🌟 超额警告 -->
+        <div v-if="isOverCreditLimit" class="mb-3 bg-rose-50 dark:bg-rose-900/30 border border-rose-200 p-2 rounded-lg flex items-start gap-1.5 animate-pulse">
+          <svg class="w-4 h-4 text-rose-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          <span class="text-[11px] text-rose-700 dark:text-rose-400 font-bold leading-tight">
+            {{ tExt.creditLimitWarn || '客户信用额度已超限，结算需授权' }}
+          </span>
+        </div>
+
+        <!-- 🌟 底部双按钮 (1:1 宽度) -->
+        <div class="flex gap-2 w-full">
+          <!-- 挂账按钮 -->
+          <button
+            type="button"
+            @click="$emit('checkout-fiado')"
+            :disabled="cartItems.length === 0 || !hasClient || isProcessingCheckout"
+            class="flex-1 h-14 bg-amber-500 hover:bg-amber-600 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 text-white rounded-lg font-black text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer flex items-center justify-center active:scale-[0.98]"
+          >
+            <span class="flex items-center gap-1">
+              <FileText :size="18" />
+              <span v-if="t.pos.keyBack === '返回'">挂账 (Fiar)</span>
+              <span v-else>Fiar</span>
+            </span>
+          </button>
+
+          <!-- 结账按钮 (改为 flex-1) -->
+          <button
+            data-testid="pos-checkout-btn"  
+            @click="$emit('checkout')"
+            :disabled="!isFullyPaid || cartItems.length === 0 || isProcessingCheckout"
+            class="flex-1 h-14 bg-success hover:bg-success/90 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 text-white rounded-lg font-black text-base shadow-lg shadow-success/20 transition-all cursor-pointer flex items-center justify-center active:scale-[0.98]"
+          >
+            <span v-if="isProcessingCheckout" class="animate-spin mr-2">
+              <svg class="w-5 h-5 text-current" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+            </span>
+            <span>{{ isProcessingCheckout ? (t.pos.processingBtn || '...') : (t.pos.checkoutBtn || 'Cobrar') }}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

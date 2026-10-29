@@ -9,8 +9,13 @@ export default defineConfig({
     host: '0.0.0.0', // 仅限本地访问  // 允许局域网任何设备访问: '127.0.0.1'
     port: 5173,
     https: false,      // 关闭 HTTPS，免去证书烦恼
-    proxy: {
+        proxy: {
       '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/uploads': { // 🌟 紧急修复：把图片请求也转发给后端
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false

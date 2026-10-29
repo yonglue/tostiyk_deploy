@@ -15,13 +15,15 @@
     <!-- 数据表格 -->
     <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse min-w-[800px]">
+        <table class="w-full text-left border-collapse min-w-[900px]">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-extrabold uppercase tracking-wider">
               <th class="py-4 px-6">{{ tExt.colQuoteNo }}</th>
               <th class="py-4 px-6">{{ tExt.colClient }}</th>
               <th class="py-4 px-6 text-right">{{ tExt.colTotalUsd }}</th>
               <th class="py-4 px-6 text-right">{{ tExt.colTotalBs }}</th>
+              <!-- 🌟 新增：时间列 -->
+              <th class="py-4 px-6">{{ isZh ? '创建时间' : isEs ? 'Fecha' : 'Date' }}</th>
               <th class="py-4 px-6 text-center">{{ t.common.actions }}</th>
             </tr>
           </thead>
@@ -42,6 +44,11 @@
               <td class="py-4 px-6 text-right font-mono font-bold text-slate-600">
                 Bs. {{ Number(q.total_bs || 0).toFixed(2) }}
               </td>
+              <!-- 🌟 时间列数据 -->
+              <td class="py-4 px-6 font-mono text-slate-500">
+                {{ (q.timestamp || q.created_at || '').replace('T', ' ').substring(0, 16) }}
+              </td>
+              <!-- 🌟 操作列 -->
               <td class="py-4 px-6 text-center" @click.stop>
                 <div class="flex items-center justify-center gap-2">
                   <button 
@@ -68,8 +75,7 @@
               </td>
             </tr>
             <tr v-if="quotations.length === 0">
-              <td colspan="5" class="text-center py-20 text-slate-400 font-bold">
-                
+              <td colspan="6" class="text-center py-20 text-slate-400 font-bold">
                 {{ tExt.emptyData }}
               </td>
             </tr>
@@ -187,7 +193,7 @@
         <div class="document-info">
           <h2>{{ isZh ? '报价单' : isEs ? 'Cotización' : 'Quote' }}</h2>
           <p><strong>{{ isZh ? '单号:' : isEs ? 'Nro:' : 'No:' }}</strong> {{ a4PrintData.quotation_no }}</p>
-          <p><strong>{{ isZh ? '日期:' : isEs ? 'Fecha:' : 'Date:' }}</strong> {{ new Date(a4PrintData.created_at || Date.now()).toLocaleDateString() }}</p>
+          <p><strong>{{ isZh ? '日期:' : isEs ? 'Fecha:' : 'Date:' }}</strong> {{ (a4PrintData.timestamp || '').replace('T', ' ').substring(0, 16) }}</p>
         </div>
       </div>
 

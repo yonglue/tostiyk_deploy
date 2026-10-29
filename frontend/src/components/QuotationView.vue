@@ -12,7 +12,7 @@
       <h2 class="text-white text-2xl font-black mt-8 tracking-widest drop-shadow-lg">{{ tExt.checkoutSuccessTitle }}</h2>
     </div>
 
-    <!-- 右上角提示条 (修复了乱码) -->
+    <!-- 右上角提示条 -->
     <transition name="fade">
       <div v-if="toastMessage" :class="toastType === 'success' ? 'bg-emerald-600/90 border-emerald-400/30' : 'bg-rose-600/90 border-rose-400/30'" class="fixed top-2 right-4 z-[100] text-white px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-sm font-bold animate-bounce">
         <CheckCircle2 v-if="toastType === 'success'" :size="18" />
@@ -42,6 +42,13 @@
       </div>
       
       <div class="flex items-center space-x-2.5">
+        <!-- 历史报价按钮 -->
+        <button @click="openQuoteHistoryModal" class="bg-white dark:bg-slate-800/70 hover:bg-white dark:bg-slate-800/90 text-indigo-600 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
+          <History :size="14" />
+          <span>{{ tExt.historyTitle }}</span>
+        </button>
+
+        <!-- 快捷键指南按钮 -->
         <button @click="helpModalVisible = true" class="bg-white dark:bg-slate-800/70 hover:bg-white dark:bg-slate-800/90 text-accent border border-slate-200 dark:border-slate-700 hover:border-blue-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]">
           <Keyboard :size="14" />
           <span>{{ t.pos.shortcutGuide }}</span>
@@ -138,9 +145,36 @@
               >
                 <td class="py-3 px-3 font-mono font-black text-accent text-sm">{{ item.oem }}</td>
                 <td class="py-3 px-3 text-slate-900 dark:text-white font-bold">{{ item.name }}</td>
-                <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold">
-                  <div>${{ item.price.toFixed(2) }}</div>
-                  <div class="text-xs text-slate-400 font-normal">Bs. {{ (item.price * bcvRate).toFixed(2) }}</div>
+                <td class="py-3 px-3 text-right font-mono font-bold text-slate-700 dark:text-slate-300">
+                  <div 
+                    class="inline-flex items-center justify-end gap-1"
+                    :title="item.price < item.cost_price ? `注意：当前售价低于成本价 $${item.cost_price.toFixed(2)}` : ''"
+                  >
+                    <span class="text-slate-400 text-sm" :class="{ 'text-rose-400': item.price < item.cost_price }">$</span>
+                    
+                    <input 
+                      v-model.number="item.price"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      @blur="(e) => { item.price = Number(Number(e.target.value).toFixed(2)) }"
+                      @keyup.enter="(e) => { item.price = Number(Number(e.target.value).toFixed(2)); e.target.blur() }"
+                      :class="[
+                        'w-20 text-right bg-surface-raised border rounded px-2 py-1 outline-none transition-colors',
+                        item.price < item.cost_price 
+                          ? 'border-rose-400 text-rose-600 focus:border-rose-500' 
+                          : 'border-line text-primary focus:border-accent'
+                      ]"
+                    />
+                    
+                    <div v-if="item.price < item.cost_price" class="text-rose-500 cursor-help">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                  </div>
+                  
+                  <div class="text-xs text-slate-400 font-normal mt-1">
+                    Bs. {{ (item.price * bcvRate).toFixed(2) }}
+                  </div>
                 </td>
                 <td class="py-3 px-3 text-center" @click.stop>
                   <div class="inline-flex items-center border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden bg-white dark:bg-slate-800 shadow-2xs focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
@@ -190,6 +224,15 @@
           </div>
 
           <div class="p-3 bg-white dark:bg-slate-800/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 shrink-0 flex flex-col gap-2">
+            
+            <!-- 实时超额警告 -->
+            <div v-if="isOverCreditLimit" class="bg-rose-50 dark:bg-rose-900/30 border border-rose-200 p-2.5 rounded-lg flex items-start gap-2 animate-pulse">
+              <AlertTriangle :size="16" class="text-rose-500 mt-0.5 shrink-0" />
+              <div class="text-xs text-rose-600 font-bold leading-tight">
+                {{ isZh ? '该客户信用额度已超限，转 POS 结算时需店长授权！' : isEs ? '¡Límite excedido! Requiere autorización en Caja.' : 'Credit limit exceeded. Manager auth required in POS.' }}
+              </div>
+            </div>
+
             <div class="flex gap-2 w-full mt-2">
               <button @click="generateQuotationPDF" :disabled="cartItems.length === 0 || isSubmitting" class="flex-1 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
                 <Download :size="18" />
@@ -197,15 +240,19 @@
               </button>
               <button @click="printQuotationReceipt" :disabled="cartItems.length === 0 || isSubmitting || !isConnected" class="flex-1 py-2.5 bg-accent hover:bg-accent/100 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
                 <Printer :size="18" />
-                打印
+                {{ tExt.printBtn }}
               </button>
             </div>
-            <!-- 修复了乱码的挂账按钮 -->
-            <button data-testid="quote-credit-btn" @click="submitOrderAsCredit()" :disabled="!quoteClientId || cartItems.length === 0 || isSubmitting" class="w-full py-3 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5">
-              <FileText :size="18" />
-              <span>{{ isZh ? '确认全单挂账 (Fiado)' : isEs ? 'Confirmar fiado completo' : 'Confirm Entire Credit' }}</span>
+
+            <!-- 直接转 POS 按钮 -->
+            <button 
+              @click="goToPosFromQuote()" 
+              :disabled="cartItems.length === 0" 
+              class="w-full mt-1 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl font-black text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <ShoppingCart :size="18" />
+              {{ tExt.goToPosBtn }}
             </button>
-            <p v-if="!quoteClientId && cartItems.length > 0" class="text-[10px] text-rose-500 text-center font-bold">{{ isZh ? '* 挂账前请先在顶部搜索并选择客户' : isEs ? '* Busque y seleccione cliente antes de fiar' : '* Search and select client before crediting' }}</p>
           </div>
         </div>
       </div>
@@ -269,44 +316,91 @@
     <!-- 退出确认 -->
     <ConfirmDialog :visible="exitConfirmVisible" icon="" :title="tExt.exitTitle" :message="tExt.exitMsg" @cancel="exitConfirmVisible = false" @confirm="executeExitPos" />
 
-    <!-- 店长授权超额挂账弹窗 -->
-    <div v-if="showPinModal" class="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200/80 dark:border-slate-700">
-        <div class="p-6">
-          <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-            <AlertTriangle :size="28" />
+  </div>
+
+  <!-- 🌟 历史报价弹窗 (放在最外层根节点内) -->
+  <BaseModal 
+    v-model:visible="quoteHistoryModalVisible" 
+    :title="tExt.historyTitle" 
+    size="lg"
+  >
+    <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+      <div v-if="isLoadingHistory" class="text-center py-8 text-slate-400 text-sm font-bold">
+        {{ tExt.historyLoading }}
+      </div>
+      
+      <div v-else-if="quoteHistoryList.length === 0" class="text-center py-8 text-slate-400 text-sm font-bold">
+        {{ tExt.historyEmpty }}
+      </div>
+      
+      <template v-else>
+        <div 
+          v-for="q in quoteHistoryList" 
+          :key="q.id" 
+          class="p-4 rounded-xl border border-line bg-surface-raised hover:border-accent transition-all flex flex-col gap-2 group"
+        >
+          <!-- 顶部信息：单号、客户、金额、订单状态 -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-mono font-black text-accent">{{ q.quotation_no || q.id }}</span>
+              <span class="text-sm font-bold text-primary">{{ q.client_name || 'Cliente General' }}</span>
+              
+              <!-- 核心：显示订单号状态 -->
+              <span v-if="q.converted_order_id" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold border border-indigo-200 flex items-center gap-1">
+                <CheckCircle2 :size="12" /> 已关联订单 #{{ q.converted_order_id }}
+              </span>
+            </div>
+            <div class="text-right">
+              <div class="font-black text-primary font-mono text-lg">$ {{ Number(q.total_usd || 0).toFixed(2) }}</div>
+            </div>
           </div>
-          <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">超出信用额度</h3>
-          <p class="text-xs text-center text-slate-500 dark:text-slate-400 mb-6 leading-relaxed px-2">
-            {{ pendingOverrideError }}
-          </p>
-          
-          <form @submit.prevent="submitOverridePin">
-            <div class="relative mb-6">
-              <input 
-                v-model="pinInput" 
-                type="password" 
-                autocomplete="new-password"
-                placeholder="请输入店长安全 PIN 码"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400"
-              />
+
+          <!-- 中间信息：时间、商品明细 -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-muted font-mono mb-1">{{ (q.timestamp || '').replace('T', ' ').substring(0, 16) }}</div>
+              <!-- 显示商品明细 -->
+              <div class="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-2 py-1.5 rounded-md truncate w-full border border-slate-200 dark:border-slate-700/50">
+                📦 {{ parseQuoteItems(q.items_json) }}
+              </div>
             </div>
             
-            <div class="flex gap-3">
-              <button type="button" @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer">取消</button>
-              <button type="submit" class="flex-1 py-3 rounded-xl font-bold text-white bg-accent hover:bg-accent-hover shadow-sm transition-all active:scale-95 cursor-pointer">授权放行</button>
-            </div>
-          </form>
-          
-        </div>
-      </div>
-    </div>
+            <!-- 右侧操作按钮 -->
+            <div class="flex flex-col gap-1 shrink-0 w-[88px]">
+              <button @click="loadHistoricalQuote(q)" class="w-full py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer">
+                {{ tExt.historyLoad }}
+              </button>
+              
+              <!-- 🌟 新增：PDF 预览/下载按钮 -->
+              <button @click="downloadQuotePdf(q.quotation_no)" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-indigo-600 border border-slate-200 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1">
+                <FileText :size="12" /> PDF
+              </button>
 
-  </div> 
+              <button 
+                v-if="!q.converted_order_id"
+                @click="loadHistoricalQuote(q); goToPosFromQuote()" 
+                class="w-full py-1.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+              >
+                {{ tExt.historyGoPos }}
+              </button>
+              <button 
+                v-else
+                disabled
+                class="w-full py-1.5 bg-slate-200 text-slate-400 rounded-lg text-xs font-bold cursor-not-allowed opacity-70"
+              >
+                已结账
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </BaseModal>
 </template> 
 
 <script setup>
-import { Keyboard, ShoppingCart, Search, RefreshCw, AlertTriangle, Building2, XCircle, FileText, CheckCircle2, Calendar, User, Download, Printer, Info } from 'lucide-vue-next';
+import BaseModal from './ui/BaseModal.vue'
+import { Keyboard, ShoppingCart, Search, RefreshCw, AlertTriangle, Building2, XCircle, FileText, CheckCircle2, Calendar, User, Download, Printer, Info, History } from 'lucide-vue-next';
 
 import { usePrintAgent, PRINT_ENABLED } from '../composables/usePrintAgent'
 const { isConnected, printReceipt } = usePrintAgent()
@@ -406,7 +500,6 @@ const tExt = computed(() => {
     checkoutSuccessTitle: isZh ? '交易完成！' : isEs ? '¡Pago Exitoso!' : 'Payment Successful!',
     toastClientCreated: isZh ? '客户创建成功并已选中！' : isEs ? '¡Cliente creado y seleccionado!' : 'Client created and selected!',
     errorRequired: isZh ? '请输入客户名称' : isEs ? 'Ingrese el nombre del cliente' : 'Enter client name',
-
     printOrderNo: isZh ? '单号:' : isEs ? 'Nro:' : 'No:',
     printDate: isZh ? '日期:' : isEs ? 'Fecha:' : 'Date:',
     printClient: isZh ? '客户:' : isEs ? 'Cliente:' : 'Client:',
@@ -416,6 +509,15 @@ const tExt = computed(() => {
     printSubtotalTitle: isZh ? '小计' : isEs ? 'Subtotal' : 'Subtotal',
     printPaymentTitle: isZh ? '支付明细:' : isEs ? 'Pagos:' : 'Payments:',
     printThanks: isZh ? '感谢惠顾！' : isEs ? '¡Gracias por su compra!' : 'Thank you!',
+
+    // 🌟 补全的多语言字典
+    goToPosBtn: isZh ? '立即转入 POS 收银台' : isEs ? 'Ir a Caja POS' : 'Go to POS Checkout',
+    historyTitle: isZh ? '历史报价记录' : isEs ? 'Historial de Cotizaciones' : 'Quotation History',
+    historyLoading: isZh ? '正在加载历史记录...' : isEs ? 'Cargando historial...' : 'Loading history...',
+    historyEmpty: isZh ? '暂无历史报价记录' : isEs ? 'Sin cotizaciones registradas' : 'No quotations found',
+    historyLoad: isZh ? '载入修改' : isEs ? 'Cargar' : 'Load',
+    historyGoPos: isZh ? '转 POS' : isEs ? 'A POS' : 'To POS',
+    printBtn: isZh ? '打印' : isEs ? 'Imprimir' : 'Print',
   }
 })
 
@@ -428,7 +530,7 @@ const props = defineProps({
   currentUser: Object
 })
 
-const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients'])
+const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients', 'go-to-pos'])
 
 const deskSearchQuery = ref('')
 const quoteClientName = ref('')
@@ -508,6 +610,97 @@ const fetchSystemSettings = async () => {
 }
 
 const helpModalVisible = ref(false)
+// 🌟 历史报价相关状态
+const quoteHistoryModalVisible = ref(false)
+const quoteHistoryList = ref([])
+const isLoadingHistory = ref(false)
+
+const openQuoteHistoryModal = async () => {
+  isLoadingHistory.value = true
+  quoteHistoryModalVisible.value = true
+  try {
+    const res = await apiFetch('/api/quotations')
+    if (res.ok) {
+      const data = await res.json()
+      // 按时间倒序排，最新的在上面
+      quoteHistoryList.value = data.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))
+    } else {
+      showToast('获取历史报价失败', 'error')
+    }
+  } catch (e) {
+    showToast('网络异常', 'error')
+  } finally {
+    isLoadingHistory.value = false
+  }
+}
+
+const loadHistoricalQuote = (quote) => {
+  try {
+    const items = JSON.parse(quote.items_json || '[]')
+    
+    // 清空当前购物车并注入
+    props.cartItems.splice(0, props.cartItems.length, ...items.map(i => ({
+      ...i,
+      cost_price: i.cost_price || 0,
+      tax_rate: i.tax_rate ?? 0.16
+    })))
+    
+    // 恢复客户信息
+    quoteClientName.value = quote.client_name || ''
+    const matchedClient = props.clientsList?.find(c => c.name === quote.client_name)
+    quoteClientId.value = matchedClient ? matchedClient.id : null
+    
+    // 恢复备注
+    if (quote.notes) quoteNotes.value = quote.notes
+
+    // 关弹窗提示成功
+    quoteHistoryModalVisible.value = false
+    showToast('✅ 历史报价已载入，可修改后保存', 'success')
+  } catch (e) {
+    showToast('❌ 解析历史报价失败', 'error')
+  }
+}
+
+// 🌟 解析历史报价里的商品明细，生成简短的文本
+const parseQuoteItems = (jsonStr) => {
+  try {
+    const items = JSON.parse(jsonStr || '[]')
+    if (!items.length) return '无明细'
+    // 最多显示 3 个商品，多的用"等"表示
+    const names = items.slice(0, 3).map(i => `${i.name} x${i.quantity}`).join(', ')
+    return items.length > 3 ? `${names} 等 ${items.length} 件商品` : names
+  } catch (e) {
+    return '解析失败'
+  }
+}
+
+// 🌟 新增：下载历史报价的 PDF
+const downloadQuotePdf = async (quotationNo) => {
+  if (!quotationNo) return
+  try {
+    const res = await apiFetch(`/api/quotation/pdf/download?quotation_no=${quotationNo}&lang=${currentLang.value}`)
+    if (!res.ok) throw new Error('PDF download failed')
+    
+    const blob = await res.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Quotation_${quotationNo}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url)
+    showToast(isZh.value ? 'PDF 下载成功' : 'PDF descargado con éxito', 'success')
+  } catch (err) {
+    console.error(err)
+    showToast(isZh.value ? 'PDF 下载失败' : 'Error al descargar PDF', 'error')
+  }
+}
+
+const goToPosFromQuote = () => {
+  emit('go-to-pos')
+}
+
 const toastMessage = ref('')
 const toastType = ref('success')
 const checkoutSuccessVisible = ref(false)
@@ -577,7 +770,8 @@ const selectAndAddToCart = (part) => {
       name: part.name,
       brand: part.brand || 'GENERAL',
       price: part.price,
-      tax_rate: part.tax_rate ?? 0.16,
+      cost_price: part.cost_price || 0, // 🌟 新增：把成本价带上，用于比价
+      tax_rate: part.tax_rate ?? 0.16, 
       quantity: 1
     })
   }
@@ -604,6 +798,19 @@ const confirmExitPos = () => { exitConfirmVisible.value = true }
 const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos') }
 
 const isSubmitting = ref(false)
+
+// 🌟 实时计算是否超额
+const isOverCreditLimit = computed(() => {
+  if (!quoteClientId.value || !props.clientsList) return false
+  const client = props.clientsList.find(c => c.id === quoteClientId.value)
+  if (!client) return false
+  
+  const currentDebt = Number(client.debt) || 0
+  const limit = Number(client.credit_limit) || 500
+  const projectedDebt = currentDebt + totalUsd.value
+  
+  return projectedDebt > limit
+})
 
 const printQuotationReceipt = async () => {
   if (!PRINT_ENABLED) return
@@ -686,79 +893,6 @@ const generateQuotationPDF = async () => {
     quoteClientId.value = null
     quoteNotes.value = ''
     
-  } catch (err) {
-    showToast(err.message, 'error')
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-const showPinModal = ref(false)
-const pinInput = ref('')
-const pendingOverrideError = ref('')
-
-const submitOverridePin = async () => {
-  if (!pinInput.value) return
-  showPinModal.value = false
-  await submitOrderAsCredit(pinInput.value)
-}
-
-const submitOrderAsCredit = async (overridePin = null) => {
-  if (!quoteClientId.value) {
-    showToast('必须先选中具体客户才能挂账！', 'error')
-    return
-  }
-  if (props.cartItems.length === 0) return
-
-  isSubmitting.value = true
-  try {
-    const payload = {
-      client_name: quoteClientName.value,
-      client_id: quoteClientId.value,
-      request_id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-      payment_method: 'Fiado_USD',
-      payment_reference: '全单挂账',
-      bcv_rate: props.bcvRate,
-      igtf_amount: 0,
-      items: props.cartItems.map(i => ({ 
-        oem: i.oem, name: i.name, brand: i.brand || "GENERAL", 
-        quantity: i.quantity, price: i.price 
-      }))
-    }
-
-    if (overridePin) {
-      payload.force_override_pin = overridePin
-    }
-
-    const res = await apiFetch('/api/pos/orders', { method: 'POST', body: JSON.stringify(payload) })
-    
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}))
-      
-      if (!overridePin) {
-        pendingOverrideError.value = err.detail || '超出信用额度'
-        showPinModal.value = true
-        isSubmitting.value = false
-        return
-      }
-      
-      throw new Error(err.detail || '挂账失败')
-    }
-    
-    const data = await res.json()
-    
-    checkoutSuccessVisible.value = true
-    setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
-    showToast(`挂账成功！单号: ${data.order_no}`, 'success')
-
-    paymentReference.value = ''
-    quoteClientName.value = ''
-    quoteClientId.value = null
-
-    props.cartItems.splice(0, props.cartItems.length)
-    
-    emit('generate-quote')
-
   } catch (err) {
     showToast(err.message, 'error')
   } finally {
