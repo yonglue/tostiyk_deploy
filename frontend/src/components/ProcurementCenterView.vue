@@ -330,108 +330,139 @@
       </template>
     </SideDrawer>
 
-    <!-- 新建采购单弹窗 (保留原版大弹窗，多语言化) -->
+    <!-- 新建采购单弹窗 -->
     <div v-if="isCreateModalVisible" @click.self="isCreateModalVisible = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all">
-      <div class="bg-white rounded-3xl shadow-2xl w-[90vw] max-w-[1000px] h-[85vh] max-h-[850px] border border-slate-100 flex flex-col overflow-visible">
-        <div class="flex items-center justify-between border-b border-slate-200/60 p-6 pb-4 shrink-0 bg-slate-50/50 rounded-t-3xl">
+      <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-[90vw] max-w-[1000px] h-[85vh] max-h-[850px] border border-slate-100 dark:border-slate-700 flex flex-col overflow-visible">
+        <div class="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-700 p-6 pb-4 shrink-0 bg-slate-50/50 dark:bg-slate-800/50 rounded-t-3xl">
           <div class="flex items-center gap-2">
             <span class="text-xl">📝</span>
-            <h3 class="font-bold text-slate-800 text-base">{{ tExt.createPoTitle }}</h3>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">{{ tExt.createPoTitle }}</h3>
           </div>
-          <button @click="isCreateModalVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
+          <button @click="isCreateModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-lg font-bold cursor-pointer">✕</button>
         </div>
-        <div class="flex-1 p-6 flex flex-col min-h-0 bg-white">
+        <div class="flex-1 p-6 flex flex-col min-h-0 bg-white dark:bg-slate-800">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0 mb-6">
+            <!-- 供应商选择 -->
             <div class="relative">
-              <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">{{ tExt.colSupplier }}</label>
-              <div class="flex gap-2">
+              <div class="flex gap-2 items-end">
                 <div class="relative flex-1">
-                  <input v-model="poForm.supplier_name" @focus="handleSupplierFocus" @blur="hideSupplierDropdownDelayed" type="text" :placeholder="tExt.phSupplier" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
-                  <div v-if="showSupplierDropdown" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-1 max-h-48 overflow-y-auto">
-                    <div v-for="sup in filteredSuppliers" :key="sup.id" @mousedown.prevent="selectSupplier(sup)" class="px-4 py-2.5 hover:bg-blue-50 cursor-pointer transition-colors flex items-center justify-between border-b border-slate-50 last:border-0">
-                      <div class="text-sm font-bold text-slate-800">{{ sup.name }}</div>
+                  <BaseInput 
+                    v-model="poForm.supplier_name" 
+                    @focus="handleSupplierFocus" 
+                    :label="tExt.colSupplier"
+                    :placeholder="tExt.phSupplier" 
+                  />
+                  <div v-if="showSupplierDropdown" class="absolute top-full left-0 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 py-1 max-h-48 overflow-y-auto">
+                    <div v-for="sup in filteredSuppliers" :key="sup.id" @mousedown.prevent="selectSupplier(sup)" class="px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer transition-colors flex items-center justify-between border-b border-slate-50 dark:border-slate-700 last:border-0">
+                      <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ sup.name }}</div>
                       <div class="text-[10px] text-slate-400 font-mono">{{ tExt.colSupplierDebt }}: ${{ sup.debt_usd || 0 }}</div>
                     </div>
                     <div v-if="poForm.supplier_name.trim() && filteredSuppliers.length === 0" class="px-4 py-3 text-center text-xs text-slate-400">{{ tExt.noSupplierFound }}</div>
                   </div>
                 </div>
-                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0">➕ {{ tExt.newSupBtn }}</button>
+                <button @click="openSupplierModal" type="button" class="px-4 py-2.5 mb-0.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0">➕ {{ tExt.newSupBtn }}</button>
               </div>
             </div>
+            
+            <!-- 单号 -->
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">{{ tExt.poRefLabel }}</label>
-              <input v-model="poForm.po_no" type="text" :placeholder="tExt.poRefPlaceholder" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+              <BaseInput v-model="poForm.po_no" :label="tExt.poRefLabel" :placeholder="tExt.poRefPlaceholder" />
             </div>
           </div>
+          
           <div class="flex-1 flex flex-col min-h-0">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0 mb-3">
-              <label class="block text-xs font-bold text-slate-500 uppercase">{{ tExt.poItemsLabel }}</label>
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2 shrink-0 mb-3">
+              <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">{{ tExt.poItemsLabel }}</label>
               <div class="flex items-center gap-3">
                 <button @click="$emit('navigate', 'parts')" class="text-xs text-amber-600 hover:text-amber-700 hover:underline cursor-pointer">{{ tExt.findPartLink }}</button>
-                <button @click="addPOLine" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">➕ {{ tExt.addLineBtn }}</button>
+                <button @click="addPOLine" class="text-xs bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer">➕ {{ tExt.addLineBtn }}</button>
               </div>
             </div>
+            
             <div class="flex-1 overflow-y-auto space-y-3 pr-2 pb-10">
-              <div v-for="(item, index) in poForm.items" :key="index" class="grid grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200/60 relative">
+              <div v-for="(item, index) in poForm.items" :key="index" class="grid grid-cols-12 gap-3 items-start bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700 relative">
                 <div class="col-span-5 relative">
-                  <div @click="openPartDropdown(item)" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium outline-none cursor-pointer flex items-center justify-between hover:border-blue-400 transition-colors">
-                    <span v-if="item.oem" class="truncate text-slate-800">{{ item.oem }} - {{ item.name }}</span>
+                  <div @click="openPartDropdown(item)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-medium outline-none cursor-pointer flex items-center justify-between hover:border-blue-400 transition-colors">
+                    <span v-if="item.oem" class="truncate text-slate-800 dark:text-slate-200">{{ item.oem }} - {{ item.name }}</span>
                     <span v-else class="text-slate-400">{{ tExt.searchPartPlaceholder }}</span>
                     <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                   </div>
-                  <div v-if="item.showDropdown" class="absolute top-full left-0 mt-1 w-[500px] bg-white border border-slate-200 rounded-xl shadow-2xl z-[100] p-2 space-y-2">
-                    <div class="relative">
-                      <Search class="absolute left-3 top-2.5 text-slate-400" :size="16" />
-                      <input v-model="item.searchQuery" type="text" :placeholder="tExt.searchPartDropdown" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md pl-9 pr-3 py-1.5 text-sm text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-bold" @click.stop />
-                    </div>
+                  <div v-if="item.showDropdown" class="absolute top-full left-0 mt-1 w-[500px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-[100] p-2 space-y-2">
+                    <BaseSearchInput 
+                      v-model="item.searchQuery" 
+                      :placeholder="tExt.searchPartDropdown" 
+                    />
                     <div class="max-h-64 overflow-y-auto space-y-1">
-                      <div v-for="p in getFilteredParts(item.searchQuery)" :key="p.id" @click="selectPartForItem(item, p)" class="p-2 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors border border-transparent hover:border-blue-200">
-                        <div class="text-sm font-bold text-slate-800">{{ p.oem }} - {{ p.name }}</div>
+                      <div v-for="p in getFilteredParts(item.searchQuery)" :key="p.id" @click="selectPartForItem(item, p)" class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer transition-colors border border-transparent hover:border-blue-200">
+                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ p.oem }} - {{ p.name }}</div>
                         <div class="text-[10px] text-slate-500 font-mono">{{ tExt.stockLabel }}: {{ p.stock }} | {{ tExt.lastPriceLabel }}: ${{ p.cost_price || 0 }}</div>
                       </div>
                       <div v-if="getFilteredParts(item.searchQuery).length === 0" class="text-center py-4 text-xs text-slate-400">{{ tExt.noPartFound }}</div>
                     </div>
                   </div>
                 </div>
-                <div class="col-span-2"><input v-model.number="item.quantity" type="number" min="1" :placeholder="tExt.qtyLabel" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" /></div>
-                <div class="col-span-2 relative">
-                  <span class="absolute left-2.5 top-2 text-xs text-slate-400 font-bold">$</span>
-                  <input v-model.number="item.unit_price" type="number" step="0.01" min="0" :placeholder="tExt.priceLabel" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md pl-6 pr-2 py-1.5 text-sm font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+                
+                <div class="col-span-2">
+                  <BaseInput 
+                    v-model.number="item.quantity" 
+                    type="number" 
+                    min="1" 
+                    :placeholder="tExt.qtyLabel" 
+                  />
                 </div>
-                <div class="col-span-2 text-right font-mono font-bold text-slate-700">$ {{ ((item.quantity || 0) * (item.unit_price || 0)).toFixed(2) }}</div>
-                <div class="col-span-1 text-center"><button @click="removePOLine(index)" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors cursor-pointer">🗑️</button></div>
+                
+                <div class="col-span-2">
+                  <BaseInput 
+                    v-model.number="item.unit_price" 
+                    type="number" 
+                    step="0.01" 
+                    min="0" 
+                    :placeholder="tExt.priceLabel" 
+                  />
+                </div>
+                
+                <div class="col-span-2 text-right font-mono font-bold text-slate-700 dark:text-slate-300 mt-2">$ {{ ((item.quantity || 0) * (item.unit_price || 0)).toFixed(2) }}</div>
+                <div class="col-span-1 text-center mt-2"><button @click="removePOLine(index)" class="text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 p-1.5 rounded-lg transition-colors cursor-pointer">🗑️</button></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex items-center justify-between border-t border-slate-200/60 p-6 pt-4 bg-slate-50/50 shrink-0 rounded-b-3xl">
-          <div class="text-sm">{{ tExt.poTotalLabel }}: <span class="font-black text-blue-600 text-xl font-mono">$ {{ totalPOAmount.toFixed(2) }}</span></div>
+        <div class="flex items-center justify-between border-t border-slate-200/60 dark:border-slate-700 p-6 pt-4 bg-slate-50/50 dark:bg-slate-800/50 shrink-0 rounded-b-3xl">
+          <div class="text-sm text-slate-600 dark:text-slate-400">{{ tExt.poTotalLabel }}: <span class="font-black text-blue-600 dark:text-blue-400 text-xl font-mono">$ {{ totalPOAmount.toFixed(2) }}</span></div>
           <div class="flex items-center gap-3">
-            <button @click="isCreateModalVisible = false" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
+            <button @click="isCreateModalVisible = false" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
             <button @click="submitPO" :disabled="isSubmittingPO" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">{{ isSubmittingPO ? tExt.creating : tExt.createPoBtn }}</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 新建供应商弹窗 (保留原版，多语言化) -->
+    <!-- 新建供应商弹窗 -->
     <div v-if="isSupplierModalVisible" @click.self="isSupplierModalVisible = false" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-[60] p-6">
-      <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 flex flex-col animate-in zoom-in-95 duration-150">
-        <div class="p-5 border-b border-slate-200/60 flex items-center justify-between bg-slate-50/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900">{{ tExt.newSupTitle }}</h3>
-          <button @click="isSupplierModalVisible = false" class="text-slate-400 hover:text-slate-700 font-bold text-base p-1 cursor-pointer">✕</button>
+      <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 dark:border-slate-700 flex flex-col animate-in zoom-in-95 duration-150">
+        <div class="p-5 border-b border-slate-200/60 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 shrink-0">
+          <h3 class="font-extrabold text-base text-slate-900 dark:text-white">{{ tExt.newSupTitle }}</h3>
+          <button @click="isSupplierModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 font-bold text-base p-1 cursor-pointer">✕</button>
         </div>
         <div class="p-5 space-y-4">
-          <div><label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colSupplier }} *</label><input v-model="newSupplierForm.name" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" :placeholder="tExt.phSupplier" /></div>
-          <div class="grid grid-cols-2 gap-4">
-            <div><label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.contactLabel }}</label><input v-model="newSupplierForm.contact_person" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" :placeholder="tExt.phContact" /></div>
-            <div><label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.phoneLabel }}</label><input v-model="newSupplierForm.phone" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" :placeholder="tExt.phPhone" /></div>
+          <div class="space-y-4">
+            <BaseInput v-model="newSupplierForm.name" :label="tExt.colSupplier + ' *'" :placeholder="tExt.phSupplier" />
+            <div class="grid grid-cols-2 gap-4">
+              <BaseInput v-model="newSupplierForm.contact_person" :label="tExt.contactLabel" :placeholder="tExt.phContact" />
+              <BaseInput v-model="newSupplierForm.phone" :label="tExt.phoneLabel" :placeholder="tExt.phPhone" />
+            </div>
+            <BaseInput v-model="newSupplierForm.address" :label="tExt.addressLabel" :placeholder="tExt.optional" />
           </div>
-          <div><label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.addressLabel }}</label><input v-model="newSupplierForm.address" type="text" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" :placeholder="tExt.optional" /></div>
         </div>
-        <div class="p-5 border-t border-slate-200/60 flex justify-end gap-3 bg-slate-50/50">
-          <button @click="isSupplierModalVisible = false" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-200 text-slate-600 hover:bg-slate-300 transition-colors cursor-pointer">{{ t.common.cancel }}</button>
-          <button @click="saveNewSupplier" :disabled="isSavingSupplier" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md transition-colors cursor-pointer disabled:opacity-50">{{ isSavingSupplier ? tExt.saving : tExt.saveSupBtn }}</button>
+        
+        <!-- 底部按钮区 -->
+        <div class="p-5 border-t border-slate-200/60 dark:border-slate-700 flex justify-end gap-3 bg-slate-50/50 dark:bg-slate-800/50">
+          <button @click="isSupplierModalVisible = false" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">
+            {{ t.common.cancel }}
+          </button>
+          <button @click="saveNewSupplier" :disabled="isSavingSupplier" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50">
+            {{ isSavingSupplier ? '...' : tExt.saveSupBtn }}
+          </button>
         </div>
       </div>
     </div>
@@ -449,9 +480,7 @@
     />
   </div>
 
-  <!-- ==================================================== -->
-  <!-- 🌟 核心修复：将 A4 打印区域通过 Teleport 移到 body 下，摆脱所有父级限制 -->
-  <!-- ==================================================== -->
+  <!-- A4 打印区域 -->
   <Teleport to="body">
     <div v-if="a4PrintData" class="a4-print-only" id="a4-print-section">
       <div class="a4-header">
@@ -521,9 +550,6 @@
 </template>
 
 <script setup>
-const isZh = computed(() => currentLang.value === 'zh')
-const isEs = computed(() => currentLang.value === 'es')
-
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { Plus, Search } from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'
@@ -533,10 +559,16 @@ import { apiFetch } from '../utils/api'
 import SuppliersView from './SuppliersView.vue'
 import ConfirmDialog from './ConfirmDialog.vue'
 import SideDrawer from './SideDrawer.vue'
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
+import BaseSearchInput from './ui/BaseSearchInput.vue'
 
 const { t, currentLang } = useI18n()
 const { showSuccessModal } = useNotifications()
 const { partsList, fetchParts, bcvRate } = useInventory()
+
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
 
 const emit = defineEmits(['navigate'])
 

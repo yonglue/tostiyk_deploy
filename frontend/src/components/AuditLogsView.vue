@@ -21,36 +21,43 @@
 
     <!-- 高级筛选控制面板 -->
     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">🔍 {{ tExt.filterUser }}</label>
-        <input v-model="filterUsername" type="text" :placeholder="tExt.phUser" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 dark:text-white transition-all" />
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">🛡️ {{ tExt.filterRole }}</label>
-        <select v-model="filterRole" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 dark:text-white transition-all cursor-pointer">
-          <option value="">{{ tExt.allRoles }}</option>
-          <option value="super_admin">SUPER_ADMIN</option>
-          <option value="admin">ADMIN</option>
-          <option value="staff">STAFF</option>
-          <option value="cashier">CASHIER</option>
-          <option value="warehouse">WAREHOUSE</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">⚡ {{ tExt.filterAction }}</label>
-        <select v-model="filterAction" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 dark:text-white transition-all cursor-pointer">
-          <option value="">{{ tExt.allActions }}</option>
-          <option v-for="act in actionOptions" :key="act" :value="act">
-            {{ getActionLabel(act) }}
-          </option>
-        </select>
-      </div>
-      <div class="flex items-center gap-2">
+      <BaseInput 
+        v-model="filterUsername" 
+        :label="'🔍 ' + tExt.filterUser" 
+        :placeholder="tExt.phUser" 
+      />
+      
+      <BaseSelect 
+        v-model="filterRole" 
+        :label="'🛡️ ' + tExt.filterRole"
+        :options="[
+          { label: tExt.allRoles, value: '' },
+          { label: 'SUPER_ADMIN', value: 'super_admin' },
+          { label: 'ADMIN', value: 'admin' },
+          { label: 'STAFF', value: 'staff' },
+          { label: 'CASHIER', value: 'cashier' },
+          { label: 'WAREHOUSE', value: 'warehouse' }
+        ]" 
+      />
+
+      <BaseSelect 
+        v-model="filterAction" 
+        :label="'⚡ ' + tExt.filterAction"
+        :options="[
+          { label: tExt.allActions, value: '' },
+          ...actionOptions.map(act => ({ label: getActionLabel(act), value: act }))
+        ]" 
+      />
+
+      <div class="flex items-end gap-2">
         <div class="flex-1">
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">📅 {{ tExt.filterDate }}</label>
-          <input v-model="filterDate" type="date" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 dark:text-white transition-all font-mono" />
+          <BaseInput 
+            v-model="filterDate" 
+            type="date" 
+            :label="'📅 ' + tExt.filterDate" 
+          />
         </div>
-        <button @click="resetFilters" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors mt-6 cursor-pointer">
+        <button @click="resetFilters" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors mb-[2px] cursor-pointer">
           {{ tExt.resetBtn }}
         </button>
       </div>
@@ -169,6 +176,9 @@
 </template>
 
 <script setup>
+import BaseSearchInput from './ui/BaseSearchInput.vue'
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

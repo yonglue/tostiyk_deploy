@@ -19,7 +19,7 @@
       
       <!-- 展开状态：显示 Logo 和标题 -->
       <div v-show="!isCollapsed" @click.stop.prevent="handleMenuClick('dashboard')" class="flex items-center gap-3 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" title="返回主页">
-        <div class="w-8 h-8 min-w-[32px] rounded bg-slate-900 dark:bg-blue-600 flex items-center justify-center text-white shadow-sm shrink-0">
+        <div class="w-8 h-8 min-w-[32px] rounded bg-blue-600 flex items-center justify-center text-white shadow-sm shrink-0">
           <Cpu :size="20" />
         </div>
         <div class="whitespace-nowrap transition-opacity duration-300">

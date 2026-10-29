@@ -19,34 +19,26 @@
       </h3>
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{{ t.staff.usernameLabel }}</label>
-          <input 
-            v-model="newStaff.username" 
-            type="text" 
-            autocomplete="off" 
-            :placeholder="tExt.phUsername" 
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-slate-900 transition-all font-mono placeholder:text-slate-400 dark:placeholder:text-slate-500" 
-          />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{{ t.staff.passwordLabel }}</label>
-          <input 
-            v-model="newStaff.password" 
-            type="password" 
-            autocomplete="new-password" 
-            placeholder="••••••••" 
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-slate-900 transition-all font-mono placeholder:text-slate-400 dark:placeholder:text-slate-500" 
-          />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{{ t.staff.roleLabel }}</label>
-          <select v-model="newStaff.role" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-slate-900 transition-all cursor-pointer font-semibold">
-            <option v-for="role in roleOptions" :key="role.value" :value="role.value">
-              {{ role.label }}
-            </option>
-          </select>
-        </div>
+        <BaseInput 
+          v-model="newStaff.username" 
+          :label="t.staff.usernameLabel" 
+          :placeholder="tExt.phUsername" 
+          autocomplete="off" 
+        />
+
+        <BaseInput 
+          v-model="newStaff.password" 
+          type="password" 
+          :label="t.staff.passwordLabel" 
+          placeholder="••••••••" 
+          autocomplete="new-password" 
+        />
+
+        <BaseSelect 
+          v-model="newStaff.role" 
+          :label="t.staff.roleLabel"
+          :options="roleOptions" 
+        />
       </div>
 
       <!-- 权限矩阵 -->
@@ -169,10 +161,13 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
+
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
-import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import { apiFetch } from '../utils/api' 
 import ConfirmDialog from './ConfirmDialog.vue' 

@@ -9,7 +9,6 @@
   <!-- 🌟 优先级 3：已登录 且 是 PC 端 -->
   <div v-else class="h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
     
-    <!-- 第 6 行 -->
     <div class="flex flex-col md:flex-row h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       
       <Sidebar 
@@ -30,28 +29,21 @@
         
         <header v-if="activeTab !== 'pos'" class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 px-6 flex items-center justify-between shrink-0 z-10 transition-all">
           <div class="flex items-center space-x-4">
-            <!-- 移动端菜单按钮 (保留) -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-blue-50/90 rounded-2xl transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            
           </div>
 
           <div class="flex items-center gap-3 h-full">
             
-            <!-- 1. BCV 汇率 (极度克制，纯文本) -->
             <div class="hidden sm:flex items-center gap-1.5 px-2">
               <span class="text-slate-400 text-[11px] font-bold tracking-wider uppercase">BCV</span>
               <span class="text-slate-700 dark:text-slate-200 font-bold font-mono text-sm">{{ bcvRate }}</span>
             </div>
 
-            <!-- 分割线 -->
             <div class="h-4 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
 
-            <!-- 2. 纯图标操作组 -->
             <div class="flex items-center gap-1.5">
-              
-              <!-- 语言切换 (原生Select覆盖在地球图标上，实现纯图标交互) -->
               <div class="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" title="Language">
                 <svg class="w-4 h-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10"></circle>
@@ -65,12 +57,10 @@
                 </select>
               </div>
 
-              <!-- 主题切换 (强制限制外层尺寸并去除内部组件自带大背景) -->
               <div class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 [&>button]:!w-full [&>button]:!h-full [&>button]:!p-0 [&>button]:!bg-transparent [&>button]:!border-0 [&>button]:!shadow-none [&>button>svg]:!w-4 [&>button>svg]:!h-4" title="Theme">
                 <ThemeSwitcher />
               </div>
 
-              <!-- 退出登录 (纯图标) -->
               <button @click="handleLogout" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer" title="Logout">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -78,7 +68,6 @@
               </button>
             </div>
 
-            <!-- 3. 用户信息 (只留头像和名字) -->
             <div class="flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-slate-700 h-5">
               <div class="relative flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs uppercase shadow-sm cursor-default" title="User">
                 {{ currentUserObj.username ? currentUserObj.username.charAt(0) : 'U' }}
@@ -87,13 +76,10 @@
               <span class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-default">{{ currentUserObj.username }}</span>
             </div>
 
-            <!-- 🌟 离线队列状态指示器 -->
             <OfflineIndicator />
-
           </div>
         </header>
 
-        <!-- 🌟 全局搜索弹窗 -->
         <GlobalSearchModal 
           :visible="isGlobalSearchVisible"
           :partsList="partsList"
@@ -102,19 +88,14 @@
           @select="handleGlobalSelect"
         />
 
-        <!-- 主内容区域 -->
         <main ref="mainScrollRef" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6" @scroll="handleScroll">
-          <DashboardView 
-            v-if="activeTab === 'dashboard'" 
-            :stats="stats" 
-            :bcvRate="bcvRate"
-            @navigate="(tab) => checkAndSwitchTab(tab)" 
-          />
+          <DashboardView v-if="activeTab === 'dashboard'" :stats="stats" :bcvRate="bcvRate" @navigate="(tab) => checkAndSwitchTab(tab)" />
           <FinancialView v-else-if="activeTab === 'financial' && hasPermission('financial:view')" />
           <GastosView v-else-if="activeTab === 'expenses' && hasPermission('financial:view')" />
           <StaffManagementView v-else-if="activeTab === 'staff' && hasPermission('users:manage')" />
           <AuditLogsView v-else-if="activeTab === 'audit_logs' && hasPermission('users:manage')" />
           <CashRegisterView v-else-if="activeTab === 'cash_register' && hasPermission('shift:report')" />
+          
           <PartsView 
             v-else-if="activeTab === 'parts' && isPluginEnabled('auto_parts') && hasPermission('parts:view')"
             :partsList="partsList"
@@ -127,6 +108,7 @@
             @delete-part="openDeletePartModal"
             @refresh-data="fetchParts"
           />
+          
           <ClientsView 
             v-else-if="activeTab === 'clients' && hasPermission('clients:view')"
             :clientsList="clientsList"
@@ -136,10 +118,9 @@
             @delete-client="openDeleteClientModal"
             @refresh-data="fetchClients"
           />
-          <PurchaseOrdersView 
-            v-else-if="activeTab === 'procurement' && hasPermission('procurement:view')"
-            @navigate="checkAndSwitchTab" 
-          />          
+          
+          <PurchaseOrdersView v-else-if="activeTab === 'procurement' && hasPermission('procurement:view')" @navigate="checkAndSwitchTab" />          
+          
           <TransactionsView 
             v-else-if="activeTab === 'transactions' && hasPermission('transactions:history')"
             :transactionsList="transactionsList"
@@ -150,19 +131,11 @@
             @change-tab="onTransactionsChangeTab"
             @change-page="onTransactionsChangePage"
           />
-          <InventoryAuditView 
-            v-else-if="activeTab === 'inventory_audit' && isPluginEnabled('auto_parts') && hasPermission('parts:manage')" 
-          />
           
-          <!-- 挂载报价单列表 -->
-          <QuotationListView 
-            v-else-if="activeTab === 'quotations' && hasPermission('pos:access')"
-            @convert-to-pos="handleConvertToPos"
-            @delete-quote="openDeleteModal"
-            @show-toast="(msg, type) => showSuccessModal(msg)"
-          />
+          <InventoryAuditView v-else-if="activeTab === 'inventory_audit' && isPluginEnabled('auto_parts') && hasPermission('parts:manage')" />
+          
+          <QuotationListView v-else-if="activeTab === 'quotations' && hasPermission('pos:access')" @convert-to-pos="handleConvertToPos" @delete-quote="openDeleteModal" @show-toast="(msg, type) => showSuccessModal(msg)" />
 
-          <!-- 🌟 新拆分出来的：纯收银页面 -->
           <PosView 
             v-else-if="activeTab === 'pos' && hasPermission('pos:access')"
             :partsList="partsList"
@@ -178,7 +151,6 @@
             @refresh-clients="fetchClients"
           />
 
-          <!-- 🌟 新拆分出来的：纯开单报价页面 -->
           <QuotationView 
             v-else-if="activeTab === 'quotation' && hasPermission('pos:access')"
             :partsList="partsList"
@@ -194,7 +166,6 @@
             @refresh-clients="fetchClients"
           />
 
-          <!-- 🌟 这里就是你误删的 BackupView，现在补回来 -->
           <BackupView 
             v-else-if="activeTab === 'backup' && hasPermission('settings:manage')"
             @export-parts="exportPartsExcel"
@@ -203,13 +174,9 @@
             @download-db="downloadDatabaseBackup"
           />
 
-          <!-- 🌟 FMCG 找零钱包 -->
-          <FmcgWalletView 
-            v-else-if="activeTab === 'fmcg_wallet' && isPluginEnabled('fmcg') && hasPermission('financial:view')"
-          />
+          <FmcgWalletView v-else-if="activeTab === 'fmcg_wallet' && isPluginEnabled('fmcg') && hasPermission('financial:view')" />
         </main>
 
-        <!-- 智能悬浮按钮 -->
         <Transition name="fade">
           <button v-if="showFab" @click="scrollToTop" class="fixed bottom-10 right-8 z-40 bg-blue-600 hover:bg-blue-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer active:scale-95 group" :class="isFabExpanded ? 'w-32 h-12 rounded-2xl px-4' : 'w-12 h-12 rounded-full'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
@@ -218,10 +185,9 @@
         </Transition>
 
       </div>
-
     </div>
 
-    <!-- 🌟 新增：手工录入进销存单据弹窗 -->
+    <!-- 手工录入进销存单据弹窗 -->
     <div v-if="txDialogVisible" @click.self="txDialogVisible = false" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all">
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
@@ -233,48 +199,11 @@
         </div>
 
         <form @submit.prevent="handleAddTx" class="space-y-4 px-6 py-5 overflow-y-auto max-h-[70vh]">
-          <!-- 类型选择 -->
-          <div class="flex gap-4">
-            <label class="flex-1 cursor-pointer">
-              <input type="radio" v-model="newTx.type" value="OUT" class="peer sr-only" />
-              <div class="p-3 text-center rounded-xl border border-slate-200 bg-slate-50 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:text-amber-700 text-slate-600 font-bold transition-all">
-                出库 (销售)
-              </div>
-            </label>
-            <label class="flex-1 cursor-pointer">
-              <input type="radio" v-model="newTx.type" value="IN" class="peer sr-only" />
-              <div class="p-3 text-center rounded-xl border border-slate-200 bg-slate-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 text-slate-600 font-bold transition-all">
-                入库 (采购)
-              </div>
-            </label>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ isZh ? 'OEM 编号' : isEs ? 'Código OEM' : 'OEM No.' }}</label>
-              <input v-model="newTx.part_oem" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-mono font-bold outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">配件名称</label>
-              <input v-model="newTx.part_name" type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-medium outline-none focus:border-blue-500" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ isZh ? '数量' : isEs ? 'Cantidad' : 'Qty' }}</label>
-              <input v-model.number="newTx.quantity" type="number" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-bold font-mono outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">单价 ($)</label>
-              <input v-model.number="newTx.unit_price" type="number" step="0.01" min="0" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-bold font-mono outline-none focus:border-blue-500" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">客户 / 供应商</label>
-            <input v-model="newTx.customer_or_supplier" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-blue-500" />
-          </div>
+          <BaseInput v-model="newTx.part_oem" label="OEM 编号" placeholder="请输入 OEM" />
+          <BaseInput v-model="newTx.part_name" label="配件名称" placeholder="请输入配件名称" />
+          <BaseInput v-model.number="newTx.quantity" type="number" min="1" label="数量" />
+          <BaseInput v-model.number="newTx.unit_price" type="number" step="0.01" min="0" label="单价" />
+          <BaseInput v-model="newTx.customer_or_supplier" label="客户/供应商" placeholder="关联对象" />
 
           <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/20">
             <button type="button" @click="txDialogVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors cursor-pointer">
@@ -289,11 +218,7 @@
     </div>
 
     <!-- 弹窗组件：录入新汽配 -->
-    <div 
-      v-if="dialogVisible" 
-      @click.self="dialogVisible = false" 
-      class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all"
-    >
+    <div v-if="dialogVisible" @click.self="dialogVisible = false" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all">
       <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
@@ -305,56 +230,32 @@
 
         <form @submit.prevent="handleAddPart" class="space-y-4 max-h-[70vh] overflow-y-auto px-6 py-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colOem }}</label>
-              <input v-model="newPart.oem" type="text" :placeholder="tExt.placeholderOem" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono font-bold outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colName }}</label>
-              <input v-model="newPart.name" type="text" :placeholder="tExt.placeholderName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium outline-none focus:border-blue-500" />
-            </div>
+            <BaseInput v-model="newPart.oem" :label="t.inventory.colOem" :placeholder="tExt.placeholderOem" />
+            <BaseInput v-model="newPart.name" :label="t.inventory.colName" :placeholder="tExt.placeholderName" />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colCategory }}</label>
-              <input v-model="newPart.category" type="text" :placeholder="tExt.placeholderCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colBrand }}</label>
-              <input v-model="newPart.brand" type="text" :placeholder="tExt.placeholderBrand" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-blue-500" />
-            </div>
+            <BaseInput v-model="newPart.category" :label="t.inventory.colCategory" :placeholder="tExt.placeholderCategory" />
+            <BaseInput v-model="newPart.brand" :label="t.inventory.colBrand" :placeholder="tExt.placeholderBrand" />
           </div>
 
-          <!-- 🌟 修改为三列网格，加入进货价输入框 -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colStock }}</label>
-              <input v-model.number="newPart.stock" type="number" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colPriceUsd }}</label>
-              <input v-model.number="newPart.price" type="number" step="0.5" min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono outline-none focus:border-blue-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-amber-600 mb-1">{{ t.inventory.costPrice }}</label>
-              <input v-model.number="newPart.cost_price" type="number" step="0.5" min="0" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2 text-xs font-bold font-mono text-amber-900 outline-none focus:border-amber-500" />
-            </div>
+            <BaseInput v-model.number="newPart.stock" type="number" min="0" :label="t.inventory.colStock" />
+            <BaseInput v-model.number="newPart.price" type="number" step="0.5" min="0" :label="t.inventory.colPriceUsd" />
+            <BaseInput v-model.number="newPart.cost_price" type="number" step="0.5" min="0" :label="t.inventory.costPrice" />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.taxRate }}</label>
-              <select v-model.number="newPart.tax_rate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:border-blue-500 cursor-pointer">
-                <option :value="0.16">{{ t.inventory.tax16 }}</option>
-                <option :value="0.08">{{ t.inventory.tax8 }}</option>
-                <option :value="0.0">{{ t.inventory.tax0 }}</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ t.inventory.colBin }}</label>
-              <input v-model="newPart.bin_location" type="text" :placeholder="t.inventory.binPlaceholder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono outline-none focus:border-blue-500" />
-            </div>
+            <BaseSelect 
+              v-model.number="newPart.tax_rate" 
+              :label="t.inventory.taxRate"
+              :options="[
+                { label: t.inventory.tax16, value: 0.16 },
+                { label: t.inventory.tax8, value: 0.08 },
+                { label: t.inventory.tax0, value: 0 }
+              ]" 
+            />
+            <BaseInput v-model="newPart.bin_location" :label="t.inventory.colBin" :placeholder="t.inventory.binPlaceholder" />
           </div>
 
           <div>
@@ -384,60 +285,41 @@
       </div>
     </div>
 
-    <!-- 🌟 新增客户弹窗 (拆分店铺与联系人) -->
+    <!-- 新增客户弹窗 -->
     <div v-if="clientDialogVisible" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4">
       <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 dark:border-slate-700">
         <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700">
           <h3 class="font-bold text-base text-slate-800 dark:text-slate-200">{{ t.clients.addBtn }}</h3>
         </div>
         <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <BaseInput v-model="newClient.name" :label="isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)'" placeholder="例如: Juan Perez" />
+            <BaseInput v-model="newClient.store_name" :label="isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name'" placeholder="例如: Auto Taller Valencia" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <BaseSelect 
+              v-model="newClient.client_type" 
+              :label="t.clients.colType"
+              :options="[
+                { label: tExt.optRegular, value: 'Regular' },
+                { label: tExt.optTaller, value: 'Taller' },
+                { label: tExt.optMayorista, value: 'Mayorista' }
+              ]" 
+            />
+            <BaseInput v-model="newClient.phone" :label="t.clients.colPhone" placeholder="+58 412..." />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <BaseInput v-model="newClient.address" :label="t.clients.colAddress" placeholder="Caracas / Valencia" />
+            <BaseInput v-model="newClient.rif_or_cedula" :label="t.clients.colRif" placeholder="J-31234567-8" />
+          </div>
           
-          <!-- 两列拆分：联系人 + 店铺名 -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</label>
-              <input v-model="newClient.name" type="text" placeholder="例如: Juan Perez" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</label>
-              <input v-model="newClient.store_name" type="text" placeholder="例如: Auto Taller Valencia" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ t.clients.colType }}</label>
-              <select v-model="newClient.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 cursor-pointer dark:text-white">
-                <option value="Regular">{{ tExt.optRegular }}</option>
-                <option value="Taller">{{ tExt.optTaller }}</option>
-                <option value="Mayorista">{{ tExt.optMayorista }}</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ t.clients.colPhone }}</label>
-              <input v-model="newClient.phone" type="text" placeholder="+58 412..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ t.clients.colAddress }}</label>
-              <input v-model="newClient.address" type="text" placeholder="Caracas / Valencia" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">{{ t.clients.colRif }}</label>
-              <input v-model="newClient.rif_or_cedula" type="text" placeholder="J-31234567-8" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
-          </div>
           <div class="grid grid-cols-1 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
-                {{ isZh ? '信用额度上限 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)' }}
-              </label>
-              <input v-model.number="newClient.credit_limit" type="number" placeholder="500.00" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" />
-            </div>
+            <BaseInput v-model.number="newClient.credit_limit" type="number" :label="isZh ? '信用额度上限 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)'" placeholder="500.00" />
           </div>
         </div>
+        
         <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
           <button @click="clientDialogVisible = false" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors">{{ t.common.cancel }}</button>
           <button @click="handleAddClient(tExt)" class="px-5 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-md">{{ t.common.save }}</button>
@@ -445,8 +327,9 @@
       </div>
     </div>
 
+    <!-- 安全密钥验证弹窗 -->
     <div v-if="resetModalVisible" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4">
-      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
+      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-6 flex flex-col gap-4">
         <div class="text-center space-y-1.5">
           <div class="w-12 h-12 rounded-xl bg-amber-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
             🔒
@@ -455,16 +338,12 @@
           <p class="text-xs text-slate-400">{{ tExt.resetPinDesc }}</p>
         </div>
 
-        <div>
-          <input 
-            v-model="resetPinInput" 
-            @keyup.enter="submitResetPassword" 
-            type="password" 
-            :placeholder="tExt.resetPinPlace" 
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-amber-500 font-mono text-center tracking-widest"
-            autofocus
-          />
-        </div>
+        <BaseInput 
+          v-model="resetPinInput" 
+          type="password" 
+          :placeholder="tExt.resetPinPlace" 
+          @keyup.enter="submitResetPassword" 
+        />
 
         <div class="flex gap-3 pt-1">
           <button @click="resetModalVisible = false" class="flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
@@ -539,12 +418,13 @@
 </template>
 
 <script setup>
+import BaseInput from './components/ui/BaseInput.vue'
+import BaseSelect from './components/ui/BaseSelect.vue'
 import { ref, computed, defineAsyncComponent, onMounted, onUnmounted, watch } from 'vue'
 import { useTheme } from './composables/useTheme'
 
 useTheme()
 
-// 检测是否为移动端
 const isMobile = ref(window.innerWidth < 768)
 window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth < 768
@@ -557,7 +437,6 @@ import OfflineIndicator from './components/OfflineIndicator.vue'
 import { setOfflineEnqueue } from './utils/api'
 import { enqueueToOffline } from './composables/useOfflineQueue'
 
-// 🌟 4.4：应用级注入离线入队钩子（不依赖 OfflineIndicator 挂载）
 setOfflineEnqueue(enqueueToOffline)
 import { useI18n } from './composables/useI18n'
 
@@ -602,7 +481,6 @@ const { t, currentLang } = useI18n()
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
-// 核心 UI 状态
 const mobileMenuOpen = ref(false)
 const isSidebarCollapsed = ref(false)
 const searchQuery = ref('')
@@ -612,7 +490,6 @@ const isGlobalSearchVisible = ref(false)
 const deleteModalVisible = ref(false)
 const targetQuote = ref(null)
 
-// 业务数据层
 const {
   bcvRate, partsList, clientsList, transactionsList, transactionsMeta, quotationsList,
   stats, brandsList,
@@ -622,10 +499,8 @@ const {
 
 const { cartItems, quoteClientName, selectedPaymentMethod, paymentReference, addToCart } = usePosCart()
 
-// 弹窗与通知
 const { successModalVisible, successModalMessage, isErrorMessage, showSuccessModal, closeSuccessModal } = useNotifications()
 
-// 认证与权限
 const {
   isLoggedIn, currentAdminUser, currentUserObj,
   loginForm, loginError, resetMessage,
@@ -635,11 +510,9 @@ const {
 
 const { hasPermission, getDefaultAllowedTab } = usePermissions()
 
-// 核心 Tab 状态 (依赖 getDefaultAllowedTab)
 const { isPluginEnabled } = usePlugins()
 const activeTab = ref(getDefaultAllowedTab())
 
-// 抽离的业务动作 (CRUD)
 const { 
   txDialogVisible, isSubmittingTx, newTx, 
   deleteTxModalVisible, targetTxForDelete, 
@@ -656,12 +529,10 @@ const {
   handleAddClient, openDeleteClientModal, confirmDeleteClient
 } = useClientActions()
 
-// 画廊与导出
 const { galleryModalVisible, currentGalleryImages, currentGalleryIndex, openGallery, prevGalleryImage, nextGalleryImage } = useGallery()
 const { exportTransactionsExcel, exportPartsExcel, exportClientsExcel, downloadDatabaseBackup, downloadPartsTemplate } = useExports()
 const { currentDateTime } = useClock()
 
-// 翻译计算属性 (供全局和部分操作提示使用)
 const tExt = computed(() => {
   const isZh = currentLang.value === 'zh'
   const isEs = currentLang.value === 'es'
@@ -703,7 +574,6 @@ const tExt = computed(() => {
   }
 })
 
-// 动作编排
 const handleExitPos = () => {
   const role = currentUserObj.value?.role || 'staff'
   const hasBackendAccess = hasPermission('parts:view') || 
@@ -767,7 +637,6 @@ const confirmDeleteQuotation = async () => {
   }
 }
 
-// 监听器
 watch(isLoggedIn, (newVal) => {
   if (newVal) {
     activeTab.value = getDefaultAllowedTab()
@@ -786,7 +655,6 @@ watch(currentUserObj, (newUser) => {
   }
 }, { deep: true })
 
-// 全局快捷键
 const handleGlobalKeydown = (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault()
@@ -827,7 +695,6 @@ const handleGlobalSelect = ({ type, item }) => {
   }
 }
 
-// 403 全局提示
 let _forbiddenDebounce = null
 const _onForbidden = (e) => {
   clearTimeout(_forbiddenDebounce)
@@ -836,10 +703,8 @@ const _onForbidden = (e) => {
   }, 100)
 }
 
-// 监听全局 API 错误 (500 / 断网)
 const _onGlobalApiError = (e) => {
   const msg = e.detail?.message || '服务器发生未知错误'
-  // 复用你现有的全局 Modal 组件
   showSuccessModal('❌ ' + msg) 
 }
 
@@ -883,8 +748,8 @@ onUnmounted(() => {
 })
 </script>
 
+<style>
 @media print {
-  /* 隐藏 Vue 主界面上的所有东西 */
   body, html, #app, .fixed, main, header, footer, nav {
     visibility: hidden !important;
     background: white !important;
@@ -892,12 +757,10 @@ onUnmounted(() => {
     overflow: visible !important;
   }
   
-  /* 只让打印区域显示出来 */
   #print-section, #print-section * {
     visibility: visible !important;
   }
 
-  /* 强制置顶、去边距，适配 80mm 纸 */
   #print-section {
     position: absolute !important;
     left: 0 !important;
@@ -916,3 +779,4 @@ onUnmounted(() => {
     margin: 0mm; 
   }
 }
+</style>

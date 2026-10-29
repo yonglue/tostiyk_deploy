@@ -16,11 +16,10 @@
     <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
       
       <!-- 左侧：筛选 -->
-      <div class="flex items-center gap-3">
-        <input 
+      <div class="flex items-center gap-3 w-48">
+        <BaseInput 
           type="month" 
           v-model="filterMonth" 
-          class="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 transition-all cursor-pointer"
         />
       </div>
 
@@ -149,68 +148,79 @@
         <!-- 编辑/新增态 -->
         <div v-else class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colCategory }}</label>
-              <select v-model="formData.category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500 cursor-pointer">
-                <option value="Alquiler">{{ tExt.catRent }}</option>
-                <option value="Nomina">{{ tExt.catSalary }}</option>
-                <option value="Servicios">{{ tExt.catUtilities }}</option>
-                <option value="Flete">{{ tExt.catLogistics }}</option>
-                <option value="Varios">{{ tExt.catMisc }}</option>
-                <option value="Impuestos">{{ tExt.catTaxes }}</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colDate }}</label>
-              <input v-model="formData.expense_date" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500" />
-            </div>
+            <BaseSelect 
+              v-model="formData.category" 
+              :label="tExt.colCategory"
+              :options="[
+                { label: tExt.catRent, value: 'Alquiler' },
+                { label: tExt.catSalary, value: 'Nomina' },
+                { label: tExt.catUtilities, value: 'Servicios' },
+                { label: tExt.catLogistics, value: 'Flete' },
+                { label: tExt.catMisc, value: 'Varios' },
+                { label: tExt.catTaxes, value: 'Impuestos' }
+              ]"
+            />
+            <BaseInput 
+              v-model="formData.expense_date" 
+              type="date" 
+              :label="tExt.colDate" 
+            />
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colDesc }}</label>
-            <input v-model="formData.description" type="text" :placeholder="tExt.phDesc" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500" />
-          </div>
+          <BaseInput 
+            v-model="formData.description" 
+            :label="tExt.colDesc" 
+            :placeholder="tExt.phDesc" 
+          />
 
           <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colAmount }}</label>
-              <input v-model.number="formData.amount" type="number" step="0.01" min="0" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold outline-none focus:border-rose-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.currency }}</label>
-              <select v-model="formData.currency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500 cursor-pointer">
-                <option value="USD">{{ tExt.curUsd }}</option>
-                <option value="BS">{{ tExt.curBs }}</option>
-              </select>
-            </div>
+            <BaseInput 
+              v-model.number="formData.amount" 
+              type="number" 
+              step="0.01" 
+              min="0" 
+              :label="tExt.colAmount" 
+            />
+            <BaseSelect 
+              v-model="formData.currency" 
+              :label="tExt.currency"
+              :options="[
+                { label: tExt.curUsd, value: 'USD' },
+                { label: tExt.curBs, value: 'BS' }
+              ]"
+            />
           </div>
 
           <div v-if="formData.currency === 'BS'" class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.exchangeRate }}</label>
-              <input v-model.number="formData.exchange_rate" type="number" step="0.01" min="0" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold outline-none focus:border-rose-500" />
-            </div>
+            <BaseInput 
+              v-model.number="formData.exchange_rate" 
+              type="number" 
+              step="0.01" 
+              min="0" 
+              :label="tExt.exchangeRate" 
+            />
             <div class="flex items-end pb-3">
               <span class="text-xs text-slate-500 font-bold">≈ ${{ (formData.amount / formData.exchange_rate || 0).toFixed(2) }}</span>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colMethod }}</label>
-              <select v-model="formData.payment_method" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500 cursor-pointer">
-                <option value="Cash_USD">{{ tExt.pmCashUsd }}</option>
-                <option value="Cash_BS">{{ tExt.pmCashBs }}</option>
-                <option value="Pago_Movil">{{ tExt.pmPagoMovil }}</option>
-                <option value="Card_POS">{{ tExt.pmCardPos }}</option>
-                <option value="Bank_Transfer">{{ tExt.pmTransfer }}</option>
-                <option value="Zelle">Zelle</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">{{ tExt.colUser }}</label>
-              <input v-model="formData.created_by" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-rose-500" />
-            </div>
+            <BaseSelect 
+              v-model="formData.payment_method" 
+              :label="tExt.colMethod"
+              :options="[
+                { label: tExt.pmCashUsd, value: 'Cash_USD' },
+                { label: tExt.pmCashBs, value: 'Cash_BS' },
+                { label: tExt.pmPagoMovil, value: 'Pago_Movil' },
+                { label: tExt.pmCardPos, value: 'Card_POS' },
+                { label: tExt.pmTransfer, value: 'Bank_Transfer' },
+                { label: 'Zelle', value: 'Zelle' }
+              ]"
+            />
+            <BaseInput 
+              v-model="formData.created_by" 
+              :label="tExt.colUser" 
+            />
           </div>
         </div>
       </div>
@@ -243,8 +253,8 @@
 </template>
 
 <script setup>
-const isZh = computed(() => currentLang.value === 'zh')
-const isEs = computed(() => currentLang.value === 'es')
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
 
 import { ref, computed, onMounted } from 'vue'
 import { apiFetch } from '../utils/api'

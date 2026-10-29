@@ -20,14 +20,11 @@ const isEs = computed(() => currentLang.value === 'es')
       
       <!-- 左侧：搜索框 -->
       <div class="flex items-center gap-3 w-full md:w-auto">
-        <div class="relative w-full md:w-80">
-          <Search class="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" :size="16" />
-          <input
-            :value="clientSearchQuery"
-            @input="$emit('update:clientSearchQuery',$event.target.value)"
-            type="text"
-            :placeholder="t.clients.searchPlaceholder"
-            class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm rounded-md pl-10 pr-4 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white transition-all font-bold"
+        <div class="w-full md:w-72">
+          <BaseSearchInput 
+            :model-value="clientSearchQuery" 
+            @update:model-value="$emit('update:clientSearchQuery', $event)" 
+            placeholder="搜索客户名称 / 电话..." 
           />
         </div>
       </div>
@@ -274,48 +271,26 @@ const isEs = computed(() => currentLang.value === 'es')
 
         <!-- 编辑态 -->
         <div v-else-if="drawerMode === 'edit'" class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '客户名称 (联系人)' : isEs ? 'Nombre (Contacto)' : 'Name (Contact)' }}</label>
-              <input v-model="editForm.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '店铺名称' : isEs ? 'Tienda' : 'Store Name' }}</label>
-              <input v-model="editForm.store_name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colType }}</label>
-              <select v-model="editForm.client_type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 cursor-pointer dark:text-white">
-                <option value="Regular">{{ tExt.regular }}</option>
-                <option value="Taller">{{ tExt.taller }}</option>
-                <option value="Mayorista">{{ tExt.mayorista }}</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colPhone }}</label>
-              <input v-model="editForm.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colRif }}</label>
-              <input v-model="editForm.rif_or_cedula" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ t.clients.colAddress }}</label>
-              <input v-model="editForm.address" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ isZh ? '信用额度 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)' }}</label>
-              <input v-model.number="editForm.credit_limit" type="number" min="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white font-mono" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">备注 (Notes)</label>
-            <textarea v-model="editForm.notes" rows="2" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3.5 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white resize-none"></textarea>
-          </div>
+          <BaseInput v-model="editForm.name" label="客户名称 *" />
+          <BaseInput v-model="editForm.store_name" label="门店名称" />
+          <BaseInput v-model="editForm.phone" label="联系电话" />
+          <BaseInput v-model="editForm.rif_or_cedula" label="RIF / 身份证" />
+          <BaseInput v-model="editForm.address" label="地址" class="col-span-2" />
+          <BaseInput v-model.number="editForm.credit_limit" type="number" label="信用额度 ($)" />
+
+          <!-- 客户类型 -->
+          <BaseSelect 
+            v-model="editForm.client_type" 
+            label="客户类型"
+            :options="[
+              { label: tExt.regular, value: 'Regular' },
+              { label: tExt.taller, value: 'Taller' },
+              { label: tExt.mayorista, value: 'Mayorista' }
+            ]" 
+          />
+
+          <BaseInput v-model.number="editForm.credit_limit" type="number" label="信用额度 ($)" />
+
         </div>
 
         <!-- 收款编辑态 -->
@@ -359,13 +334,18 @@ const isEs = computed(() => currentLang.value === 'es')
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.payMethod }}</label>
-              <select 
-                v-model="repayForm.payment_method"
-                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm font-bold outline-none focus:border-blue-500 cursor-pointer dark:text-white"
-              >
-                <option v-for="pm in paymentMethods" :key="pm.value" :value="pm.value">{{ pm.label }}</option>
-              </select>
+              <BaseSelect 
+                v-model="repayForm.payment_method" 
+                :label="tExt.payMethod"
+                :options="paymentMethods" 
+              />
+            </div>
+            <div>
+              <BaseInput 
+                v-model="repayForm.reference_no" 
+                :label="tExt.referenceNo" 
+                :placeholder="tExt.optional" 
+              />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.referenceNo }}</label>
@@ -496,6 +476,9 @@ const isEs = computed(() => currentLang.value === 'es')
 </template>
 
 <script setup>
+import BaseSearchInput from './ui/BaseSearchInput.vue'
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
 import { ref, computed, watch } from 'vue'
 import { Search, Plus, FileSpreadsheet , FileText, Edit3, Banknote, Trash2} from 'lucide-vue-next'
 import { useI18n } from '../composables/useI18n'
