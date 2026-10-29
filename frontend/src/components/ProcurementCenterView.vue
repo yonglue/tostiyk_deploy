@@ -346,7 +346,7 @@
               <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">{{ tExt.colSupplier }}</label>
               <div class="flex gap-2">
                 <div class="relative flex-1">
-                  <input v-model="poForm.supplier_name" @focus="showSupplierDropdown = true" @blur="hideSupplierDropdownDelayed" type="text" :placeholder="tExt.phSupplier" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+                  <input v-model="poForm.supplier_name" @focus="handleSupplierFocus" @blur="hideSupplierDropdownDelayed" type="text" :placeholder="tExt.phSupplier" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-3 py-2 text-sm font-bold text-slate-900 dark:text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
                   <div v-if="showSupplierDropdown" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-1 max-h-48 overflow-y-auto">
                     <div v-for="sup in filteredSuppliers" :key="sup.id" @mousedown.prevent="selectSupplier(sup)" class="px-4 py-2.5 hover:bg-blue-50 cursor-pointer transition-colors flex items-center justify-between border-b border-slate-50 last:border-0">
                       <div class="text-sm font-bold text-slate-800">{{ sup.name }}</div>
@@ -861,6 +861,11 @@ const fetchSuppliers = async () => {
     const res = await apiFetch('/api/suppliers')
     if (res.ok) suppliersList.value = await res.json()
   } catch (e) { console.error(e) }
+}
+
+const handleSupplierFocus = () => {
+  showSupplierDropdown.value = true
+  fetchSuppliers() // 每次聚焦输入框，强制向后端要最新数据
 }
 
 watch(activeTab, (newVal) => {

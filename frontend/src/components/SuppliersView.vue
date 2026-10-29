@@ -5,14 +5,8 @@
       <!-- 顶部操作栏 -->
       <div class="p-4 md:p-6 border-b border-slate-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3 w-full md:w-auto">
-          <div class="relative w-full md:w-72">
-            <Search class="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500" :size="16" />
-            <input
-              v-model="searchQuery"
-              type="text"
-              :placeholder="tExt.searchPlaceholder"
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-bold dark:text-white"
-            />
+          <div class="w-full md:w-72">
+            <BaseSearchInput v-model="searchQuery" :placeholder="tExt.searchPlaceholder" />
           </div>
         </div>
 
@@ -201,24 +195,12 @@
 
         <!-- 新增/编辑态 -->
         <div v-else-if="drawerMode === 'edit'" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.colName }} *</label>
-            <input v-model="formData.name" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-bold text-slate-900 dark:text-white" :placeholder="tExt.phName" />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.colContact }}</label>
-              <input v-model="formData.contact_person" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" :placeholder="tExt.phContact" />
+          <BaseInput v-model="formData.name" :label="tExt.colName + ' *'" :placeholder="tExt.phName" />
+            <div class="grid grid-cols-2 gap-4">
+              <BaseInput v-model="formData.contact_person" :label="tExt.colContact" :placeholder="tExt.phContact" />
+              <BaseInput v-model="formData.phone" :label="tExt.colPhone" :placeholder="tExt.phPhone" />
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.colPhone }}</label>
-              <input v-model="formData.phone" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 font-mono dark:text-white" :placeholder="tExt.phPhone" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.colAddress }}</label>
-            <input v-model="formData.address" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-blue-500 dark:text-white" :placeholder="tExt.optional" />
-          </div>
+          <BaseInput v-model="formData.address" :label="tExt.colAddress" :placeholder="tExt.optional" />
         </div>
 
         <!-- 付款态 -->
@@ -227,25 +209,22 @@
             <div class="text-xs text-rose-500 dark:text-rose-400 font-bold">{{ tExt.colDebt }}:</div>
             <div class="text-lg font-black text-rose-600 dark:text-rose-400 font-mono">$ {{ (currentSupplier?.debt_usd || 0).toFixed(2) }}</div>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.amountPaid }} *</label>
-            <input v-model.number="payForm.amount_paid" type="number" step="0.01" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold font-mono outline-none focus:border-blue-500 dark:text-white" />
-          </div>
+          <BaseInput v-model.number="payForm.amount_paid" type="number" step="0.01" :label="tExt.amountPaid + ' *'" />
+
           <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.payMethod }}</label>
-              <select v-model="payForm.payment_method" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold outline-none cursor-pointer dark:text-white">
-                <option value="Cash_USD">{{ tExt.pmCashUsd }}</option>
-                <option value="Cash_BS">{{ tExt.pmCashBs }}</option>
-                <option value="Bank_Transfer">{{ tExt.pmTransfer }}</option>
-                <option value="Zelle">Zelle</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{{ tExt.referenceNo }}</label>
-              <input v-model="payForm.reference_no" type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs outline-none dark:text-white" :placeholder="tExt.optional" />
-            </div>
+            <BaseSelect 
+              v-model="payForm.payment_method" 
+              :label="tExt.payMethod"
+              :options="[
+                { label: tExt.pmCashUsd, value: 'Cash_USD' },
+                { label: tExt.pmCashBs, value: 'Cash_BS' },
+                { label: tExt.pmTransfer, value: 'Bank_Transfer' },
+                { label: 'Zelle', value: 'Zelle' }
+              ]" 
+            />
+            <BaseInput v-model="payForm.reference_no" :label="tExt.referenceNo" :placeholder="tExt.optional" />
           </div>
+
         </div>
       </div>
 
@@ -292,6 +271,9 @@
 </template>
 
 <script setup>
+import BaseSearchInput from './ui/BaseSearchInput.vue'
+import BaseInput from './ui/BaseInput.vue'
+import BaseSelect from './ui/BaseSelect.vue'
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 

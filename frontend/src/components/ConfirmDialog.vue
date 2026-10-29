@@ -1,52 +1,52 @@
+<!-- src/components/ConfirmDialog.vue -->
+<script setup>
+import BaseModal from './ui/BaseModal.vue'
+
+defineProps({
+  visible: { type: Boolean, default: false },
+  title: { type: String, default: 'Confirm' },
+  message: { type: String, default: 'Are you sure?' },
+  icon: { type: String, default: '⚠️' },
+  cancelText: { type: String, default: 'Cancel' },
+  confirmText: { type: String, default: 'Confirm' },
+  // 保留原 API 以兼容旧调用，但在 BaseModal 中由统一 token 驱动，故忽略
+  overlayClass: { type: String, default: '' }, 
+  isDanger: { type: Boolean, default: true }
+})
+defineEmits(['cancel', 'confirm'])
+</script>
+
 <template>
-  <!-- 通用二次确认弹窗：POS 退出/退货、后台各处删除确认共用。
-       icon 留空则不显示图标区，用于后台的轻量删除确认。 -->
-  <div
-    v-if="visible"
-    :class="overlayClass"
-    class="fixed inset-0 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+  <BaseModal 
+    :visible="visible" 
+    :title="title" 
+    size="sm" 
+    :closable="false"
+    @close="$emit('cancel')"
   >
-    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-100">
-      <div
-        v-if="icon"
-        :class="iconClass"
-        class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center shadow-lg font-bold text-2xl"
-      >
-        {{ icon }}
-      </div>
-      <div>
-        <h3 class="font-black text-lg text-slate-900">{{ title }}</h3>
-        <p v-if="message" class="text-xs text-slate-500 mt-1.5 leading-relaxed">{{ message }}</p>
-      </div>
-      <div class="flex gap-3 pt-2">
-        <button
-          @click="$emit('cancel')"
-          class="flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
+    <div class="px-6 py-8 flex flex-col items-center text-center gap-4">
+      <span v-if="icon" class="text-4xl">{{ icon }}</span>
+      <p class="text-primary font-medium text-sm leading-relaxed whitespace-pre-wrap">{{ message }}</p>
+    </div>
+    
+    <template #footer>
+      <div class="flex justify-end gap-3 w-full">
+        <button 
+          @click="$emit('cancel')" 
+          class="px-5 py-2.5 bg-surface-muted hover:bg-surface-raised text-secondary rounded-xl text-sm font-bold transition-colors cursor-pointer"
         >
           {{ cancelText }}
         </button>
-        <button
-          @click="$emit('confirm')"
-          class="flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 shadow-md transition-colors cursor-pointer"
+        <button 
+          @click="$emit('confirm')" 
+          :class="[
+            'px-5 py-2.5 text-white rounded-xl text-sm font-bold transition-colors cursor-pointer',
+            isDanger ? 'bg-danger hover:bg-red-600' : 'bg-accent hover:bg-accent-hover'
+          ]"
         >
           {{ confirmText }}
         </button>
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseModal>
 </template>
-
-<script setup>
-defineProps({
-  visible: { type: Boolean, default: false },
-  icon: { type: String, default: '' },
-  iconClass: { type: String, default: 'bg-amber-50 text-amber-600' },
-  title: { type: String, default: '' },
-  message: { type: String, default: '' },
-  cancelText: { type: String, default: '取消' },
-  confirmText: { type: String, default: '确认' },
-  overlayClass: { type: String, default: 'bg-slate-900/50' }
-})
-
-defineEmits(['cancel', 'confirm'])
-</script>

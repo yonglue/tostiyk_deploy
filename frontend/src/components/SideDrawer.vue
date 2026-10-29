@@ -9,14 +9,14 @@
     
     <!-- 右侧面板 -->
     <div 
-      class="absolute right-0 top-0 h-full w-full bg-white shadow-2xl flex flex-col transition-transform duration-300"
+      class="absolute right-0 top-0 h-full w-full bg-surface shadow-2xl flex flex-col transition-transform duration-300"
       :class="widthClass"
     >
       <!-- 头部 -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-line shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-xl">{{ icon }}</span>
-          <h3 class="font-bold text-slate-800 text-base">{{ title }}</h3>
+          <h3 class="font-bold text-primary text-base">{{ title }}</h3>
         </div>
         <div class="flex items-center gap-2">
           <!-- 插槽：头部右侧按钮组（如只读态的编辑/删除按钮） -->
@@ -25,7 +25,7 @@
           <!-- 关闭按钮 -->
           <button 
             @click="$emit('close')" 
-            class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
+            class="text-muted hover:text-primary text-lg font-bold cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-muted transition-colors"
           >
             ✕
           </button>

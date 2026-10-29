@@ -3,6 +3,40 @@
 /* 告诉 Tailwind v4 使用 class 来切换深色模式 */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* =========================================
+   语义 Token → Tailwind class（复用已有 --color-* 变量）
+   原则：不新增变量、不改视觉，仅提供 bg-surface / text-primary / border-line 等 class
+   ========================================= */
+@theme inline {
+  /* 文本（别名 + 长名）*/
+  --color-primary:             var(--color-content-primary);
+  --color-secondary:           var(--color-content-secondary);
+  --color-muted:               var(--color-content-muted);
+  --color-content-primary:     var(--color-content-primary);
+  --color-content-secondary:   var(--color-content-secondary);
+  --color-content-muted:       var(--color-content-muted);
+
+  /* 表面 */
+  --color-surface:             var(--color-surface);
+  --color-surface-raised:      var(--color-surface-raised);
+  --color-surface-muted:       var(--color-surface-sunken);
+
+  /* 边框 */
+  --color-line:                var(--color-border);
+  --color-line-strong:         var(--color-border-strong);
+
+  /* 强调色（品牌）*/
+  --color-accent:              var(--color-brand);
+  --color-accent-hover:        var(--color-brand-hover);
+
+  /* 状态色 */
+  --color-danger:              var(--color-status-danger);
+  --color-success:             var(--color-status-success);
+  --color-warning:             var(--color-status-warning);
+  --color-info:                var(--color-status-info);
+}
+
+
 @layer base {
   :root {
     --background: 210 40% 98%; /* #FAF2E0 米黄色背景 */
@@ -749,4 +783,41 @@ table tbody tr {
 .animate-progress {
   /* 时长 1.4s，分 10 步跳完，视觉上就是一段段地“咔咔”前进 */
   animation: progress-fill 1.4s steps(10, end) forwards !important;
+}
+
+/* =========================================
+   Token 层 v1（2026-10-28）
+   复刻历史 :root/.dark 中的语义色值，供 bg-surface / text-primary / border-line 等 class 使用
+   调整色板时改这里即可；不改动任何历史样式
+   ========================================= */
+@theme {
+  --color-surface:        #ffffff;
+  --color-surface-raised: #f8fafc;
+  --color-surface-muted:  #f1f5f9;
+  --color-primary:        #0f172a;
+  --color-secondary:      #475569;
+  --color-muted:          #64748b;
+  --color-line:           #e2e8f0;
+  --color-line-strong:    #cbd5e1;
+  --color-accent:         #1e40af;
+  --color-accent-hover:   #1e3a8a;
+  --color-danger:         #dc2626;
+  --color-success:        #059669;
+  --color-warning:        #d97706;
+  --color-info:           #0284c7;
+}
+
+.dark {
+  /* surface 系列原 .dark 已定义，无需重复 */
+  --color-primary:      #f1f5f9;
+  --color-secondary:    #cbd5e1;
+  --color-muted:        #94a3b8;
+  --color-line:         #334155;
+  --color-line-strong:  #475569;
+  --color-accent:       #3b82f6;
+  --color-accent-hover: #60a5fa;
+  --color-danger:       #ef4444;
+  --color-success:      #10b981;
+  --color-warning:      #f59e0b;
+  --color-info:         #38bdf8;
 }

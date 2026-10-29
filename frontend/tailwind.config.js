@@ -8,9 +8,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        // —— 历史保留（勿删，有组件在用 --border / --background / --foreground）——
         border: "hsl(var(--border))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        // —— 新增语义 token：复用 style.css 底部已有的 --color-* 变量 ——
+        primary: "var(--color-content-primary)",
+        secondary: "var(--color-content-secondary)",
+        muted: "var(--color-content-muted)",
+        surface: {
+          DEFAULT: "var(--color-surface)",
+          raised: "var(--color-surface-raised)",
+          muted: "var(--color-surface-sunken)",
+        },
+        line: {
+          DEFAULT: "var(--color-border)",
+          strong: "var(--color-border-strong)",
+        },
+        accent: {
+          DEFAULT: "var(--color-brand)",
+          hover: "var(--color-brand-hover)",
+        },
+        danger: "var(--color-status-danger)",
+        success: "var(--color-status-success)",
+        warning: "var(--color-status-warning)",
+        info: "var(--color-status-info)",
       },
       boxShadow: {
         'saas': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03)',
