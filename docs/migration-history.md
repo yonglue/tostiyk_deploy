@@ -33,5 +33,5 @@
 
 ## 已知未完成（TODO，非本次范围）
 
-- `app/routers/parts.py` 的 `update_part` 路由**仍不接收** `wholesale_price/vip2_price/vip3_price` 三个 Form 字段 —— 创建能设、更新不能改，属未完成的多级定价功能
-- `tests/conftest.py` 用 `sqlite:///:memory:` + `StaticPool`（README 已明确说不能这么配并发测试），当前串行跑未爆，一旦加并发用例会挂
+- ~~`app/routers/parts.py` 的 `update_part` 路由不接收 `wholesale_price/vip2_price/vip3_price`~~ —— ✅ 已于 2026-10-29 修复（Optional 语义向后兼容，见 commit `0767ab1`）
+- ~~`tests/conftest.py` 用 `sqlite:///:memory:` + `StaticPool`~~ —— ✅ 已于 2026-10-29 修复（改为 tmp_path 文件型测试库）
