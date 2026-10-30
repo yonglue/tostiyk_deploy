@@ -148,6 +148,8 @@
             :partsList="partsList"
             :clientsList="clientsList"
             :cartItems="cartItems"
+            :quoteClientId="quoteClientId"
+            :quoteClientName="quoteClientName"
             :bcvRate="bcvRate"
             :currentDateTime="currentDateTime"
             :currentUser="currentUserObj"
@@ -173,6 +175,8 @@
             @clear-cart="cartItems = []"
             @refresh-clients="fetchClients"
             @go-to-pos="activeTab = 'pos'"
+            @convert-to-pos="handleConvertToPos"
+            @show-toast="(msg) => showSuccessModal(msg)"
           />
 
           <BackupView 
@@ -507,7 +511,7 @@ const {
   fetchDashboardStats, fetchBcvRate, updateBcvRate, refreshAll
 } = useInventory()
 
-const { cartItems, quoteClientName, selectedPaymentMethod, paymentReference, addToCart } = usePosCart()
+const { cartItems, quoteClientName, quoteClientId, selectedPaymentMethod, paymentReference, addToCart } = usePosCart()
 
 const { successModalVisible, successModalMessage, isErrorMessage, showSuccessModal, closeSuccessModal } = useNotifications()
 
