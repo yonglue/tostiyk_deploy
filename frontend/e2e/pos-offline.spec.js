@@ -33,9 +33,7 @@ async function addAndCheckout(page) {
     await page.waitForTimeout(1000)
   }
   await checkoutBtn.click()
-
-  const confirmPrintBtn = page.locator('.bg-emerald-600', { hasText: /Confirmar|确认|Print/i }).last()
-  await confirmPrintBtn.click()
+  // 🌟 离线状态下不弹窗，直接清空购物车并入队
 }
 
 test.describe('POS 离线入队', () => {

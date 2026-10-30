@@ -113,10 +113,7 @@ test.describe('POS 离线缓存', () => {
       await page.waitForTimeout(1500)
     }
     await checkoutBtn.evaluate(el => el.click())
-
-    const confirmPrintBtn = page.locator('.bg-emerald-600', { hasText: /Confirmar|确认|Print/i }).last()
-    await confirmPrintBtn.waitFor({ state: 'attached', timeout: 10_000 })
-    await confirmPrintBtn.evaluate(el => el.click())
+    // 🌟 离线状态下直接入队，无需打印弹窗
     await page.waitForTimeout(2000)
 
     // 7. 断言入队 1 条

@@ -1,6 +1,3 @@
-const { currentLang } = useI18n()
-const isZh = computed(() => currentLang.value === 'zh')
-const isEs = computed(() => currentLang.value === 'es')
 <!-- src/components/ClientsView.vue -->
 <template>
   <div class="space-y-6 max-w-11xl mx-auto pb-24">
@@ -479,7 +476,7 @@ const isEs = computed(() => currentLang.value === 'es')
 import BaseSearchInput from './ui/BaseSearchInput.vue'
 import BaseInput from './ui/BaseInput.vue'
 import BaseSelect from './ui/BaseSelect.vue'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, toRefs } from 'vue'
 import { FileSpreadsheet, Users, Search, Banknote, XCircle, Trash2, Printer, Plus, FileText, Edit3 } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n'
 import { apiFetch } from '../utils/api'
@@ -513,9 +510,12 @@ const props = defineProps({
   clientsList: Array,
   clientSearchQuery: String
 })
+const { clientSearchQuery } = toRefs(props)
 
 const emit = defineEmits(['update:clientSearchQuery', 'open-add-client', 'export-clients', 'delete-client', 'refresh-data'])
 const { t, currentLang } = useI18n()
+const isZh = computed(() => currentLang.value === 'zh')
+const isEs = computed(() => currentLang.value === 'es')
 const { showSuccessModal } = useNotifications()
 const { bcvRate } = useInventory()
 

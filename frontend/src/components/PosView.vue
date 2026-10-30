@@ -1701,6 +1701,23 @@ const confirmAndPrint = async (overridePin = null) => {
 const handleGlobalKeydown = (e) => {
   const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
   
+  // 🌟 新增：处理收银台各类弹窗的 ESC 关闭逻辑
+  if (e.key === 'Escape') {
+    let handled = false
+    if (previewModalVisible.value) { previewModalVisible.value = false; handled = true }
+    else if (historyModalVisible.value) { historyModalVisible.value = false; handled = true } // 🌟 Historial
+    else if (helpModalVisible.value) { helpModalVisible.value = false; handled = true }       // 🌟 Atajos
+    else if (clientModalVisible.value) { clientModalVisible.value = false; handled = true }
+    else if (newClientModalVisible.value) { newClientModalVisible.value = false; handled = true }
+    else if (showPinModal.value) { showPinModal.value = false; handled = true }
+    
+    if (handled) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+  }
+
   if (e.key === '/' && !isInput) {
     e.preventDefault()
     searchInputRef.value?.focus()

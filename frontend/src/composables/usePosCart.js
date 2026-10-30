@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 
 const cartItems = ref([])
 const quoteClientName = ref('Cliente General')
+const quoteClientId = ref(null)
 const paymentReference = ref('')
 
 // 🌟 支付流水列表（替换掉原来的单一对象）
@@ -30,6 +31,7 @@ export function usePosCart() {
     cartItems.value = []
     paymentRecords.value = [] // 清空购物车时连带清空支付流水
     quoteClientName.value = 'Cliente General'
+    quoteClientId.value = null
     paymentReference.value = ''
   }
 
@@ -76,6 +78,7 @@ export function usePosCart() {
   return {
     cartItems,
     quoteClientName,
+    quoteClientId,
     paymentReference,
     paymentRecords, // 导出流水
     cartTotalUsd,

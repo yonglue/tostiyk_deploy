@@ -444,61 +444,109 @@
   </div>
 
   <!-- 历史报价弹窗 -->
-  <BaseModal 
-    v-model:visible="quoteHistoryModalVisible" 
-    :title="tExt.historyTitle" 
-    size="lg"
-  >
-    <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
-      <div v-if="isLoadingHistory" class="text-center py-8 text-slate-400 text-sm font-bold">
-        {{ tExt.historyLoading }}
-      </div>
+  <div v-if="quoteHistoryModalVisible" @click.self="quoteHistoryModalVisible = false" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
+    <div class="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-5xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
       
-      <div v-else-if="quoteHistoryList.length === 0" class="text-center py-8 text-slate-400 text-sm font-bold">
-        {{ tExt.historyEmpty }}
+      <!-- 头部 -->
+      <div class="p-5 border-b border-slate-200/60 flex items-center justify-between bg-white/50 shrink-0">
+        <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+          <span>{{ tExt.historyTitle }}</span>
+        </h3>
+        <button @click="quoteHistoryModalVisible = false" class="text-slate-400 hover:text-slate-700 text-base font-bold p-1 cursor-pointer">✕</button>
       </div>
-      
-      <template v-else>
-        <div 
-          v-for="q in quoteHistoryList" 
-          :key="q.id" 
-          class="p-4 rounded-xl border border-line bg-surface-raised hover:border-accent transition-all flex flex-col gap-2 group"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-              <span class="font-mono font-black text-accent">{{ q.quotation_no || q.id }}</span>
-              <span class="text-sm font-bold text-primary">{{ q.client_name || 'Cliente General' }}</span>
-              <span v-if="q.converted_order_id" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold border border-indigo-200 flex items-center gap-1">
-                <CheckCircle2 :size="12" /> 已关联订单 #{{ q.converted_order_id }}
-              </span>
-            </div>
-            <div class="text-right">
-              <div class="font-black text-primary font-mono text-lg">$ {{ Number(q.total_usd || 0).toFixed(2) }}</div>
-            </div>
-          </div>
 
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-muted font-mono mb-1">{{ (q.timestamp || '').replace('T', ' ').substring(0, 16) }}</div>
-              <div class="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-2 py-1.5 rounded-md truncate w-full border border-slate-200 dark:border-slate-700/50">
-                📦 {{ parseQuoteItems(q.items_json) }}
+      <!-- 工具栏 (搜索与日期) -->
+      <div class="p-4 border-b border-slate-200/60 bg-white/40 shrink-0 flex flex-wrap gap-4 items-center">
+        <div class="relative flex-1 min-w-[200px]">
+          <Search class="absolute left-3.5 top-3 text-slate-400" :size="16" />
+          <input v-model="historySearchQuery" type="text" :placeholder="isZh ? '搜索单号/客户...' : isEs ? 'Buscar Nro. / Cliente...' : 'Search Quote / Client...'" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-accent font-bold text-slate-900 transition-colors" />
+        </div>
+        
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl px-2 py-1 focus-within:border-accent transition-colors">
+            <input type="date" :lang="currentLang" v-model="historyStartDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+            <span class="text-slate-400 text-xs font-bold px-1">~</span>
+            <input type="date" :lang="currentLang" v-model="historyEndDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+          </div>
+          <button @click="setHistoryDateToday" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ isZh ? '今日' : isEs ? 'Hoy' : 'Today' }}</button>
+          <button @click="setHistoryDateAll" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ isZh ? '全部历史' : isEs ? 'Todo el Historial' : 'All History' }}</button>
+        </div>
+      </div>
+
+      <!-- 状态 Tabs -->
+      <div class="px-5 py-3 border-b border-slate-200/60 bg-white/30 flex items-center gap-2 shrink-0">
+        <button 
+          @click="historyStatusFilter = 'ALL'" 
+          :class="['px-4 py-1.5 rounded-lg text-xs font-bold transition-all', historyStatusFilter === 'ALL' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100']"
+        >{{ isZh ? '全部' : isEs ? 'Todo' : 'All' }}</button>
+        <button 
+          @click="historyStatusFilter = 'PENDING'" 
+          :class="['px-4 py-1.5 rounded-lg text-xs font-bold transition-all', historyStatusFilter === 'PENDING' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100']"
+        >{{ isZh ? '待结算' : isEs ? 'Pendiente' : 'Pending' }}</button>
+        <button 
+          @click="historyStatusFilter = 'CONVERTED'" 
+          :class="['px-4 py-1.5 rounded-lg text-xs font-bold transition-all', historyStatusFilter === 'CONVERTED' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100']"
+        >{{ isZh ? '已转单' : isEs ? 'Convertido' : 'Converted' }}</button>
+      </div>
+
+      <!-- 列表区 -->
+      <div class="flex-1 overflow-y-auto p-5 bg-white/20 space-y-3 custom-scrollbar">
+        <div v-if="isLoadingHistory" class="text-center py-8 text-slate-400 text-sm font-bold">
+          {{ tExt.historyLoading }}
+        </div>
+        
+        <div v-else-if="filteredHistoryList.length === 0" class="text-center py-8 text-slate-400 text-sm font-bold">
+          {{ tExt.historyEmpty }}
+        </div>
+        
+        <template v-else>
+          <div 
+            v-for="q in filteredHistoryList" 
+            :key="q.id" 
+            :class="[
+              'p-4 rounded-2xl border transition-all flex flex-wrap items-center justify-between gap-4 shadow-2xs',
+              q.converted_order_id ? 'bg-slate-50/50 border-slate-200 opacity-60' : 'bg-white/90 border-slate-200/80 hover:bg-white'
+            ]"
+          >
+            <!-- 左侧信息 -->
+            <div class="space-y-1">
+              <div class="font-black text-sm text-slate-900 flex items-center gap-2 flex-wrap">
+                <span :class="['font-mono', q.converted_order_id ? 'text-slate-400 line-through' : 'text-accent']">{{ q.quotation_no || q.id }}</span>
+                <span v-if="q.converted_order_id" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-black rounded border border-indigo-200">{{ isZh ? '【已转单】' : isEs ? '【Convertido】' : '【Converted】' }}</span>
+                <span>👤 {{ q.client_name || 'Cliente General' }}</span>
+              </div>
+              <div class="text-xs text-slate-500 font-mono flex items-center gap-3">
+                <span>{{ (q.timestamp || q.created_at || '').replace('T', ' ').substring(0, 16) }}</span>
+                <span class="text-slate-400">|</span>
+                <span class="truncate max-w-[300px]">📦 {{ parseQuoteItems(q.items_json) }}</span>
               </div>
             </div>
             
-            <div class="flex flex-col gap-1 shrink-0 w-[88px]">
-              <button @click="loadHistoricalQuote(q)" class="w-full py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-colors cursor-pointer">
-                {{ tExt.historyLoad }}
-              </button>
-              
-              <button @click="downloadQuotePdf(q.quotation_no)" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-indigo-600 border border-slate-200 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1">
-                <FileText :size="12" /> PDF
-              </button>
+            <!-- 右侧金额与操作 -->
+            <div class="flex items-center gap-6">
+              <div class="text-right">
+                <div :class="['text-sm font-black font-mono', q.converted_order_id ? 'text-slate-400 line-through' : 'text-emerald-600']">$ {{ Number(q.total_usd || 0).toFixed(2) }}</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button @click="loadHistoricalQuote(q)" class="px-3 py-1.5 border border-slate-300 text-slate-700 rounded-md text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer">{{ isZh ? '载入修改' : isEs ? 'Cargar' : 'Load' }}</button>
+                <button @click="downloadQuotePdf(q.quotation_no)" class="px-3 py-1.5 border border-slate-300 text-slate-700 rounded-md text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer">PDF</button>
+                <button v-if="!q.converted_order_id" @click="emit('convert-to-pos', { id: q.id, client_id: q.client_id, client_name: q.client_name, items: JSON.parse(q.items_json) }); quoteHistoryModalVisible = false" class="px-3 py-1.5 border border-rose-600 text-rose-600 rounded-md text-xs font-bold hover:bg-rose-50 transition-colors cursor-pointer">{{ isZh ? '转收银台' : isEs ? 'A Caja POS' : 'To POS' }}</button>
+                <span v-else class="px-3 py-1.5 text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded-md">{{ isZh ? '已转单' : isEs ? 'Convertido' : 'Converted' }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
+      
+      <!-- 底部 -->
+      <div class="p-5 border-t border-slate-200/60 bg-white/80 flex items-center justify-between shrink-0">
+        <span class="text-xs text-slate-500 font-bold">{{ isZh ? '共找到' : isEs ? 'Encontrados' : 'Found' }} <strong class="text-slate-900">{{ filteredHistoryList.length }}</strong> {{ isZh ? '笔报价单' : isEs ? 'cotizaciones' : 'quotations' }}</span>
+        <button @click="quoteHistoryModalVisible = false" class="px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer">
+          {{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}
+        </button>
+      </div>
     </div>
-  </BaseModal>
+  </div>
 </template> 
 
 <script setup>
@@ -580,7 +628,7 @@ const props = defineProps({
   currentUser: Object
 })
 
-const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients', 'go-to-pos'])
+const emit = defineEmits(['add-to-cart', 'generate-quote', 'exit-pos', 'clear-cart', 'refresh-clients', 'go-to-pos', 'convert-to-pos', 'show-toast'])
 
 const deskSearchQuery = ref('')
 const quoteClientName = ref('')
@@ -636,6 +684,47 @@ const fetchSystemSettings = async () => {
 const helpModalVisible = ref(false)
 const quoteHistoryModalVisible = ref(false)
 const quoteHistoryList = ref([])
+const historySearchQuery = ref('')
+const todayStr = new Date().toLocaleDateString('en-CA')
+const historyStartDate = ref(todayStr)
+const historyEndDate = ref(todayStr)
+const historyStatusFilter = ref('ALL')
+
+const setHistoryDateToday = () => {
+  historyStartDate.value = todayStr
+  historyEndDate.value = todayStr
+}
+const setHistoryDateAll = () => {
+  historyStartDate.value = ''
+  historyEndDate.value = ''
+}
+
+const filteredHistoryList = computed(() => {
+  let result = quoteHistoryList.value || []
+  
+  if (historySearchQuery.value) {
+    const q = historySearchQuery.value.toUpperCase()
+    result = result.filter(item => 
+      (item.quotation_no && item.quotation_no.toUpperCase().includes(q)) || 
+      (item.client_name && item.client_name.toUpperCase().includes(q))
+    )
+  }
+  
+  if (historyStartDate.value) {
+    result = result.filter(item => (item.timestamp || item.created_at || '').slice(0, 10) >= historyStartDate.value)
+  }
+  if (historyEndDate.value) {
+    result = result.filter(item => (item.timestamp || item.created_at || '').slice(0, 10) <= historyEndDate.value)
+  }
+
+  if (historyStatusFilter.value === 'PENDING') {
+    result = result.filter(item => !item.converted_order_id)
+  } else if (historyStatusFilter.value === 'CONVERTED') {
+    result = result.filter(item => item.converted_order_id)
+  }
+
+  return result
+})
 const isLoadingHistory = ref(false)
 
 const openQuoteHistoryModal = async () => {
@@ -998,10 +1087,11 @@ const generateQuotationPDF = async () => {
 }
 
 const handleGlobalKeydown = (e) => {
-  if (clientModalVisible.value || helpModalVisible.value || exitConfirmVisible.value || newClientModalVisible.value) {
+  if (clientModalVisible.value || helpModalVisible.value || exitConfirmVisible.value || newClientModalVisible.value || quoteHistoryModalVisible.value) {
     if (e.key === 'Escape') {
       e.preventDefault()
       if (exitConfirmVisible.value) exitConfirmVisible.value = false
+      else if (quoteHistoryModalVisible.value) quoteHistoryModalVisible.value = false
       else { clientModalVisible.value = false; helpModalVisible.value = false; newClientModalVisible.value = false; }
       return
     }
