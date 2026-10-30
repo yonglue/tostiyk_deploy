@@ -41,6 +41,16 @@
 
 ## 启动
 
+> ⚠️ **首次启动必须做的事**：新数据库启动后**不会自动创建 admin**。
+> `app/config.py` 在未设 `TK_ADMIN_PASSWORD` 环境变量时会生成**随机管理员密码**
+> （`secrets.token_urlsafe(16)`，仅本次进程有效、不落盘）。首次登录前请：
+>
+> - **推荐**：启动后访问 `/api/auth/setup` 通过首次 setup 接口设置
+> - **或**：执行 `python scripts/set_admin_password.py` 按提示设置
+>
+> README 下方旧文本中提到的**旧硬编码默认密码**是重构前的过时值，现已不存在；
+> 请以 `/api/auth/setup` 或 `scripts/set_admin_password.py` 为准。
+
 ```bash
 # 1. 后端
 python3 -m venv .venv
@@ -67,7 +77,7 @@ npm run build          # 生产: 产物在 frontend/dist
 | `TK_JWT_SECRET` | 访问令牌签名密钥，**生产必须设置** | `dev-only-change-me` |
 | `TK_TOKEN_TTL_MINUTES` | 令牌有效期（分钟） | `720` |
 | `TK_MASTER_PIN` | 管理员密码重置密钥 | `TK-PIN-2026` |
-| `TK_ADMIN_USER` / `TK_ADMIN_PASSWORD` | 全新数据库初始化时的管理员 | `admin` / `tostiyk2026` |
+| `TK_ADMIN_USER` / `TK_ADMIN_PASSWORD` | 管理员账号；`TK_ADMIN_PASSWORD` **未设置时启动生成随机值、不落盘**，需通过 `/api/auth/setup` 或 `scripts/set_admin_password.py` 显式设置 | `admin` / **随机生成** |
 | `TK_CORS_ORIGINS` | 允许跨域的前端来源，逗号分隔 | `http://localhost:5173,http://127.0.0.1:5173` |
 | `TK_PUBLIC_BASE_URL` | 报价单 PDF 下载地址前缀 | `http://localhost:8000` |
 
@@ -76,9 +86,10 @@ npm run build          # 生产: 产物在 frontend/dist
 登录 `POST /api/auth/login` 返回 `access_token`，之后请求带 `Authorization: Bearer <token>`。
 
 ```bash
+# 需先设置 $TK_ADMIN_PASSWORD（如通过 scripts/set_admin_password.py）
 TOKEN=$(curl -s -X POST http://localhost:8000/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"admin","password":"tostiyk2026"}' | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+  -d "{\"username\":\"admin\",\"password\":\"$TK_ADMIN_PASSWORD\"}" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
 curl http://localhost:8000/api/staff -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -124,8 +135,8 @@ location /         { root /path/to/frontend/dist; try_files $uri /index.html; }
 
 | 项 | 值 |
 |---|---|
-| 管理员 | `admin` / `tostiyk2026` |
-| 重置密钥 | `TK-PIN-2026` |
+| 管理员 | `admin` / **通过 `/api/auth/setup` 或 `scripts/set_admin_password.py` 设置** |
+| 重置密钥 | **随机生成**（`app/config.py:71` `_rand_pin`）；生产须在 `.env` 显式设置 `TK_MASTER_PIN` |
 
 > ⚠️ 以上仅为代码默认值，公网部署前务必通过环境变量替换。
 
@@ -160,7 +171,7 @@ location /         { root /path/to/frontend/dist; try_files $uri /index.html; }
 6. ✅ **启动安全自检**：仍在用出厂弱默认值会打印醒目告警；
    `TK_STRICT_SECURITY=1` 时**直接拒绝启动**。
 7. ✅ **管理员密码可轮换**：`scripts/set_admin_password.py`（带强度校验）；
-   若 `.env` 配了 `TK_ADMIN_PASSWORD` 而库里仍是出厂密码，启动时自动替换。
+   若 `.env` 配了 `TK_ADMIN_PASSWORD` 而库中 admin 仍为空密码（出厂态），启动时自动替换。
 8. ✅ **登录/重置接口防爆破限流**：滑动窗口 + 锁定，超限返回 429 与 `Retry-After`。
 
 仍待处理：
@@ -188,7 +199,7 @@ rm -f .jwt_secret   # 或在 .env 换一个 TK_JWT_SECRET，然后重启
 |---|---|---|
 | `TK_JWT_SECRET` | 自动生成 | 令牌签名密钥；多实例必须共享同一值 |
 | `TK_MASTER_PIN` | 弱默认值 ⚠️ | 重置管理员密码的密钥 |
-| `TK_ADMIN_PASSWORD` | 弱默认值 ⚠️ | 仅用于初始化；库中仍是出厂密码时启动会自动替换 |
+| `TK_ADMIN_PASSWORD` | 未设置→随机生成 | 仅用于初始化；未设置时启动生成随机值不落盘；库中 admin 为空密码时会自动替换 |
 | `TK_STRICT_SECURITY` | 空 | `1` = 检出弱默认凭据就拒绝启动 |
 | `TK_LOGIN_MAX_ATTEMPTS` | `5` | 窗口内允许的失败次数 |
 | `TK_LOGIN_WINDOW_SECONDS` | `300` | 失败计数窗口 |

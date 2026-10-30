@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/app/data
+      - ./tostiyk_erp.db:/app/tostiyk_erp.db   # 🔴 P0：运行库在根目录，必须持久化
       - ./uploads:/app/uploads
       - ./backups:/app/backups
     environment:

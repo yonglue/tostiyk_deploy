@@ -1,7 +1,10 @@
-"""兼容入口与启动脚本。
+"""便捷启动入口。
 
-应用装配已迁移到 `app.main`。保留本模块是为了兼容历史引用方式：
-测试与脚本中的 ``from main import app, get_session, ...`` 仍然可用。
+应用装配在 ``app.main``（官方入口，见 start.sh / Dockerfile /
+.github/workflows/ci.yml / README）。
+
+本模块仅提供 ``python main.py`` 的快速本地启动方式。
+测试与脚本请直接 ``from app.main import app``，不要依赖本模块。
 """
 
 from app.database import engine, get_session, init_db

@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "iconv-lite": "^0.7.3",
-    "qz-tray": "^2.3.0"
-  }
-}
