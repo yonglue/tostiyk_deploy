@@ -7,7 +7,9 @@
       <div v-if="isProcessingCheckout" class="fixed inset-0 z-[999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center">
         <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4 border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-200">
           <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-          <div class="text-slate-900 dark:text-white font-black text-lg">正在打印发票...</div>
+          <div class="text-slate-900 dark:text-white font-black text-lg">
+            {{ isZh ? '正在打印发票...' : isEs ? 'Emitiendo factura...' : 'Printing invoice...' }}
+          </div>
           <div class="w-56 h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
             <div class="h-full bg-emerald-500 rounded-full animate-progress"></div>
           </div>
@@ -28,7 +30,6 @@
     <!-- 右上角提示条 -->
     <transition name="fade">
       <div v-if="toastMessage" :class="toastType === 'success' ? 'bg-emerald-600/90 border-emerald-400/30' : 'bg-rose-600/90 border-rose-400/30'" class="fixed top-2 right-4 z-[100] text-white px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-2 text-sm font-bold animate-bounce">
-        <span>{{ toastType === 'success' ? '' : '' }}</span>
         <span>{{ toastMessage }}</span>
       </div>
     </transition>
@@ -94,7 +95,9 @@
                   <div class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-2 mt-0.5 truncate">
                     <span v-if="selectedClientDetails?.store_name" class="truncate">👤 {{ quoteClientName }}</span>
                     <span v-if="selectedClientDetails?.phone" class="truncate">📞 {{ selectedClientDetails.phone }}</span>
-                    <span v-if="selectedClientDetails?.debt > 0" class="text-rose-500 font-bold shrink-0">欠款: ${{ selectedClientDetails.debt.toFixed(2) }}</span>
+                    <span v-if="selectedClientDetails?.debt > 0" class="text-rose-500 font-bold shrink-0">
+                      {{ isZh ? '欠款' : isEs ? 'Deuda' : 'Debt' }}: ${{ selectedClientDetails.debt.toFixed(2) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -260,8 +263,8 @@
             <div class="border-t border-black border-dashed my-1"></div>
             
             <div class="text-center text-[10px] space-y-0.5 mt-2">
-              <div>¡Gracias por su compra!</div>
-              <div>Cambios dentro de 7 dias con recibo</div>
+              <div>{{ isZh ? '谢谢惠顾！' : isEs ? '¡Gracias por su compra!' : 'Thank you!' }}</div>
+              <div>{{ isZh ? '收据 7 天内有效' : isEs ? 'Cambios dentro de 7 dias con recibo' : 'Returns within 7 days with receipt' }}</div>
               <div>Tel: {{ printData.phone || 'N/A' }}</div>
               <div class="font-bold">Tostiyk (TK) ERP</div>
             </div>
@@ -282,13 +285,18 @@
 
     <PosHelpModal :visible="helpModalVisible" @close="helpModalVisible = false" />
 
-    <!-- ✅ 客户快速搜索 Modal (完美复刻图1大尺寸 + 丰富细节) -->
+    <!-- ✅ 客户快速搜索 Modal -->
     <div v-if="clientModalVisible" @click.self="clientModalVisible = false" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-[60] p-6 cursor-pointer">
       <div class="bg-white dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl max-w-5xl w-full h-[88vh] max-h-[900px] overflow-hidden border border-white/80 flex flex-col cursor-default">
         
         <!-- 弹窗头部 -->
         <div class="p-5 border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between bg-white dark:bg-slate-800/50 shrink-0">
-          <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>{{ tExt.clientModalTitle }}</span></h3>
+          <div class="flex items-center gap-3">
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2"><span>{{ tExt.clientModalTitle }}</span></h3>
+            <span class="text-[11px] bg-slate-100 dark:bg-slate-700 text-slate-500 px-2.5 py-0.5 rounded-full font-mono">
+              {{ isZh ? '↑↓ 导航 | Enter 选择 | Esc 关闭' : isEs ? '↑↓ Navegar | Enter Seleccionar | Esc Cerrar' : '↑↓ Navigate | Enter Select | Esc Close' }}
+            </span>
+          </div>
           <button @click="clientModalVisible = false" class="text-slate-400 hover:text-slate-700 dark:text-slate-300 text-base font-bold p-1 cursor-pointer">✕</button>
         </div>
 
@@ -310,25 +318,40 @@
               />
             </div>
             
-            <!-- 已选客户提示与清除 -->
-            <div v-if="quoteClientId" class="flex items-center justify-between text-sm px-1">
-              <span class="text-slate-500 font-medium">已选: <strong class="text-slate-800 dark:text-slate-200">{{ quoteClientName }}</strong></span>
-              <button @click="clearClient(); clientModalVisible = false" class="text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1 transition-colors">
-                <XCircle :size="16" />
-                清除客户
+            <!-- 散客一键直通快捷栏 -->
+            <div class="flex items-center justify-between px-1">
+              <button 
+                @click="selectClient(null)" 
+                type="button"
+                class="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-700/50 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+              >
+                <span>👤 {{ isZh ? '普通散客 / 现金' : isEs ? 'Cliente General / Contado' : 'General Client / Cash' }}</span>
               </button>
+
+              <div v-if="quoteClientId" class="flex items-center gap-2 text-sm">
+                <span class="text-slate-500 font-medium">
+                  {{ isZh ? '已选:' : isEs ? 'Seleccionado:' : 'Selected:' }} <strong class="text-slate-800 dark:text-slate-200">{{ quoteClientName }}</strong>
+                </span>
+                <button @click="clearClient()" class="text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1 transition-colors text-xs px-2 py-1 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
+                  <XCircle :size="14" /> {{ isZh ? '清除' : isEs ? 'Limpiar' : 'Clear' }}
+                </button>
+              </div>
             </div>
           </div>
 
-          <!-- 客户列表（改为三段式信息网格） -->
+          <!-- 客户列表 -->
           <div class="flex-1 overflow-y-auto mt-4 space-y-3 pb-4">
             <div 
-              v-for="c in filteredModalClients" 
+              v-for="(c, idx) in filteredModalClients" 
               :key="c.id" 
               @click="selectClient(c)" 
-              class="p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 cursor-pointer hover:border-accent hover:shadow-md transition-all flex items-center justify-between gap-6"
+              @mouseenter="modalSelectedIndex = idx"
+              :class="[
+                modalSelectedIndex === idx ? 'border-accent ring-2 ring-accent/20 bg-accent/5' : 'border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800',
+                isClientOverLimit(c) ? 'border-rose-300 bg-rose-50/40 dark:bg-rose-900/10' : '',
+                'p-4 rounded-xl border cursor-pointer hover:border-accent hover:shadow-md transition-all flex items-center justify-between gap-6'
+              ]"
             >
-              <!-- 左侧区：基本资料 -->
               <div class="flex items-center gap-4 w-[35%] shrink-0">
                 <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
                   <Building2 :size="20" class="text-slate-500 dark:text-slate-400" />
@@ -343,45 +366,51 @@
                 </div>
               </div>
 
-              <!-- 中间区：属性与地址 -->
               <div class="flex-1 flex flex-col min-w-0 border-l border-slate-100 dark:border-slate-700/50 pl-6">
                 <div class="flex flex-wrap gap-1.5 mb-1">
                   <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded">
                     {{ c.client_type || 'Regular' }}
                   </span>
                   <span v-if="c.is_special_taxpayer" class="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold rounded border border-amber-200 dark:border-amber-800">
-                    Contribuyente Especial
+                    {{ isZh ? '特殊纳税人' : isEs ? 'Contribuyente Especial' : 'Special Taxpayer' }}
+                  </span>
+                  <span v-if="isClientOverLimit(c)" class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-black rounded border border-rose-200 animate-pulse">
+                    ⚠️ {{ isZh ? '信用超限' : isEs ? 'Crédito Excedido' : 'Credit Exceeded' }}
                   </span>
                 </div>
-                <span class="text-xs text-slate-400 truncate">📍 {{ c.address || 'No hay dirección registrada' }}</span>
+                <span class="text-xs text-slate-400 truncate">📍 {{ c.address || (isZh ? '暂无地址' : isEs ? 'No hay dirección' : 'No address') }}</span>
               </div>
 
-              <!-- 右侧区：财务与操作 -->
               <div class="w-[30%] shrink-0 flex items-center justify-end gap-4 border-l border-slate-100 dark:border-slate-700/50 pl-6">
                 <div class="flex flex-col items-end gap-0.5">
-                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Deuda Actual</span>
+                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ isZh ? '当前欠款' : isEs ? 'Deuda Actual' : 'Current Debt' }}</span>
                   <span :class="Number(c.debt) > 0 ? 'text-rose-500' : 'text-slate-400'" class="font-black font-mono text-base">
                     ${{ Number(c.debt || 0).toFixed(2) }}
                   </span>
-                  <span v-if="c.credit_limit" class="text-[9px] text-slate-400 font-medium">Límite: ${{ Number(c.credit_limit).toFixed(2) }}</span>
+                  <span class="text-[9px] text-slate-400 font-medium">{{ isZh ? '限额' : isEs ? 'Límite' : 'Limit' }}: ${{ Number(c.credit_limit || 500).toFixed(2) }}</span>
                 </div>
-                <button class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors shrink-0">{{ tExt.clientSelectBtn }}</button>
+                <button class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-100 transition-colors shrink-0">
+                  {{ modalSelectedIndex === idx ? (isZh ? '⏎ 选择' : isEs ? '⏎ Elegir' : '⏎ Select') : tExt.clientSelectBtn }}
+                </button>
               </div>
             </div>
             
             <div v-if="filteredModalClients.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 text-sm font-bold gap-3 py-10">
               <span>{{ tExt.clientNotFound }}</span>
               <button v-if="clientFilterQuery.trim()" @click="prepareCreateClient(clientFilterQuery)" class="px-6 py-3 bg-accent text-white rounded-xl font-bold text-sm shadow-md hover:bg-accent-hover transition-colors">
-                + {{ tExt.createThisClient }}
+                + {{ tExt.createThisClient }} (Enter)
               </button>
             </div>
           </div>
         </div>
 
-        <!-- 弹窗底部 -->
         <div class="p-5 bg-white dark:bg-slate-800/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between shrink-0">
-          <span class="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">Encontrados: <strong class="text-slate-900 dark:text-white">{{ filteredModalClients.length }}</strong></span>
-          <button @click="clientModalVisible = false" class="px-6 py-2 bg-slate-200/80 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">{{ t.common.cancel }}</button>
+          <span class="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">
+            {{ isZh ? '找到:' : isEs ? 'Encontrados:' : 'Found:' }} <strong class="text-slate-900 dark:text-white">{{ filteredModalClients.length }}</strong>
+          </span>
+          <button @click="clientModalVisible = false" class="px-6 py-2 bg-slate-200/80 hover:bg-slate-300 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer">
+            {{ t.common.cancel }} (Esc)
+          </button>
         </div>
       </div>
     </div>
@@ -432,18 +461,14 @@
           <p class="text-[10px]">{{ systemConfig.address || 'Valencia, Carabobo' }}</p>
           <p class="text-[10px]">Tel: {{ systemConfig.phone || 'N/A' }}</p>
         </div>
-        
         <div class="border-t border-dashed border-black my-1"></div>
-        
         <div class="text-[10px] leading-tight">
           <p>{{ tExt.printOrderNo }} {{ printData.order_no }}</p>
           <p>{{ tExt.printDate }} {{ printData.date }}</p>
           <p>{{ tExt.printClient }} {{ printData.client_name }}</p>
           <p>{{ tExt.printOperator }} {{ printData.operator }}</p>
         </div>
-        
         <div class="border-t border-dashed border-black my-1"></div>
-
         <div class="text-[10px]">
           <div v-for="(item, idx) in printData.items" :key="idx" class="mb-1">
             <div class="font-bold">{{ item.name }}</div>
@@ -453,22 +478,14 @@
             </div>
           </div>
         </div>
-
         <div class="border-t border-dashed border-black my-1"></div>
-
         <div class="text-[10px] flex flex-col gap-0.5">
           <div class="flex justify-between"><span>Base Imponible:</span> <span>${{ printData.base_usd.toFixed(2) }}</span></div>
           <div class="flex justify-between"><span>IVA:</span> <span>${{ printData.tax_usd.toFixed(2) }}</span></div>
-          <div class="flex justify-between font-black text-sm mt-1">
-            <span>TOTAL USD:</span> <span>${{ printData.total_usd.toFixed(2) }}</span>
-          </div>
-          <div class="flex justify-between font-black text-sm">
-            <span>TOTAL VES:</span> <span>Bs. {{ printData.total_bs.toFixed(2) }}</span>
-          </div>
+          <div class="flex justify-between font-black text-sm mt-1"><span>TOTAL USD:</span> <span>${{ printData.total_usd.toFixed(2) }}</span></div>
+          <div class="flex justify-between font-black text-sm"><span>TOTAL VES:</span> <span>Bs. {{ printData.total_bs.toFixed(2) }}</span></div>
         </div>
-
         <div class="border-t border-dashed border-black my-1"></div>
-        
         <div class="text-[10px]">
           <p class="font-bold">{{ tExt.printPaymentTitle }}</p>
           <div v-if="printData.payment.cardPos > 0" class="flex justify-between"><span>- Punto de Venta:</span> <span>Bs. {{ printData.payment.cardPos.toFixed(2) }}</span></div>
@@ -477,9 +494,7 @@
           <div v-if="printData.payment.cashUsd > 0" class="flex justify-between"><span>- Efectivo USD:</span> <span>${{ printData.payment.cashUsd.toFixed(2) }}</span></div>
           <p v-if="printData.reference" class="mt-1">Ref: {{ printData.reference }}</p>
         </div>
-
         <div class="border-t border-dashed border-black my-2"></div>
-        
         <div class="text-center text-[10px]">
           <p>{{ tExt.printThanks }}</p>
           <p class="font-bold">Tostiyk (TK) ERP</p>
@@ -496,16 +511,11 @@
             <button @click="receiptPreviewVisible = false" class="text-slate-400 hover:text-rose-500 text-2xl leading-none font-bold">&times;</button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 flex justify-center bg-slate-200/50">
-            <iframe 
-              ref="previewIframe" 
-              class="bg-white shadow-xl border border-slate-300 rounded-sm" 
-              style="width: 320px; min-height: 100%; height: max-content;"
-            ></iframe>
+            <iframe ref="previewIframe" class="bg-white shadow-xl border border-slate-300 rounded-sm" style="width: 320px; min-height: 100%; height: max-content;"></iframe>
           </div>
           <div class="p-4 border-t border-slate-200 flex gap-3 bg-white shrink-0">
             <button @click="receiptPreviewVisible = false" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700 transition">{{ isZh ? '关闭' : isEs ? 'Cerrar' : 'Close' }}</button>
-            <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-sm transition flex items-center justify-center gap-2">
-              <span></span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
+            <button @click="printFromPreview" class="flex-1 py-3 bg-accent hover:bg-accent-hover rounded-xl font-bold text-white shadow-sm transition flex items-center justify-center gap-2"><span></span>{{ isZh ? '打印' : isEs ? 'Imprimir' : 'Print' }}</button>
           </div>
         </div>
       </div>
@@ -526,17 +536,15 @@
           <p class="text-xs text-center text-slate-500 dark:text-slate-400 mb-6 leading-relaxed px-2">
             {{ pendingOverrideError }}
           </p>
-          
           <div class="relative mb-6">
             <input 
               v-model="pinInput" 
               type="password" 
               :placeholder="isZh ? '请输入店长安全 PIN 码' : isEs ? 'Ingrese PIN de gerente' : 'Enter Manager PIN'"
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent  focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-center tracking-[0.3em] font-mono text-lg text-slate-800 dark:text-white outline-none focus:border-accent focus:ring-0 transition-all placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500"
               @keyup.enter="submitOverridePin"
             />
           </div>
-          
           <div class="flex gap-3">
             <button @click="showPinModal = false" class="flex-1 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
               {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
@@ -720,7 +728,7 @@ const paymentSplit = ref({
   cashBs: 0,
   cashUsd: 0
 })
-// 引入的别名函数调用
+
 const goodsTotalUsd = computed(() => calcGoodsTotal(props.cartItems))
 const totalBaseUsd = computed(() => calcBaseTotal(props.cartItems))
 const totalTaxUsd = computed(() => calcTaxTotal(goodsTotalUsd.value, totalBaseUsd.value))
@@ -733,16 +741,13 @@ const totalPaidUsd = computed(() => calcPaidTotal(paymentSplit.value, props.bcvR
 const balanceRemaining = computed(() => calcBalance(totalUsd.value, totalPaidUsd.value))
 const isFullyPaid = computed(() => totalUsd.value > 0 && totalPaidUsd.value >= totalUsd.value)
 
-// 🌟 实时计算 POS 客户是否超额
 const isOverCreditLimit = computed(() => {
   if (!quoteClientId.value || !props.clientsList) return false
   const client = props.clientsList.find(c => c.id === quoteClientId.value)
   if (!client) return false
-  
   const currentDebt = Number(client.debt) || 0
   const limit = Number(client.credit_limit) || 500
   const projectedDebt = currentDebt + totalUsd.value
-  
   return projectedDebt > limit
 })
 
@@ -782,7 +787,6 @@ const handlePaymentKeydown = (e, channelKey) => {
   if (e.key === ' ' || e.key === '=') {
     e.preventDefault()
     const rate = props.bcvRate || 1
-
     let otherPaidInUsd = 0
     for (const k in paymentSplit.value) {
       if (k !== channelKey) {
@@ -917,12 +921,10 @@ const submitShiftHandover = async (actualCounts, handoverNotes) => {
     }
     const money = (n) => Number((Number(n) || 0).toFixed(2))
     const payload = {
-      // ... 前面的 system 相关的不变 ...
       actual_card_pos_bs: money(actualCounts.cardPos),
       actual_pago_movil_bs: money(actualCounts.pagoMovil),
       actual_cash_bs: money(actualCounts.cashBs),
       actual_cash_usd: money(actualCounts.cashUsd),
-      // ... 后面的零值保持不变 ...
       notes: handoverNotes || ''
     }
     const res = await apiFetch('/api/pos/shift-handover', { method: 'POST', body: JSON.stringify(payload) })
@@ -962,14 +964,10 @@ const showToast = (msg, type = 'error') => {
 const clientModalVisible = ref(false)
 const clientFilterQuery = ref('')
 const clientModalInputRef = ref(null)
-
-// 🌟 新增：本地变量，专门用于弹窗显示
 const localClientsList = ref([])
 
 const openClientSearchModal = async () => {
   clientFilterQuery.value = quoteClientName.value || ''
-  
-  // 🌟 强制向后端请求最新的客户数据，不再依赖父组件
   try {
     const res = await apiFetch('/api/clients')
     if (res.ok) {
@@ -988,23 +986,66 @@ const openClientSearchModal = async () => {
   }
 }
 
+const modalSelectedIndex = ref(0)
+
 const selectClient = (client) => {
-  quoteClientName.value = client?.name || ''
-  quoteClientId.value = client?.id ?? null
-  quoteClientRif.value = client?.rif || ''
+  if (!client) {
+    quoteClientName.value = ''
+    quoteClientId.value = null
+    quoteClientRif.value = ''
+  } else {
+    quoteClientName.value = client?.name || ''
+    quoteClientId.value = client?.id ?? null
+    quoteClientRif.value = client?.rif || ''
+  }
   clientModalVisible.value = false
 }
 
+const isClientOverLimit = (client) => {
+  const currentDebt = Number(client.debt) || 0
+  const limit = Number(client.credit_limit) || 500
+  const currentCartTotal = totalUsd.value || 0
+  return (currentDebt + currentCartTotal) > limit
+}
+
 const handleClientModalKeydown = (e) => {
+  const list = filteredModalClients.value
+  if (e.key === 'Escape') {
+    e.preventDefault()
+    clientModalVisible.value = false
+    return
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    if (list.length > 0) {
+      modalSelectedIndex.value = (modalSelectedIndex.value + 1) % list.length
+    }
+    return
+  }
+  
+  if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    if (list.length > 0) {
+      modalSelectedIndex.value = (modalSelectedIndex.value - 1 + list.length) % list.length
+    }
+    return
+  }
+
   if (e.key === 'Enter') {
-    const matched = filteredModalClients.value
-    if (matched.length > 0) {
-      selectClient(matched[0])
+    e.preventDefault()
+    if (list.length > 0) {
+      const target = list[modalSelectedIndex.value] || list[0]
+      selectClient(target)
     } else if (clientFilterQuery.value.trim()) {
       prepareCreateClient(clientFilterQuery.value)
     }
   }
 }
+
+watch(clientFilterQuery, () => {
+  modalSelectedIndex.value = 0
+})
 
 const filteredModalClients = computed(() => {
   if (!localClientsList.value) return []
@@ -1016,14 +1057,12 @@ const filteredModalClients = computed(() => {
   )
 })
 
-// 🌟 提取当前选中客户的详细信息（用于顶部展示）
 const selectedClientDetails = computed(() => {
   if (!quoteClientId.value) return null
   const list = localClientsList.value.length > 0 ? localClientsList.value : props.clientsList
   return list?.find(c => c.id === quoteClientId.value) || null
 })
 
-// 🌟 清除当前选中的客户
 const clearClient = () => {
   quoteClientName.value = ''
   quoteClientId.value = null
@@ -1149,7 +1188,7 @@ const selectAndAddToCart = (part) => {
       name: part.name,
       brand: part.brand || 'GENERAL',
       price: part.price,
-      tax_rate: part.tax_rate ?? 0.16, // 🌟 确保正确读取商品档案中的税率（0.16, 0.08, 0）
+      tax_rate: part.tax_rate ?? 0.16,
       quantity: 1
     })
   }
@@ -1323,7 +1362,6 @@ const executeExitPos = () => { exitConfirmVisible.value = false; emit('exit-pos'
 
 const isFiadoMode = ref(false)
 
-// 🌟 补上这个函数，让结账事件有对应的处理逻辑
 const handleDirectCheckout = async () => {
   if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
     isFiadoMode.value = false
@@ -1346,7 +1384,6 @@ const handleFiadoCheckout = async () => {
   if (!quoteClientId.value) return
   if (props.cartItems.length === 0) return
 
-  // 🌟 开启全屏进度条
   isProcessingCheckout.value = true
   isFiadoMode.value = true
   if (!pendingRequestId.value) pendingRequestId.value = makeRequestId()
@@ -1417,7 +1454,7 @@ const confirmAndPrint = async (overridePin = null) => {
         brand: i.brand || "GENERAL", 
         quantity: i.quantity, 
         price: i.price,
-        tax_rate: i.tax_rate ?? 0.16 // 🌟 确保后端数据库记录订单明细时也能拿到正确税率
+        tax_rate: i.tax_rate ?? 0.16 
       }))
     }
 
@@ -1431,7 +1468,6 @@ const confirmAndPrint = async (overridePin = null) => {
       offline: { queueOnFail: true },
     })
     
-    // 🌟 4.4：离线入队（202）——网络断时订单已进 IndexedDB，UI 按"成功"处理
     if (res.status === 202) {
       const offlineData = await res.json()
       const offlineMsg = isZh.value
@@ -1450,7 +1486,6 @@ const confirmAndPrint = async (overridePin = null) => {
       checkoutSuccessVisible.value = true
       setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
       showToast(`📴 ${offlineMsg} ${offlineData.order_no || ''}`, 'success')
-      // 不打印：离线订单无真实 order_no
       return
     }
 
@@ -1461,7 +1496,7 @@ const confirmAndPrint = async (overridePin = null) => {
       isProcessingCheckout.value = false 
       isSubmitting.value = false 
       
-      if (!overridePin && res.status === 400 && errMsg.includes('信用额度')) {
+      if (!overridePin && res.status === 400 && (errMsg.includes('信用额度') || errMsg.includes('Límite'))) {
         pendingPinPayload.value = payload
         pendingOverrideError.value = errMsg
         pinInput.value = ''
@@ -1474,7 +1509,6 @@ const confirmAndPrint = async (overridePin = null) => {
     
     const data = await res.json()
     
-    // 🌟 1. 先组装好打印数据
     printData.value = {
       company_name: systemConfig.value?.company_name || 'TOSTIYK (TK)',
       rif: systemConfig.value?.rif || '',
@@ -1488,7 +1522,6 @@ const confirmAndPrint = async (overridePin = null) => {
       cashier: props.currentUser?.username || 'Admin',
       exchange_rate: props.bcvRate || 0,
       
-      // 找零计算：(现金美元 + 刷卡玻利瓦尔/汇率 + 移动支付/汇率 + 现金玻利瓦尔/汇率) - 总应收美元
       change: Math.max(0, (
         (paymentSplit.value.cashUsd || 0) + 
         ((paymentSplit.value.cardPos || 0) / (props.bcvRate || 1)) + 
@@ -1503,7 +1536,7 @@ const confirmAndPrint = async (overridePin = null) => {
         oem: item.oem || '',
         quantity: item.quantity,
         price: item.price,
-        tax_rate: item.tax_rate ?? 0.16 // 🌟 让 WebSocket 代理能够按商品独立识别 8%、16% 或 0%
+        tax_rate: item.tax_rate ?? 0.16 
       })),
       
       base_usd: totalBaseUsd.value,
@@ -1513,18 +1546,12 @@ const confirmAndPrint = async (overridePin = null) => {
       payment: { ...paymentSplit.value },
       reference: paymentReference.value
     }
-
-    // 🌟 2. 先关弹窗、反馈成功（不依赖打印）
-    // 修复：之前 await 打印会因后端 /api/printer/receipt 阻塞而卡住订单完成流程
-    // 生产收益：print-agent 挂掉时收银员仍能继续开单（只是没纸票）
     
     checkoutSuccessVisible.value = true
     setTimeout(() => { checkoutSuccessVisible.value = false }, 1500)
 
     showToast(`${tExt.value.toastCheckoutSuccess} ${data.order_no}`, 'success')
 
-    //  立即清空购物车（双保险）：不依赖任何后续异步
-    // 历史问题：清空放在最后，pendingQid 的 await / fetchCompletedOrders 挂住就清不掉
     props.cartItems.splice(0, props.cartItems.length)
     emit('clear-cart')
     paymentReference.value = ''
@@ -1533,7 +1560,6 @@ const confirmAndPrint = async (overridePin = null) => {
     quoteClientRif.value = ''
     emit('generate-quote')
 
-    // 后台任务（全部 fire-and-forget，失败不影响已完成的订单）
     autoPrintReceipt(printData.value).catch(err => {
       console.warn('打印失败（不影响订单完成）:', err)
     })
@@ -1561,28 +1587,25 @@ const confirmAndPrint = async (overridePin = null) => {
 const handleGlobalKeydown = (e) => {
   const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)
   
-  // 搜索聚焦: / 
   if (e.key === '/' && !isInput) {
     e.preventDefault()
     searchInputRef.value?.focus()
     return
   }
 
-  // 👤 选客户: F3
-  if (e.key === 'F3') {
+  // 🌟 修复：同时支持 F3 或 Ctrl + F 唤起客户选择弹窗
+  if (e.key === 'F3' || (e.ctrlKey && e.key.toLowerCase() === 'f')) {
     e.preventDefault()
     clientModalVisible.value = true
     setTimeout(() => { clientModalInputRef.value?.focus() }, 100)
     return
   }
 
-  // 支付通道切换: F4 - F7
   if (e.key === 'F4') { e.preventDefault(); focusPaymentChannel('cardPos'); return; }
   if (e.key === 'F5') { e.preventDefault(); focusPaymentChannel('pagoMovil'); return; }
   if (e.key === 'F6') { e.preventDefault(); focusPaymentChannel('cashBs'); return; }
   if (e.key === 'F7') { e.preventDefault(); focusPaymentChannel('cashUsd'); return; }
 
-  // 挂单: F8 
   if (e.key === 'F8') {
     e.preventDefault()
     if (typeof saveHeldOrder === 'function') saveHeldOrder()
@@ -1590,7 +1613,6 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // 结账: F12 或 Ctrl+Enter
   if (e.key === 'F12' || (e.ctrlKey && e.key === 'Enter')) {
     e.preventDefault()
     if (isFullyPaid.value && props.cartItems.length > 0 && !isSubmitting.value && !isProcessingCheckout.value) {
@@ -1599,7 +1621,6 @@ const handleGlobalKeydown = (e) => {
     return
   }
 
-  // 删除: Delete 删末项，Alt+Delete 清空
   if (e.key === 'Delete') {
     if (e.altKey) {
       e.preventDefault()
@@ -1615,7 +1636,6 @@ const handleGlobalKeydown = (e) => {
   }
 }
 
-// F9 唤起打印机设置
 const handleKeydown = (e) => {
   if (e.key === 'F9') {
     e.preventDefault()
@@ -1641,13 +1661,11 @@ onUnmounted(() => {
   if (toastTimer) clearTimeout(toastTimer)
 })
 
-// ================= 打印系统核心逻辑 =================
 const receiptPreviewVisible = ref(false)
 const previewIframe = ref(null)
 
 const autoPrintReceipt = async (receiptData) => {
-  if (!PRINT_ENABLED) return  // 🚫 打印功能已暂停，恢复时移除此行
-  //  优先使用本地 WebSocket 代理打印
+  if (!PRINT_ENABLED) return  
   if (isConnected.value) {
     printReceipt({
       lang: isZh.value ? 'zh' : isEs.value ? 'es' : 'en',
@@ -1660,17 +1678,13 @@ const autoPrintReceipt = async (receiptData) => {
       client_name: receiptData.client_name || 'Contado',
       operator: receiptData.cashier || receiptData.operator || 'Admin',
       items: receiptData.items || [],
-      
-      // 🌟 关键补齐：让 WebSocket 代理拿到准确的税额和净额
       subtotal: receiptData.base_usd || receiptData.subtotal || 0,
       iva: receiptData.tax_usd || receiptData.iva || 0,
-
       total_usd: receiptData.total_usd || 0,
       total_bs: receiptData.total_bs || 0,
       payment: receiptData.payment || {}
     }).then(() => console.log('WebSocket 打印成功'))
       .catch(err => console.warn('WebSocket 打印失败:', err.message));
-      
     return; 
   }
 
@@ -1721,7 +1735,6 @@ const previewOrderTicket = (order) => {
     tax_usd: order.tax_usd || order.taxAmountUsd || 0,
     total_usd: order.total || order.total_usd || order.totalAmountUsd || 0,
     total_bs: order.total_bs || order.totalAmountBs || 0,
-    exchange_rate: order.exchange_rate || order.bcvRate || systemConfig.value?.bcv_rate || 0,
     payment: order.payment || order.paymentSplit || { cashUsd: order.total || 0 }
   }
   
@@ -1747,7 +1760,6 @@ const printFromPreview = () => {
 
 const reprintOrderTicket = (order) => {
   showToast(`${tExt.value.toastReprint} #${order.orderId}`, 'success')
-  
   const receiptData = {
     company_name: systemConfig.value?.company_name || 'TOSTIYK (TK)',
     rif: systemConfig.value?.rif || '',
@@ -1765,10 +1777,8 @@ const reprintOrderTicket = (order) => {
     tax_usd: order.tax_usd || order.taxAmountUsd || 0,
     total_usd: order.total || order.total_usd || order.totalAmountUsd || 0,
     total_bs: order.total_bs || order.totalAmountBs || 0,
-    exchange_rate: order.exchange_rate || order.bcvRate || systemConfig.value?.bcv_rate || 0,
     payment: order.payment || order.paymentSplit || { cashUsd: order.total || 0 }
   }
-  
   autoPrintReceipt(receiptData)
 }
 
@@ -1816,12 +1826,10 @@ input[type=number].no-spinner {
     background: #fff;
     line-height: 1.2;
   }
-
   @page {
     size: auto;
     margin: 0mm; 
   }
-
   .print-header, .print-footer {
     text-align: center;
   }
@@ -1833,19 +1841,16 @@ input[type=number].no-spinner {
     margin: 0;
     font-size: 10px;
   }
-  
   .divider {
     text-align: center;
     margin: 4px 0;
     overflow: hidden;
     white-space: nowrap;
   }
-
   .print-meta p {
     margin: 2px 0;
     font-size: 11px;
   }
-
   .print-items table {
     width: 100%;
     border-collapse: collapse;
@@ -1857,7 +1862,6 @@ input[type=number].no-spinner {
   .print-items th {
     border-bottom: 1px dashed #000;
   }
-
   .print-totals p {
     display: flex;
     justify-content: space-between;
@@ -1868,12 +1872,10 @@ input[type=number].no-spinner {
     font-weight: bold;
     font-size: 13px;
   }
-
   .print-payments p {
     margin: 2px 0;
     font-size: 10px;
   }
-
   .print-footer {
     margin-top: 10px;
   }

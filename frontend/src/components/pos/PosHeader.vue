@@ -49,7 +49,7 @@ defineEmits(['open-recall', 'open-history', 'open-shift', 'open-help', 'confirm-
       <!-- 🌟 跳转到报价界面按钮 -->
       <button @click="$emit('goToQuote')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-700/60 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs hover:scale-[1.02]">
         <FileText :size="14" />
-        <span>{{ currentLang === 'zh' ? '报价界面' : currentLang === 'es' ? 'Cotizar' : 'ir a cotizar' }}</span>
+        <span>{{ currentLang === 'zh' ? '报价界面' : currentLang === 'es' ? 'ir a cotizar' : 'ir a cotizar' }}</span>
       </button>
 
       <button @click="$emit('open-history')" class="bg-surface-raised hover:bg-surface-muted text-indigo-600 border border-line hover:border-indigo-300 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm hover:scale-[1.02]">
