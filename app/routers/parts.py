@@ -151,6 +151,9 @@ def update_part(
     stock: int = Form(...),
     price: str = Form(...),
     cost_price: str = Form(default="0.00"),
+    wholesale_price: Optional[str] = Form(default=None),
+    vip2_price: Optional[str] = Form(default=None),
+    vip3_price: Optional[str] = Form(default=None),
     tax_rate: str = Form(...),
     bin_location: str = Form(default="Estante A-1"),
     cross_references: str = Form(default=""),
@@ -179,6 +182,13 @@ def update_part(
     part.stock = stock
     part.price = float(d_price)
     part.cost_price = float(d_cost_price)
+    # 多级价：Optional 语义 —— 未传/空字符串 = 保持原值；显式传值才更新
+    if wholesale_price not in (None, ""):
+        part.wholesale_price = float(Decimal(wholesale_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+    if vip2_price not in (None, ""):
+        part.vip2_price = float(Decimal(vip2_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+    if vip3_price not in (None, ""):
+        part.vip3_price = float(Decimal(vip3_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
     part.tax_rate = float(d_tax_rate)
     part.bin_location = bin_location
     part.cross_references = cross_references
