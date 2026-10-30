@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import messagebox
 import datetime
 import re
+import requests
 
 if getattr(sys, 'frozen', False):
     os.environ['TK_IS_DESKTOP'] = '1'
@@ -33,6 +34,7 @@ def get_machine_id():
             hw_id = out.split('"')[3]
         else:
             hw_id = str(uuid.getnode())
+            
         clean_hw = re.sub(r'[^A-Z0-9]', '', hw_id[-8:].upper())
         return f"TK-{clean_hw}"
     except Exception:
@@ -42,6 +44,12 @@ MACHINE_CODE = get_machine_id()
 LICENSE_FILE = "license.key"
 
 def verify_key(input_key):
+    # ==========================================
+    # 🌟 万能后门：只要输入这个码，无条件通过！
+    # ==========================================
+    if input_key.strip().upper() == "TK-DEMO-2026":
+        return True, "验证成功"
+        
     try:
         clean_input = re.sub(r'[^A-Za-z0-9\-]', '', input_key.strip())
         parts = clean_input.split('-')
@@ -115,17 +123,8 @@ def show_activation_window():
     def do_activate():
         user_input = key_var.get().strip().upper()
         
-        # 🌟 万能码拦截
-        if user_input == "TK-DEMO-2026":
-            with open(LICENSE_FILE, "w") as f:
-                f.write(user_input)
-            messagebox.showinfo("成功", "万能码激活成功！")
-            root.destroy()
-            return
-
         # 处理专属 7 天密码
         if user_input == "HUIYI1314":
-            # 检查是否已有记录
             if os.path.exists(LICENSE_FILE):
                 with open(LICENSE_FILE, "r") as f:
                     old = f.read().strip()
@@ -137,7 +136,6 @@ def show_activation_window():
                             messagebox.showerror("失败", "Huiyi1314 专属 7 天演示已到期！")
                         return
             
-            # 首次输入，记录当天日期
             today_str = datetime.date.today().strftime("%Y%m%d")
             with open(LICENSE_FILE, "w") as f:
                 f.write(f"HUIYI1314_{today_str}")
@@ -160,6 +158,7 @@ def show_activation_window():
     root.mainloop()
 
 def start_backend():
+    # 关闭日志，防止黑框
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, log_level="error")
 
 if __name__ == '__main__':
@@ -168,10 +167,28 @@ if __name__ == '__main__':
         if not check_license():
             sys.exit(0)
 
+    # 启动后端线程
     t = threading.Thread(target=start_backend, daemon=True)
     t.start()
-    time.sleep(2)
 
+    # 智能轮询等待后端启动（最多等 15 秒）
+    print("正在启动后台服务...")
+    backend_ready = False
+    for _ in range(30):
+        try:
+            requests.get("http://127.0.0.1:8000/api/auth/setup-status", timeout=1)
+            backend_ready = True
+            break
+        except requests.exceptions.ConnectionError:
+            time.sleep(0.5)
+
+    if not backend_ready:
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("启动失败", "后台服务启动超时！\n请检查是否被杀毒软件拦截，或尝试右键以管理员身份运行。")
+        sys.exit(1)
+
+    # 唤起独立客户端窗口
     window = webview.create_window(
         title="Tostiyk ERP",
         url="http://127.0.0.1:8000",
