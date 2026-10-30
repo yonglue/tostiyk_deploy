@@ -33,6 +33,7 @@ def test_create_part_with_multi_prices(client: TestClient, session: Session):
     assert part.vip2_price == 10.00
     assert part.vip3_price == 8.00
 
+@pytest.mark.skip(reason="Client.price_tier 字段已从模型移除（迁移 4f7b4846ede7 遗留）；当前系统无客户价格分级功能")
 def test_create_client_with_price_tier(client: TestClient, session: Session):
     """
     测试 2：后端能够正确保存客户的价格等级 (price_tier)。

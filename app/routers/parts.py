@@ -74,6 +74,9 @@ def create_part(
     stock: int = Form(...),
     price: str = Form(...),
     cost_price: str = Form(default="0.00"),
+    wholesale_price: str = Form(default="0.00"),
+    vip2_price: str = Form(default="0.00"),
+    vip3_price: str = Form(default="0.00"),
     tax_rate: str = Form(...),  
     cross_references: str = Form(default=""),
     bin_location: str = Form(default="Estante A-1"),
@@ -104,9 +107,9 @@ def create_part(
         # 🌟 补全必填字段的默认值
         min_stock=0,
         max_stock=9999,
-        wholesale_price=0.0,
-        vip2_price=0.0,
-        vip3_price=0.0,
+        wholesale_price=float(Decimal(wholesale_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
+        vip2_price=float(Decimal(vip2_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
+        vip3_price=float(Decimal(vip3_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
     )
     session.add(new_part)
     try:
