@@ -11,7 +11,7 @@ export function useTxActions({ activeTab }) {
   const { showSuccessModal } = useNotifications()
   const { t, currentLang } = useI18n()
   const { fetchTransactions, fetchParts, fetchDashboardStats } = useInventory()
-  const { cartItems, quoteClientName } = usePosCart()
+  const { cartItems, quoteClientName, quoteClientId } = usePosCart()
 
   // 把 tExt 抽出为局部计算属性（只保留与 Tx 相关的）
   // 注意：App.vue 里原来有个庞大的 tExt，这里为了局部化，提取需要的部分
@@ -98,23 +98,35 @@ export function useTxActions({ activeTab }) {
     
     // 2. 将报价单的明细映射到购物车格式
     data.items.forEach(item => {
+      // 🌟 容错处理：兼容老报价单里可能缺失的字段 (如 qty 替代 quantity)
+      const safePrice = Number(item.price) || 0
+      const safeQty = Number(item.quantity || item.qty) || 1
+      const safeCost = Number(item.cost_price) || 0
+      
       cartItems.value.push({
-        oem: item.oem,
-        name: item.name,
+        oem: item.oem || 'S/N',
+        name: item.name || 'Sin Nombre',
         brand: item.brand || 'GENERAL',
-        price: Number(item.price),
-        quantity: Number(item.quantity),
+        price: safePrice,
+        cost_price: safeCost,
+        quantity: safeQty,
         tax_rate: item.tax_rate ?? 0.16
       })
     })
 
-    // 3. 带上客户名字
+    // 3. 带上客户名字和 ID
     if (data.client_name && data.client_name !== 'Cliente General') {
       quoteClientName.value = data.client_name
+      quoteClientId.value = data.client_id || null
+    } else {
+      quoteClientName.value = ''
+      quoteClientId.value = null
     }
 
-    // 4. 跳转到 POS 页面
-    activeTab.value = 'desk'
+    // 4. 跳转到 POS 页面 (加一个极小的延迟，让报价页的 DOM 和插件通信先安全结束)
+    setTimeout(() => {
+      activeTab.value = 'pos'
+    }, 50)
   }
 
   return {

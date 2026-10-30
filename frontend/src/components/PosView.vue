@@ -176,7 +176,7 @@
     />
 
     <!-- 销售历史弹窗 -->
-    <PosHistoryModal :visible="historyModalVisible" :orders="completedOrders" @close="historyModalVisible = false" @preview="previewOrderTicket" @reprint="reprintOrderTicket" @return="processReturnOrder" />
+    <PosHistoryModal :visible="historyModalVisible" :orders="completedOrders" @close="historyModalVisible = false" @preview="previewOrderTicket" @reprint="reprintOrderTicket" @return="confirmReturnOrder" />
     
     <!-- 挂单池 -->
     <PosRecallModal 
@@ -558,6 +558,18 @@
     </div>
 
   </div>
+  <!-- 🌟 退货警告弹窗 (使用统一组件) -->
+  <ConfirmDialog
+    :visible="returnConfirmVisible"
+    :title="isZh ? '⚠️ 确认退货' : isEs ? '⚠️ Confirmar devolución' : '⚠️ Confirm Return'"
+    :message="isZh ? '确定要为该订单办理退货吗？\n库存将自动回滚，退款将计入财务支出。' : isEs ? '¿Está seguro de procesar la devolución?\nEl stock se revertirá y el reembolso se registrará como gasto.' : 'Are you sure you want to process this return?\nStock will be restored and the refund recorded as an expense.'"
+    :cancel-text="isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel'"
+    :confirm-text="isZh ? '确认退货' : isEs ? 'Confirmar' : 'Confirm'"
+    is-danger
+    @cancel="returnConfirmVisible = false"
+    @confirm="processReturnOrder"
+  />
+
   <!-- 🌟 低于成本价警告弹窗 (使用统一组件) -->
   <ConfirmDialog
     :visible="belowCostModalVisible"
@@ -695,6 +707,8 @@ const props = defineProps({
   partsList: Array,
   clientsList: Array,
   cartItems: Array,
+  quoteClientId: { type: [Number, String], default: null },
+  quoteClientName: { type: String, default: '' },
   bcvRate: Number,
   currentDateTime: String,
   currentUser: Object
@@ -1087,6 +1101,18 @@ const filteredModalClients = computed(() => {
   )
 })
 
+watch(() => props.quoteClientId, (val) => {
+  if (val && val !== quoteClientId.value) {
+    quoteClientId.value = val
+  }
+}, { immediate: true })
+
+watch(() => props.quoteClientName, (val) => {
+  if (val && val !== quoteClientName.value) {
+    quoteClientName.value = val
+  }
+}, { immediate: true })
+
 const selectedClientDetails = computed(() => {
   if (!quoteClientId.value) return null
   const list = localClientsList.value.length > 0 ? localClientsList.value : props.clientsList
@@ -1374,7 +1400,16 @@ const fetchCompletedOrders = async () => {
 
 const openHistoryModal = async () => { await fetchCompletedOrders(); historyModalVisible.value = true }
 const openShiftReportModal = async () => { await fetchCompletedOrders(); shiftReportModalVisible.value = true }
-const processReturnOrder = async (dbId) => {
+const confirmReturnOrder = (dbId) => {
+  pendingReturnId.value = dbId
+  returnConfirmVisible.value = true
+}
+
+const processReturnOrder = async () => {
+  const dbId = pendingReturnId.value
+  returnConfirmVisible.value = false
+  if (!dbId) return
+  
   try {
     const res = await apiFetch(`/api/pos/orders/${dbId}/refund`, { method: 'POST' })
     if (!res.ok) {
@@ -1457,6 +1492,8 @@ const printData = ref(null)
 const overLimitModalVisible = ref(false)
 const overLimitClientInfo = ref(null)
 const belowCostModalVisible = ref(false) // 🌟 新增：低于成本警告弹窗
+const returnConfirmVisible = ref(false) // 🌟 新增：退货确认弹窗
+const pendingReturnId = ref(null)
 
 const overLimitMessage = computed(() => {
   if (!overLimitClientInfo.value) return ''
@@ -1720,13 +1757,8 @@ const handleKeydown = (e) => {
 }
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
-})
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
-
-onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
+  
   focusSearch()
   fetchCompletedOrders()
   fetchSystemSettings()
@@ -1734,8 +1766,12 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('keydown', handleGlobalKeydown)
   if (toastTimer) clearTimeout(toastTimer)
+  
+  // 额外清理，防止异步请求回调到已销毁的组件上
+  if (window._posFetchTimer) clearTimeout(window._posFetchTimer)
 })
 
 const receiptPreviewVisible = ref(false)
