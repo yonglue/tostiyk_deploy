@@ -69,7 +69,7 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
     plugin: 'core',
     titleKey: 'groupSales',
     items: [
-      { key: 'pos', iconName: 'Calculator', requiredPerm: 'pos:access', highlight: true }, // POS 置顶并高亮
+      { key: 'pos', iconName: 'Calculator', requiredPerm: 'pos:access' }, // POS 置顶并高亮
       { key: 'clients', iconName: 'Users', requiredPerm: 'clients:view' },
       { key: 'transactions', iconName: 'History', requiredPerm: 'transactions:history' },
       { key: 'quotation', labelKey: 'quotation', iconName: 'FileText', requiredPerm: 'pos:access' },
