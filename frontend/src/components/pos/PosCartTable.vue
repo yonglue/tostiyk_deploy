@@ -23,9 +23,24 @@
         >
           <td class="py-3 px-3 font-mono font-black text-accent text-sm">{{ item.oem }}</td>
           <td class="py-3 px-3 text-slate-900 dark:text-white font-bold">{{ item.name }}</td>
-          <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold">
-            <div>${{ item.price.toFixed(2) }}</div>
-            <div class="text-xs text-slate-400 font-normal">Bs. {{ (item.price * bcvRate).toFixed(2) }}</div>
+          <td class="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 font-bold relative group">
+            <div class="flex items-center justify-end gap-1">
+              <span class="text-slate-400 text-sm">$</span>
+              <input
+                v-model.number="item.price"
+                type="number"
+                step="0.01"
+                class="w-20 text-right bg-transparent border border-transparent hover:border-slate-300 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 rounded px-1 py-0.5 outline-none transition-all"
+                :class="{ 'text-rose-600 border-rose-400 dark:border-rose-700': item.price < item.cost_price }"
+                @focus="$event.target.select()"
+                @blur="(e) => { item.price = Number(Number(e.target.value).toFixed(2)) }"
+                @keyup.enter="(e) => { item.price = Number(Number(e.target.value).toFixed(2)); e.target.blur() }"
+              />
+              <div v-if="item.price < item.cost_price" class="text-rose-500 cursor-help flex items-center" :title="`注意：当前售价低于成本价 $${Number(item.cost_price || 0).toFixed(2)}`">
+                <AlertTriangle :size="16" />
+              </div>
+            </div>
+            <div class="text-xs text-slate-400 font-normal mt-0.5">Bs. {{ (item.price * bcvRate).toFixed(2) }}</div>
           </td>
           <td class="py-3 px-3 text-center" @click.stop>
             <!-- 数量加减器 -->
@@ -64,6 +79,7 @@
 </template>
 
 <script setup>
+import { AlertTriangle } from 'lucide-vue-next'
 defineProps({
   cartItems: { type: Array, required: true },
   itemInputQuantities: { type: Object, required: true },

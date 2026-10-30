@@ -558,6 +558,31 @@
     </div>
 
   </div>
+  <!-- 🌟 低于成本价警告弹窗 (使用统一组件) -->
+  <ConfirmDialog
+    :visible="belowCostModalVisible"
+    :title="isZh ? '⚠️ 售价低于成本警告' : isEs ? '⚠️ Precio bajo costo' : '⚠️ Below Cost Warning'"
+    :message="isZh ? '购物车中有商品售价低于进货价，是否继续结账？' : isEs ? 'Hay productos vendidos por debajo del costo. ¿Continuar?' : 'Some items are sold below cost. Proceed?'"
+    :cancel-text="isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel'"
+    :confirm-text="isZh ? '强制结账' : isEs ? 'Forzar' : 'Force Checkout'"
+    is-danger
+    @cancel="belowCostModalVisible = false"
+    @confirm="() => { belowCostModalVisible = false; confirmAndPrint('forced-bypass') }"
+  />
+
+  <!-- 🌟 超额挂账警告弹窗 (使用统一组件) -->
+  <ConfirmDialog
+    :visible="overLimitModalVisible"
+    :title="isZh ? '⚠️ 超额挂账警告' : isEs ? '⚠️ Límite Excedido' : '⚠️ Limit Exceeded'"
+    :message="overLimitMessage"
+    :cancel-text="isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel'"
+    :confirm-text="isZh ? '强制放行' : isEs ? 'Forzar' : 'Force Proceed'"
+    is-danger
+    @cancel="overLimitModalVisible = false"
+    @confirm="executeFiadoCheckout"
+  />
+
+  <!-- 结账成功提示动画 -->
 </template>
 
 <script setup>
@@ -569,7 +594,7 @@ import PosShiftReportModal from './pos/PosShiftReportModal.vue'
 import { generateReceiptHtml } from '../utils/pos/receipt'
 import { goodsTotalUsd as calcGoodsTotal, baseTotalUsd as calcBaseTotal, taxTotalUsd as calcTaxTotal, paidTotalUsd as calcPaidTotal, balanceUsd as calcBalance } from '../utils/pos/calc'
 import { fmtPrimary, fmtBsChannel, fmtUsdChannel } from '../utils/pos/format'
-import { Package, Lock, CreditCard, Search, Banknote, Minus, Receipt, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, DollarSign, Wallet, User, ChevronDown, Building2 } from 'lucide-vue-next';
+import { Package, Lock, CreditCard, Search, Banknote, Minus, Receipt, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, DollarSign, Wallet, User, ChevronDown, Building2 , AlertTriangle } from 'lucide-vue-next';
 
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
@@ -864,9 +889,14 @@ const fetchSystemSettings = async () => {
     const res = await apiFetch('/api/settings')
     if (res.ok) {
       const data = await res.json()
+      console.log("🔥【POS】成功拉取到系统配置:", data) // 🌟 新增这行
       systemConfig.value = { ...systemConfig.value, ...data }
+    } else {
+      console.error("❌【POS】拉取配置失败，状态码:", res.status) // 🌟 新增这行
     }
-  } catch (e) { console.error(e) }
+  } catch (e) { 
+    console.error("❌【POS】拉取配置异常:", e) 
+  }
 }
 
 const heldOrders = ref([])
@@ -1060,7 +1090,8 @@ const filteredModalClients = computed(() => {
 const selectedClientDetails = computed(() => {
   if (!quoteClientId.value) return null
   const list = localClientsList.value.length > 0 ? localClientsList.value : props.clientsList
-  return list?.find(c => c.id === quoteClientId.value) || null
+  // 🌟 修复：使用 String() 统一转为字符串比较，防止数字 1 和字符串 "1" 不相等
+  return list?.find(c => String(c.id) === String(quoteClientId.value)) || null
 })
 
 const clearClient = () => {
@@ -1188,6 +1219,7 @@ const selectAndAddToCart = (part) => {
       name: part.name,
       brand: part.brand || 'GENERAL',
       price: part.price,
+      cost_price: part.cost_price || 0, // 🌟 核心修复：把进货价带入购物车，供红线与拦截使用
       tax_rate: part.tax_rate ?? 0.16,
       quantity: 1
     })
@@ -1380,10 +1412,25 @@ const handleDirectCheckout = async () => {
   }
 }
 
-const handleFiadoCheckout = async () => {
+const handleFiadoCheckout = () => {
   if (!quoteClientId.value) return
   if (props.cartItems.length === 0) return
 
+  // 🌟 超额挂账拦截：改为弹出自定义 UI 弹窗
+  const list = localClientsList.value.length > 0 ? localClientsList.value : props.clientsList
+  const client = list?.find(c => String(c.id) === String(quoteClientId.value))
+  
+  if (client && isClientOverLimit(client)) {
+    overLimitClientInfo.value = client
+    overLimitModalVisible.value = true
+    return // 中断，等待弹窗确认
+  }
+
+  executeFiadoCheckout()
+}
+
+const executeFiadoCheckout = async () => {
+  overLimitModalVisible.value = false
   isProcessingCheckout.value = true
   isFiadoMode.value = true
   if (!pendingRequestId.value) pendingRequestId.value = makeRequestId()
@@ -1406,6 +1453,26 @@ const isProcessingCheckout = ref(false)
 const { isConnected, printReceipt } = usePrintAgent()
 const printData = ref(null)
 
+// 🌟 新增：超额挂账警告弹窗状态
+const overLimitModalVisible = ref(false)
+const overLimitClientInfo = ref(null)
+const belowCostModalVisible = ref(false) // 🌟 新增：低于成本警告弹窗
+
+const overLimitMessage = computed(() => {
+  if (!overLimitClientInfo.value) return ''
+  const debt = Number(overLimitClientInfo.value.debt || 0).toFixed(2)
+  const limit = Number(overLimitClientInfo.value.credit_limit || 500).toFixed(2)
+  const current = Number(totalUsd.value || 0).toFixed(2)
+  
+  if (isZh.value) {
+    return `客户当前欠款：$${debt}\n授信限额：$${limit}\n本次挂账：$${current}\n\n本次挂账将超出限额，是否强制放行？`
+  } else if (isEs.value) {
+    return `Deuda actual: $${debt}\nLímite de crédito: $${limit}\nEste pedido: $${current}\n\n¿Desea forzar la operación?`
+  } else {
+    return `Current Debt: $${debt}\nCredit Limit: $${limit}\nThis Order: $${current}\n\nForce this operation?`
+  }
+})
+
 const showPinModal = ref(false)
 const pinInput = ref('')
 const pendingOverrideError = ref('')
@@ -1419,6 +1486,16 @@ const submitOverridePin = async () => {
 
 const confirmAndPrint = async (overridePin = null) => {
   if (isSubmitting.value) return 
+
+  // 🌟 拦截：检查是否有商品售价低于成本价
+  if (!overridePin) {
+    const belowCostItems = props.cartItems.filter(i => i.price < (i.cost_price || 0))
+    if (belowCostItems.length > 0) {
+      belowCostModalVisible.value = true
+      return // 中断提交，等待弹窗确认
+    }
+  }
+
   isSubmitting.value = true
 
   try {
