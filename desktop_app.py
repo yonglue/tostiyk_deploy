@@ -36,12 +36,6 @@ MACHINE_CODE = get_machine_id()
 LICENSE_FILE = "license.key"
 
 def verify_key(input_key):
-    # ==========================================
-    # 🌟 万能后门：只要输入这个码，无条件通过！
-    # ==========================================
-    if input_key.strip().upper() == "TK-DEMO-2026":
-        return True, "验证成功"
-        
     try:
         clean_input = re.sub(r'[^A-Za-z0-9\-]', '', input_key.strip())
         parts = clean_input.split('-')
@@ -70,9 +64,22 @@ def verify_key(input_key):
         return False, f"激活码解析失败: {e}"
 
 def check_license():
-    if not os.path.exists(LICENSE_FILE): return False
+    if not os.path.exists(LICENSE_FILE): 
+        return False
     with open(LICENSE_FILE, "r") as f:
         saved_key = f.read().strip()
+    
+    # 处理 Huiyi1314 专属 7 天记录
+    if saved_key.startswith("HUIYI1314_"):
+        try:
+            start_date_str = saved_key.split("_")[1]
+            start_date = datetime.datetime.strptime(start_date_str, "%Y%m%d").date()
+            if (datetime.date.today() - start_date).days > 7:
+                return False # 超过7天
+            return True # 有效期内
+        except Exception:
+            return False
+            
     is_valid, _ = verify_key(saved_key)
     return is_valid
 
@@ -101,6 +108,30 @@ def show_activation_window():
 
     def do_activate():
         user_input = key_var.get().strip().upper()
+        
+        # 处理专属 7 天密码
+        if user_input == "HUIYI1314":
+            # 检查是否已有记录
+            if os.path.exists(LICENSE_FILE):
+                with open(LICENSE_FILE, "r") as f:
+                    old = f.read().strip()
+                    if old.startswith("HUIYI1314_"):
+                        if check_license():
+                            messagebox.showinfo("成功", "欢迎回来，演示期内。")
+                            root.destroy()
+                        else:
+                            messagebox.showerror("失败", "Huiyi1314 专属 7 天演示已到期！")
+                        return
+            
+            # 首次输入，记录当天日期
+            today_str = datetime.date.today().strftime("%Y%m%d")
+            with open(LICENSE_FILE, "w") as f:
+                f.write(f"HUIYI1314_{today_str}")
+            messagebox.showinfo("成功", "专属 7 天演示激活成功！")
+            root.destroy()
+            return
+
+        # 正常的算号器激活码验证
         is_valid, msg = verify_key(user_input)
         if is_valid:
             with open(LICENSE_FILE, "w") as f:
