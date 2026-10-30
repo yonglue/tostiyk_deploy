@@ -20,8 +20,14 @@ SALT = "Tostiyk_ERP_Secret_2026"
 def get_machine_id():
     try:
         if sys.platform == 'win32':
-            out = subprocess.check_output('wmic csproduct get uuid', shell=True).decode()
-            hw_id = out.split('\n')[1].strip()
+            try:
+                # 优先用 PowerShell (兼容 Win11)
+                out = subprocess.check_output('powershell -Command "(Get-CimInstance Win32_ComputerSystemProduct).UUID"', shell=True).decode()
+                hw_id = out.strip()
+            except:
+                # 回退到 wmic (兼容旧版)
+                out = subprocess.check_output('wmic csproduct get uuid', shell=True).decode()
+                hw_id = out.split('\n')[1].strip()
         elif sys.platform == 'darwin':
             out = subprocess.check_output("ioreg -rd1 -c IOPlatformExpertDevice | grep IOPlatformUUID", shell=True).decode()
             hw_id = out.split('"')[3]
@@ -109,6 +115,14 @@ def show_activation_window():
     def do_activate():
         user_input = key_var.get().strip().upper()
         
+        # 🌟 万能码拦截
+        if user_input == "TK-DEMO-2026":
+            with open(LICENSE_FILE, "w") as f:
+                f.write(user_input)
+            messagebox.showinfo("成功", "万能码激活成功！")
+            root.destroy()
+            return
+
         # 处理专属 7 天密码
         if user_input == "HUIYI1314":
             # 检查是否已有记录
