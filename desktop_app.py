@@ -172,7 +172,7 @@ if __name__ == '__main__':
     t.start()
 
     # 智能轮询等待后端启动（最多等 15 秒）
-    print("正在启动后台服务...")
+    pass  # 移除中文打印，防止 Windows 编码崩溃
     backend_ready = False
     for _ in range(30):
         try:
