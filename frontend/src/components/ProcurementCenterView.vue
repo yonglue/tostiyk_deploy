@@ -47,6 +47,16 @@
           </transition>
         </div>
 
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <input v-model="orderSearchQuery" type="text" placeholder="搜索单号/供应商..." class="bg-white border border-slate-200 rounded-xl pl-3 pr-3 py-2 text-xs outline-none focus:border-accent font-bold text-slate-700" />
+          </div>
+          <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 focus-within:border-accent">
+            <input type="date" v-model="orderStartDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+            <span class="text-slate-400 text-xs">~</span>
+            <input type="date" v-model="orderEndDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+          </div>
+        </div>
         <button @click="fetchOrders" class="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
           {{ t.common.refresh }}
         </button>

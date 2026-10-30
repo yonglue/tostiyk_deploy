@@ -78,6 +78,7 @@ class Client(SQLModel, table=True):
     
     # 🌟 新增：是否为 SENIAT 特殊纳税人（需代扣 IVA）
     is_special_taxpayer: bool = Field(default=False)
+    payment_terms: int = Field(default=30, sa_column_kwargs={"server_default": "30"}) # 账期天数
     
     timestamp: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d %H:%M"))
 
@@ -121,6 +122,9 @@ class PurchaseOrder(SQLModel, table=True):
     supplier_id: int = Field(foreign_key="suppliers.id")
     status: str = Field(default="PENDING", max_length=30)
     total_amount_usd: float = Field(default=0.0)
+    paid_amount_usd: float = Field(default=0.0)       # 已付金额
+    payment_status: str = Field(default="UNPAID", max_length=30) # UNPAID / PARTIAL / PAID
+    due_date: Optional[NaiveDatetime] = Field(default=None)      # 到期日
     items_json: str
     created_at: NaiveDatetime = Field(
         default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None)
@@ -157,6 +161,9 @@ class Order(SQLModel, table=True):
     payment_method: str = Field(max_length=50)
     payment_reference: Optional[str] = Field(default=None, max_length=150)
     status: str = Field(default="COMPLETED", max_length=30)
+    paid_amount_usd: float = Field(default=0.0, sa_column_kwargs={"server_default": "0.0"})
+    payment_status: str = Field(default="PAID", max_length=30, sa_column_kwargs={"server_default": "PAID"})
+    due_date: Optional[NaiveDatetime] = Field(default=None)
     created_at: NaiveDatetime = Field(
         default_factory=lambda: datetime.now(_VENEZUELA_TZ).replace(tzinfo=None)
     )
@@ -202,6 +209,7 @@ class QuotationRecord(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     quotation_no: str = Field(index=True)
+    client_id: Optional[int] = Field(default=None) # 🌟 恢复客户ID
     client_name: str
     total_usd: float
     total_bs: float

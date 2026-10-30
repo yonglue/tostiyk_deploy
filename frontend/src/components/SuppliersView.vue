@@ -11,6 +11,16 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- 🌟 导出账龄分析表按钮 -->
+          <button
+            v-if="hasPermission('procurement:manage')"
+            @click="exportAgingReport"
+            class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer"
+          >
+            <Download :size="16" />
+            <span>{{ isZh ? '导出账龄表' : isEs ? 'Exportar Antigüedad' : 'Export Aging' }}</span>
+          </button>
+
           <transition name="fade">
             <div v-if="selectedIds.length > 0" class="flex items-center gap-3 mr-2">
               <span class="text-xs font-bold text-accent dark:text-accent bg-accent/10 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800">
@@ -279,7 +289,7 @@ const isEs = computed(() => currentLang.value === 'es')
 
 import { usePermissions } from '../composables/usePermissions'
 import { ref, computed, onMounted, watch } from 'vue'
-import { Search, AlertTriangle, XCircle, Trash2, Plus, CheckCircle2, Wallet, Building2 } from 'lucide-vue-next';
+import { Search, AlertTriangle, XCircle, Trash2, Plus, CheckCircle2, Wallet, Building2, Download } from 'lucide-vue-next';
 import { apiFetch } from '../utils/api'
 import { useNotifications } from '../composables/useNotifications'
 import { useInventory } from '../composables/useInventory'
@@ -374,6 +384,40 @@ const drawerTitle = computed(() => {
   if (drawerMode.value === 'edit') return currentSupplier.value?.id ? tExt.value.editTitle : tExt.value.addTitle
   return tExt.value.payTitle
 })
+
+const exportAgingReport = async () => {
+  try {
+    const res = await apiFetch('/api/suppliers/aging-report')
+    if (!res.ok) throw new Error('获取报表失败')
+    const data = await res.json()
+    
+    // 生成带 BOM 的 CSV，防止 Excel 乱码
+    let csvContent = "供应商名称,总欠款(USD),未逾期(USD),逾期1-30天(USD),逾期30天以上(USD),总逾期(USD),采购单号,到期日,逾期天数,本单未付(USD)\n"
+    
+    data.forEach(sup => {
+      if (sup.details.length === 0) {
+        csvContent += `"${sup.supplier_name}",${sup.total_debt},${sup.current_due},${sup.overdue_1_30},${sup.overdue_31_plus},${sup.total_overdue},,,,\n`
+      } else {
+        sup.details.forEach(d => {
+          csvContent += `"${sup.supplier_name}",${sup.total_debt},${sup.current_due},${sup.overdue_1_30},${sup.overdue_31_plus},${sup.total_overdue},"${d.po_no}","${d.due_date}",${d.overdue_days},${d.unpaid}\n`
+        })
+      }
+    })
+    
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement("a")
+    const url = URL.createObjectURL(blob)
+    link.setAttribute("href", url)
+    link.setAttribute("download", `供应商账龄分析_${new Date().toLocaleDateString()}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    showSuccessModal(isZh.value ? '导出成功' : 'Exportación exitosa')
+  } catch (e) {
+    showSuccessModal("导出失败：" + e.message)
+  }
+}
 
 const fetchSuppliers = async () => {
   try {

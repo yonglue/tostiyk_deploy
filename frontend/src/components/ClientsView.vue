@@ -24,6 +24,12 @@
             placeholder="搜索客户名称 / 电话..." 
           />
         </div>
+        
+        <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 focus-within:border-accent">
+          <input type="date" v-model="clientStartDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 dark:text-slate-300 cursor-pointer" />
+          <span class="text-slate-400 text-xs">~</span>
+          <input type="date" v-model="clientEndDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 dark:text-slate-300 cursor-pointer" />
+        </div>
       </div>
 
       <!-- 右侧：操作按钮组 -->
@@ -272,8 +278,13 @@
           <BaseInput v-model="editForm.store_name" :label="isZh ? '门店名称' : 'Tienda'" />
           <BaseInput v-model="editForm.phone" :label="t.clients.colPhone" />
           <BaseInput v-model="editForm.rif_or_cedula" :label="t.clients.colRif" />
+          
+          
           <BaseInput v-model="editForm.address" :label="t.clients.colAddress" class="col-span-2" />
-          <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
+          <div class="grid grid-cols-2 gap-4">
+  <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
+  <BaseInput v-model.number="editForm.payment_terms" type="number" :label="isZh ? '账期天数 (天)' : 'Plazo (Días)'" placeholder="30" />
+</div>
 
           <!-- 客户类型 -->
           <BaseSelect 
@@ -286,7 +297,10 @@
             ]" 
           />
 
-          <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
+          <div class="grid grid-cols-2 gap-4">
+  <BaseInput v-model.number="editForm.credit_limit" type="number" :label="isZh ? '信用额度 ($)' : 'Límite de Crédito ($)'" />
+  <BaseInput v-model.number="editForm.payment_terms" type="number" :label="isZh ? '账期天数 (天)' : 'Plazo (Días)'" placeholder="30" />
+</div>
 
         </div>
 
@@ -570,11 +584,18 @@ const selectedIds = ref([])
 const batchDeleteModalVisible = ref(false)
 
 // ==================== 🌟 分页状态 ====================
+const clientStartDate = ref('')
+const clientEndDate = ref('')
 const currentPage = ref(1)
-const pageSize = 10
+const pageSize = 20
 const jumpPageInput = ref(1)
 
 const filteredClients = computed(() => {
+  let result = props.clients || []
+  if (clientStartDate.value) result = result.filter(c => c.timestamp && c.timestamp.slice(0, 10) >= clientStartDate.value)
+  if (clientEndDate.value) result = result.filter(c => c.timestamp && c.timestamp.slice(0, 10) <= clientEndDate.value)
+  // 原有的过滤逻辑保留
+
   return props.clientsList.filter(c => {
     const q = props.clientSearchQuery?.toLowerCase() || ''
     return !q ||
@@ -694,6 +715,7 @@ const switchToEdit = () => {
     phone: currentClient.value.phone || '',
     address: currentClient.value.address || '',
     credit_limit: currentClient.value.credit_limit || 500.0,
+    payment_terms: currentClient.value.payment_terms || 30,
     rif_or_cedula: currentClient.value.rif_or_cedula || '',
     notes: currentClient.value.notes || ''
   }

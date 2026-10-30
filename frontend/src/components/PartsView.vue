@@ -48,6 +48,14 @@
             ]" 
           />
         </div>
+        
+        <!-- 🌟 日期筛选 -->
+        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 focus-within:border-accent">
+          <input type="date" v-model="startDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+          <span class="text-slate-400 text-xs">~</span>
+          <input type="date" v-model="endDate" class="bg-transparent border-none text-xs outline-none font-mono font-bold text-slate-700 cursor-pointer" />
+          <button @click="startDate = ''; endDate = ''" class="text-xs text-rose-500 hover:underline px-1" v-if="startDate || endDate">清除</button>
+        </div>
       </div> <!-- 👈 修复点：补上了左侧容器的闭合 -->
 
       <!-- 右侧：操作按钮 -->
@@ -281,6 +289,7 @@ import BaseSelect from './ui/BaseSelect.vue'
 const props = defineProps({
   partsList: Array,
   searchQuery: String,
+
   selectedBrand: String,
   brandsList: Array,
   bcvRate: Number
@@ -321,7 +330,9 @@ const tExt = computed(() => {
   }
 })
 
-const pageSize = 10
+const pageSize = 20
+const startDate = ref('')
+const endDate = ref('')
 const currentPage = ref(1)
 const jumpPageInput = ref(1)
 const selectedIds = ref([])
@@ -357,10 +368,22 @@ const parseImages = (imageUrlStr) => {
 }
 
 const filteredParts = computed(() => {
+  let result = props.partsList || []
+  
+  // 1. 日期过滤
+  if (startDate.value) {
+    result = result.filter(p => p.timestamp && p.timestamp.slice(0, 10) >= startDate.value)
+  }
+  if (endDate.value) {
+    result = result.filter(p => p.timestamp && p.timestamp.slice(0, 10) <= endDate.value)
+  }
+
+  // 2. 搜索词处理
   const query = props.searchQuery ? props.searchQuery.trim().toLowerCase() : ''
   const cleanQuery = query.replace(/[^a-z0-9]/g, '')
 
-  return props.partsList.filter(i => {
+  // 3. 品牌、分类、多字段搜索过滤
+  return result.filter(i => {
     const matchBrand = props.selectedBrand === 'ALL' || i.brand === props.selectedBrand
     const itemCat = i.category || tExt.value.uncategorized
     const matchCategory = selectedCategory.value === 'ALL' || itemCat === selectedCategory.value

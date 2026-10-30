@@ -328,8 +328,9 @@
             <BaseInput v-model="newClient.rif_or_cedula" :label="t.clients.colRif" placeholder="J-31234567-8" />
           </div>
           
-          <div class="grid grid-cols-1 gap-4">
+          <div class="grid grid-cols-2 gap-4">
             <BaseInput v-model.number="newClient.credit_limit" type="number" :label="isZh ? '信用额度上限 (USD)' : isEs ? 'Límite de Crédito (USD)' : 'Credit Limit (USD)'" placeholder="500.00" />
+            <BaseInput v-model.number="newClient.payment_terms" type="number" :label="isZh ? '账期天数 (天)' : isEs ? 'Plazo (Días)' : 'Payment Terms (Days)'" placeholder="30" />
           </div>
         </div>
         

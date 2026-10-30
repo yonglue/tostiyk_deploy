@@ -20,6 +20,8 @@ from app.schemas import CreatePurchaseOrderRequest, SupplierPaymentPayload
 from app.services.numbering import make_po_no
 from app.services.audit import log_action
 from app.services.fx import to_usd
+from datetime import datetime, timezone, timedelta
+
 
 router = APIRouter(tags=["采购"])
 
@@ -177,6 +179,38 @@ def pay_supplier(
         notes=payload.notes,
     )
     session.add(record)
+
+    # 🌟 新增：FIFO 核销未结清采购单
+    remaining_to_allocate = float(amount_usd)
+    unpaid_pos = session.exec(
+        select(PurchaseOrder)
+        .where(
+            PurchaseOrder.supplier_id == sup.id,
+            PurchaseOrder.status == "received",
+            PurchaseOrder.payment_status.in_(["UNPAID", "PARTIAL"])
+        )
+        .order_by(PurchaseOrder.created_at.asc())
+    ).all()
+
+    for po in unpaid_pos:
+        if remaining_to_allocate <= 0:
+            break
+        
+        po_unpaid = po.total_amount_usd - po.paid_amount_usd
+        if po_unpaid <= 0:
+            continue
+            
+        if remaining_to_allocate >= po_unpaid:
+            po.paid_amount_usd = po.total_amount_usd
+            po.payment_status = "PAID"
+            remaining_to_allocate -= po_unpaid
+        else:
+            po.paid_amount_usd += remaining_to_allocate
+            po.payment_status = "PARTIAL"
+            remaining_to_allocate = 0
+            
+        session.add(po)
+
     session.commit()
 
     rate_desc = f"，汇率 {rate_snapshot.rate}（{rate_snapshot.source}）" if rate_snapshot else ""
@@ -380,6 +414,12 @@ def receive_purchase_order(
                 ))
             )
 
+        # 🌟 计算到期日（当前时间 + 供应商账期）
+        terms_days = supplier.payment_terms if supplier else 30
+        po.due_date = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=terms_days)
+        po.payment_status = "UNPAID"
+        po.paid_amount_usd = 0.0
+
         po.status = "received"
         session.add(po)
         session.commit()
@@ -440,3 +480,73 @@ def get_supplier_statement(
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=statement_{supplier_id}.pdf"}
     )
+
+
+@router.get("/api/suppliers/aging-report")
+def get_aging_report(
+    session: Session = Depends(get_session),
+    actor: Actor = Depends(RequirePermission("procurement:view"))
+):
+    """获取供应商应付账款账龄分析数据"""
+    suppliers = session.exec(select(Supplier).where(Supplier.debt_usd > 0)).all()
+    result = []
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+
+    for sup in suppliers:
+        unpaid_pos = session.exec(
+            select(PurchaseOrder).where(
+                PurchaseOrder.supplier_id == sup.id,
+                PurchaseOrder.status == "received",
+                PurchaseOrder.payment_status.in_(["UNPAID", "PARTIAL"])
+            ).order_by(PurchaseOrder.due_date.asc())
+        ).all()
+
+        total_overdue = 0.0
+        current_due = 0.0
+        over_1_30 = 0.0
+        over_31_plus = 0.0
+        details = []
+
+        for po in unpaid_pos:
+            unpaid_amt = po.total_amount_usd - po.paid_amount_usd
+            if unpaid_amt <= 0:
+                continue
+
+            overdue_days = 0
+            if po.due_date:
+                overdue_days = (now - po.due_date).days
+            
+            if overdue_days <= 0:
+                current_due += unpaid_amt
+            elif overdue_days <= 30:
+                over_1_30 += unpaid_amt
+                total_overdue += unpaid_amt
+            else:
+                over_31_plus += unpaid_amt
+                total_overdue += unpaid_amt
+
+            details.append({
+                "po_no": po.po_no,
+                "total": round(po.total_amount_usd, 2),
+                "paid": round(po.paid_amount_usd, 2),
+                "unpaid": round(unpaid_amt, 2),
+                "due_date": po.due_date.strftime("%Y-%m-%d") if po.due_date else "N/A",
+                "overdue_days": overdue_days
+            })
+
+        result.append({
+            "supplier_id": sup.id,
+            "supplier_name": sup.name,
+            "payment_terms": sup.payment_terms,
+            "total_debt": round(sup.debt_usd, 2),
+            "current_due": round(current_due, 2),
+            "overdue_1_30": round(over_1_30, 2),
+            "overdue_31_plus": round(over_31_plus, 2),
+            "total_overdue": round(total_overdue, 2),
+            "details": details
+        })
+
+    return result
+
+
+
