@@ -61,6 +61,7 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
     titleKey: 'groupWarehouse',
     items: [
       { key: 'parts', iconName: 'Package', requiredPerm: 'parts:view' },
+      { key: 'procurement', iconName: 'ShoppingCart', requiredPerm: 'procurement:view' }, // 从销售移入仓储
       { key: 'inventory_audit', labelKey: 'inventoryAudit', iconName: 'ClipboardList', requiredPerm: 'parts:manage' },
     ],
   },
@@ -68,13 +69,19 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
     plugin: 'core',
     titleKey: 'groupSales',
     items: [
+      { key: 'pos', iconName: 'Calculator', requiredPerm: 'pos:access', highlight: true }, // POS 置顶并高亮
       { key: 'clients', iconName: 'Users', requiredPerm: 'clients:view' },
-      { key: 'procurement', iconName: 'ShoppingCart', requiredPerm: 'procurement:view' },
       { key: 'transactions', iconName: 'History', requiredPerm: 'transactions:history' },
-      { key: 'pos', iconName: 'Calculator', requiredPerm: 'pos:access' },
       { key: 'quotation', labelKey: 'quotation', iconName: 'FileText', requiredPerm: 'pos:access' },
       { key: 'quotations', labelKey: 'quotations', iconName: 'History', requiredPerm: 'pos:access' },
       { key: 'cash_register', labelKey: 'cashRegister', iconName: 'FileText', requiredPerm: 'shift:report' },
+    ],
+  },
+  {
+    plugin: 'fmcg',
+    titleKey: 'groupFmcg',
+    items: [
+      { key: 'fmcg_wallet', labelKey: 'fmcgWallet', iconName: 'Wallet', requiredPerm: 'financial:view' },
     ],
   },
   {
@@ -84,13 +91,6 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
       { key: 'staff', iconName: 'ShieldCheck', requiredPerm: 'users:manage' },
       { key: 'audit_logs', labelKey: 'auditLogs', iconName: 'ShieldAlert', requiredPerm: 'users:manage' },
       { key: 'backup', iconName: 'Database', requiredPerm: 'settings:manage' },
-    ],
-  },
-  {
-    plugin: 'fmcg',
-    titleKey: 'groupFmcg',
-    items: [
-      { key: 'fmcg_wallet', labelKey: 'fmcgWallet', iconName: 'Wallet', requiredPerm: 'financial:view' },
     ],
   },
 ])
