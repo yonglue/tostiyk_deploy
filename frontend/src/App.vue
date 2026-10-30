@@ -104,6 +104,7 @@
           <CashRegisterView v-else-if="activeTab === 'cash_register' && hasPermission('shift:report')" />
           
           <PartsView 
+            @create-po-from-suggestions="handleCreatePoFromSuggestions"
             v-else-if="activeTab === 'parts' && isPluginEnabled('auto_parts') && hasPermission('parts:view')"
             :partsList="partsList"
             v-model:searchQuery="searchQuery"
@@ -114,6 +115,7 @@
             @open-gallery="openGallery"
             @delete-part="openDeletePartModal"
             @refresh-data="fetchParts"
+            @open-audit="activeTab = 'inventory_audit'"
           />
           
           <ClientsView 
@@ -126,7 +128,10 @@
             @refresh-data="fetchClients"
           />
           
-          <PurchaseOrdersView v-else-if="activeTab === 'procurement' && hasPermission('procurement:view')" @navigate="checkAndSwitchTab" />          
+          <PurchaseOrdersView v-else-if="activeTab === 'procurement' && hasPermission('procurement:view')" 
+            :prefill-items="pendingPoItems"
+            @clear-prefill="pendingPoItems = null"
+            @navigate="checkAndSwitchTab" />          
           
           <TransactionsView 
             v-else-if="activeTab === 'transactions' && hasPermission('transactions:history')"
@@ -431,6 +436,12 @@
 </template>
 
 <script setup>
+
+const handleCreatePoFromSuggestions = (items) => {
+  pendingPoItems.value = items
+  activeTab.value = 'procurement'
+}
+
 import { FileText, Lock, Plus, XCircle } from 'lucide-vue-next';
 
 import BaseInput from './components/ui/BaseInput.vue'
@@ -526,6 +537,7 @@ const {
 const { hasPermission, getDefaultAllowedTab } = usePermissions()
 
 const { isPluginEnabled } = usePlugins()
+const pendingPoItems = ref(null)
 const activeTab = ref(getDefaultAllowedTab())
 
 const { 

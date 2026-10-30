@@ -11,7 +11,7 @@ BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 DB_PATH: Path = BASE_DIR / "tostiyk_erp.db"
 UPLOAD_DIR: Path = BASE_DIR / "uploads"
-FONT_PATH: Path = BASE_DIR / "STHeiti Light.ttc"
+FONT_PATH: Path = BASE_DIR / "assets" / "STHeiti Light.ttc"
 BACKUP_DIR: Path = BASE_DIR / "backups"
 
 # SQLite 需要绝对路径，否则会随启动目录漂移到不同的库文件

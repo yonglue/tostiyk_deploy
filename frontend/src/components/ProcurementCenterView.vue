@@ -1,16 +1,28 @@
 <!-- src/components/ProcurementCenterView.vue -->
 <template>
-  <div class="space-y-6">
-    <!-- 顶部状态栏 -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
+  <div class="space-y-6 max-w-11xl mx-auto pb-24">
+    
+    <!-- 第一层：页面大标题 -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+          <ShoppingCart :size="20" class="text-accent" />
+          {{ isZh ? '采购管理' : isEs ? 'Compras' : 'Procurement' }}
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '管理采购订单、收货入库及供应商档案。' : isEs ? 'Gestione órdenes de compra y proveedores.' : 'Manage purchase orders and suppliers.' }}</p>
+      </div>
+    </div>
+
+    <!-- 第二层：操作栏 (Tab 与 主按钮) -->
+    <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-xs flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
         <button @click="activeTab = 'orders'; resetOrderPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'orders' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabOrders }}</button>
-        <button @click="activeTab = 'suggestions'; resetSuggestionPagination()" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suggestions' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabSuggestions }}</button>
+        
         <button @click="activeTab = 'suppliers'" :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all cursor-pointer', activeTab === 'suppliers' ? 'bg-white dark:bg-slate-700 text-accent dark:text-accent shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200']">{{ tExt.tabSuppliers }}</button>
       </div>
       
       <div class="flex items-center gap-3">
-        <button @click="openCreateModal" class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md font-bold text-sm shadow-sm transition-all cursor-pointer">
+        <button @click="openCreateModal" class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer">
           <Plus :size="16" /> {{ tExt.newPo }}
         </button>
       </div>
@@ -147,17 +159,25 @@
             <button @click="handleJumpOrdersPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
 
-          <div class="flex items-center gap-1.5">
-            <button @click="ordersCurrentPage--" :disabled="ordersCurrentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.prevPage }}</button>
-            <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ ordersCurrentPage }} / {{ ordersTotalPages }}</span>
-            <button @click="ordersCurrentPage++" :disabled="ordersCurrentPage === ordersTotalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.nextPage }}</button>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-2xs">
+              <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
+              <input type="number" min="1" :max="ordersTotalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpOrdersPage" class="w-12 text-center font-mono font-bold text-accent bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-accent text-xs" />
+              <span class="text-slate-400 text-[11px]">/ {{ ordersTotalPages }} {{ isZh ? '页' : isEs ? 'Pág' : 'Page' }}</span>
+              <button @click="handleJumpOrdersPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button @click="ordersCurrentPage--" :disabled="ordersCurrentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
+              <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ ordersCurrentPage }} / {{ ordersTotalPages }}</span>
+              <button @click="ordersCurrentPage++" :disabled="ordersCurrentPage === ordersTotalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ================= 模块二：智能补货 ================= -->
-    <div v-if="activeTab === 'suggestions'" class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
+    <div v-if="false" class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
       
       <div class="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 bg-white/50 shrink-0">
         <div class="flex items-center gap-6">
@@ -242,10 +262,18 @@
             <button @click="handleJumpSuggestionsPage" class="bg-amber-50 hover:bg-amber-100 text-amber-600 px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
 
-          <div class="flex items-center gap-1.5">
-            <button @click="suggestionsCurrentPage--" :disabled="suggestionsCurrentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.prevPage }}</button>
-            <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ suggestionsCurrentPage }} / {{ suggestionsTotalPages }}</span>
-            <button @click="suggestionsCurrentPage++" :disabled="suggestionsCurrentPage === suggestionsTotalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.nextPage }}</button>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-2xs">
+              <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
+              <input type="number" min="1" :max="ordersTotalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpOrdersPage" class="w-12 text-center font-mono font-bold text-accent bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-accent text-xs" />
+              <span class="text-slate-400 text-[11px]">/ {{ ordersTotalPages }} {{ isZh ? '页' : isEs ? 'Pág' : 'Page' }}</span>
+              <button @click="handleJumpOrdersPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button @click="ordersCurrentPage--" :disabled="ordersCurrentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
+              <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ ordersCurrentPage }} / {{ ordersTotalPages }}</span>
+              <button @click="ordersCurrentPage++" :disabled="ordersCurrentPage === ordersTotalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -560,6 +588,11 @@
 </template>
 
 <script setup>
+
+const props = defineProps({
+  prefillItems: { type: Array, default: null },
+})
+
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { Package, Search, XCircle, Trash2, Printer, Plus, ShoppingCart, Zap, CheckCircle2, RefreshCw, FileText, Building2 } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n'
@@ -580,7 +613,7 @@ const { partsList, fetchParts, bcvRate } = useInventory()
 const isZh = computed(() => currentLang.value === 'zh')
 const isEs = computed(() => currentLang.value === 'es')
 
-const emit = defineEmits(['navigate'])
+const emit = defineEmits(['navigate', 'clear-prefill'])
 
 const tExt = computed(() => {
   const isZh = currentLang.value === 'zh'
@@ -986,6 +1019,36 @@ const receiveOrder = (id) => {
     }
   )
 }
+
+watch(() => props.prefillItems, (newItems) => {
+  if (!newItems || newItems.length === 0) return
+  
+  // 重置表单
+  poForm.value = { supplier_name: '', po_no: '', items: [] }
+  
+  // 映射数据
+  newItems.forEach(item => {
+    poForm.value.items.push({
+      oem: item.oem || '',
+      name: item.name || '',
+      brand: item.brand || 'GENERAL',
+      quantity: item.suggested_qty || 1,
+      unit_price: item.unit_price || 0,
+      searchQuery: '',
+      showDropdown: false
+    })
+  })
+  
+  // 如果没数据加个空行
+  if (poForm.value.items.length === 0) addPOLine()
+  
+  // 打开弹窗
+  isCreateModalVisible.value = true
+  activeTab.value = 'orders'
+  
+  // 通知父组件清理
+  emit('clear-prefill')
+}, { immediate: true })
 
 const openCreateModal = () => {
   poForm.value = { supplier_name: '', po_no: '', items: [] }

@@ -5,10 +5,11 @@
     <!-- ==================== 第一层：页面大标题 ==================== -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span></span> {{ t.inventory.title }}
+        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+          <Package :size="20" class="text-accent" />
+          {{ t.inventory.title }}
         </h2>
-        <p class="text-xs text-slate-500 mt-1">{{ isZh ? '管理汽车配件的入库、出库、定价及多图档案。' : isEs ? 'Gestión de entradas, salidas y precios.' : 'Manage stock in/out, pricing, and photos.' }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ isZh ? '管理汽车配件的入库、出库、定价及多图档案。' : isEs ? 'Gestión de entradas, salidas y precios.' : 'Manage stock in/out, pricing, and photos.' }}</p>
       </div>
     </div>
 
@@ -68,6 +69,24 @@
           <span>{{ tExt.batchDelete }} ({{ tExt.batchSelected }} {{ selectedIds.length }})</span>
         </button>
 
+        
+        <!-- 🌟 库存盘点按钮 -->
+        <button 
+          @click="$emit('open-audit')" 
+          data-testid="btn-open-audit"
+          class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+        >
+          📋 {{ isZh ? '库存盘点' : isEs ? 'Auditoría' : 'Inventory Audit' }}
+        </button>
+
+        <!-- 🌟 智能补货按钮 -->
+        <button 
+          @click="openRestockModal" 
+          class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+        >
+          💡 {{ isZh ? '智能补货' : isEs ? 'Reabastecimiento' : 'Smart Restock' }}
+        </button>
+
         <button
           @click="$emit('open-add-modal')"
           class="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all cursor-pointer"
@@ -110,7 +129,8 @@
                       <img :src="parseImages(item.image_url)[0].startsWith('http') ? parseImages(item.image_url)[0] : apiUrl(parseImages(item.image_url)[0])" class="w-full h-full object-cover" />
                       <div v-if="parseImages(item.image_url).length > 1" class="absolute bottom-0 right-0 bg-slate-900/70 text-white text-[8px] px-1 rounded-tl font-mono">+{{ parseImages(item.image_url).length - 1 }}</div>
                     </div>
-                  </template>
+
+</template>
                   <div v-else class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 text-[10px] font-bold">{{ t.inventory.noImage }}</div>
                 </div>
               </td>
@@ -150,10 +170,18 @@
             <span class="text-slate-400 text-[11px]">/ {{ totalPages }} {{ tExt.page }}</span>
             <button @click="handleJumpPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ tExt.jumpBtn }}</button>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button @click="currentPage--" :disabled="currentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.prevPage }}</button>
-            <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ currentPage }} / {{ totalPages }}</span>
-            <button @click="currentPage++" :disabled="currentPage === totalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ tExt.nextPage }}</button>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-2 py-1 shadow-2xs">
+              <span class="text-slate-400 text-[11px]">{{ isZh ? '跳转到' : isEs ? 'Ir a' : 'Go to' }}</span>
+              <input type="number" min="1" :max="totalPages" v-model.number="jumpPageInput" @keyup.enter="handleJumpPage" class="w-12 text-center font-mono font-bold text-accent bg-slate-50 rounded-lg py-1 outline-none border border-slate-200 focus:border-accent text-xs" />
+              <span class="text-slate-400 text-[11px]">/ {{ totalPages }} {{ isZh ? '页' : isEs ? 'Pág' : 'Page' }}</span>
+              <button @click="handleJumpPage" class="bg-accent/10 hover:bg-blue-100 text-accent px-2.5 py-1 rounded-lg font-bold transition-colors cursor-pointer text-[11px]">{{ isZh ? '跳转' : isEs ? 'Ir' : 'Go' }}</button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button @click="currentPage--" :disabled="currentPage === 1" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '上一页' : isEs ? 'Anterior' : 'Prev' }}</button>
+              <span class="px-3 py-1 font-mono font-bold text-slate-700">{{ currentPage }} / {{ totalPages }}</span>
+              <button @click="currentPage++" :disabled="currentPage === totalPages" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors cursor-pointer">{{ isZh ? '下一页' : isEs ? 'Siguiente' : 'Next' }}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -272,6 +300,74 @@
       @confirm="confirmBatchDelete"
     />
   </div>
+
+                  
+  <!-- 🌟 智能补货弹窗 -->
+  <div v-if="restockModalVisible" @click.self="restockModalVisible = false" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-6 cursor-pointer">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full h-[80vh] overflow-hidden border border-white/80 flex flex-col cursor-default">
+      <div class="p-5 border-b border-slate-200/60 flex items-center justify-between bg-white/50 shrink-0">
+        <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+          <span>💡 {{ isZh ? '智能补货建议' : isEs ? 'Sugerencias de Reabastecimiento' : 'Smart Restock Suggestions' }}</span>
+        </h3>
+        <button @click="restockModalVisible = false" class="text-slate-400 hover:text-slate-700 text-base font-bold p-1 cursor-pointer">✕</button>
+      </div>
+      
+      <div class="p-4 border-b border-slate-200/60 bg-amber-50/50 flex items-center justify-between shrink-0">
+        <p class="text-xs text-amber-700 font-bold">{{ isZh ? '库存低于安全线的商品会自动出现在下方，勾选后可直接生成采购单。' : isEs ? 'Los productos con stock bajo aparecerán aquí. Selecciónelos para generar una orden.' : 'Low stock items will appear here. Select to generate a PO.' }}</p>
+        <button @click="fetchRestockSuggestions" class="text-xs bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg font-bold text-slate-600 transition-colors">{{ isZh ? '刷新' : isEs ? 'Actualizar' : 'Refresh' }}</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-0 custom-scrollbar">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-white shadow-sm z-10">
+            <tr class="border-b border-slate-200 text-xs font-black text-slate-500 uppercase tracking-wider">
+              <th class="py-3 px-4 w-12 text-center"><input type="checkbox" :checked="isAllSuggestionsSelected" @change="toggleSelectAllSuggestions" class="rounded border-slate-300 text-amber-500 w-4 h-4 cursor-pointer" /></th>
+              <th class="py-3 px-4">{{ isZh ? '配件信息' : isEs ? 'Producto' : 'Part Info' }}</th>
+              <th class="py-3 px-4">{{ isZh ? '当前库存' : isEs ? 'Stock Actual' : 'Current Stock' }}</th>
+              <th class="py-3 px-4 text-emerald-600">{{ isZh ? '建议补货' : isEs ? 'Reponer' : 'Suggested Qty' }}</th>
+              <th class="py-3 px-4">{{ isZh ? '进货价' : isEs ? 'Costo' : 'Cost Price' }}</th>
+              <th class="py-3 px-4">{{ isZh ? '预估总价' : isEs ? 'Total Estimado' : 'Estimated Total' }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+            <tr v-if="restockSuggestions.length === 0">
+              <td colspan="6" class="py-16 text-center text-slate-400 text-xs font-bold">
+                👍 {{ isZh ? '库存健康，暂无需要补货的商品' : isEs ? 'Inventario saludable, sin sugerencias.' : 'Healthy inventory, no restock needed.' }}
+              </td>
+            </tr>
+            <tr v-for="item in restockSuggestions" :key="item.oem" :class="['cursor-pointer transition-colors', selectedSuggestionIds.includes(item.oem) ? 'bg-amber-50/60' : 'hover:bg-slate-50']">
+              <td class="py-3 px-4 text-center" @click.stop>
+                <input type="checkbox" :checked="selectedSuggestionIds.includes(item.oem)" @change="toggleSuggestionSelect(item.oem)" class="rounded border-slate-300 text-amber-500 w-4 h-4 cursor-pointer" />
+              </td>
+              <td class="py-3 px-4">
+                <div class="font-bold text-slate-800">{{ item.name }}</div>
+                <div class="text-xs text-accent font-mono">{{ item.oem }}</div>
+              </td>
+              <td class="py-3 px-4"><span class="bg-rose-50 text-rose-600 px-2 py-1 rounded-md text-xs font-bold">{{ item.current_stock }}</span></td>
+              <td class="py-3 px-4 font-mono font-bold text-emerald-600">+ {{ item.suggested_qty }}</td>
+              <td class="py-3 px-4 font-mono text-slate-600">$ {{ Number(item.unit_price).toFixed(2) }}</td>
+              <td class="py-3 px-4 font-mono font-bold text-slate-800">$ {{ Number(item.estimated_cost).toFixed(2) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 border-t border-slate-200/60 bg-white flex items-center justify-between shrink-0">
+        <span class="text-xs font-bold text-slate-500">
+          {{ isZh ? '已选择' : isEs ? 'Seleccionados' : 'Selected' }} <strong class="text-amber-600">{{ selectedSuggestionIds.length }}</strong> {{ isZh ? '个商品' : isEs ? 'productos' : 'items' }}
+        </span>
+        <div class="flex gap-2">
+          <button @click="restockModalVisible = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors">
+            {{ isZh ? '取消' : isEs ? 'Cancelar' : 'Cancel' }}
+          </button>
+          <button @click="generatePOFromSuggestions" :disabled="selectedSuggestionIds.length === 0" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+            {{ isZh ? '生成采购单' : isEs ? 'Generar Orden' : 'Generate PO' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -585,4 +681,47 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
+
+// 🌟 智能补货逻辑
+const restockModalVisible = ref(false)
+const restockSuggestions = ref([])
+const selectedSuggestionIds = ref([])
+const isAllSuggestionsSelected = computed(() => restockSuggestions.value.length > 0 && selectedSuggestionIds.value.length === restockSuggestions.value.length)
+
+const openRestockModal = () => {
+  restockModalVisible.value = true
+  fetchRestockSuggestions()
+}
+
+const fetchRestockSuggestions = async () => {
+  try {
+    const res = await apiFetch('/api/procurement/suggestions')
+    if (res.ok) {
+      const data = await res.json()
+      restockSuggestions.value = data
+      selectedSuggestionIds.value = []
+    }
+  } catch (e) { console.error(e) }
+}
+
+const toggleSuggestionSelect = (oem) => {
+  const idx = selectedSuggestionIds.value.indexOf(oem)
+  if (idx > -1) selectedSuggestionIds.value.splice(idx, 1)
+  else selectedSuggestionIds.value.push(oem)
+}
+
+const toggleSelectAllSuggestions = (e) => {
+  if (e.target.checked) selectedSuggestionIds.value = restockSuggestions.value.map(i => i.oem)
+  else selectedSuggestionIds.value = []
+}
+
+const generatePOFromSuggestions = () => {
+  const selectedItems = restockSuggestions.value.filter(i => selectedSuggestionIds.value.includes(i.oem))
+  if (selectedItems.length === 0) return
+  
+  // 跳转到采购页面并带上建议数据
+  emit('create-po-from-suggestions', selectedItems)
+  restockModalVisible.value = false
+}
+
 </script>

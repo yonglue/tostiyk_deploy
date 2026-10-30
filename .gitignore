@@ -57,3 +57,10 @@ uploads/
 .DS_Store
 **/.DS_Store
 .vscode/
+
+# 运行/临时产物
+*.log
+logs/
+__pycache__/
+.pytest_cache/
+pytest_report.log

@@ -20,7 +20,8 @@ async function login(page) {
 test.describe('库存盘点 B1', () => {
   test.beforeEach(async ({ page }) => {
     await login(page)
-    await page.locator('[data-testid="nav-inventory_audit"]').click()
+    await page.locator('[data-testid="nav-parts"]').click()
+    await page.locator('[data-testid="btn-open-audit"]').click()
   })
 
   test('提交盘点差异并生成历史流水', async ({ page }) => {

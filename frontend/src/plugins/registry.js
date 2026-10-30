@@ -62,7 +62,6 @@ export const DESKTOP_TAB_GROUPS = Object.freeze([
     items: [
       { key: 'parts', iconName: 'Package', requiredPerm: 'parts:view' },
       { key: 'procurement', iconName: 'ShoppingCart', requiredPerm: 'procurement:view' }, // 从销售移入仓储
-      { key: 'inventory_audit', labelKey: 'inventoryAudit', iconName: 'ClipboardList', requiredPerm: 'parts:manage' },
     ],
   },
   {

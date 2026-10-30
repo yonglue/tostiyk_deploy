@@ -79,6 +79,7 @@
               <th class="py-2.5 px-3 w-32">{{ isZh ? '电话' : isEs ? 'Teléfono' : 'Phone' }}</th>
               <th class="py-2.5 px-3 w-1/4">{{ isZh ? '地址' : isEs ? 'Dirección' : 'Address' }}</th>
               <th class="py-2.5 px-3 w-32">RIF</th>
+              <th class="py-2.5 px-3 w-20 text-center">{{ isZh ? '账期(天)' : isEs ? 'Plazo' : 'Terms' }}</th>
               <th class="py-2.5 px-3 w-24 text-right">{{ isZh ? '欠款' : isEs ? 'Deuda' : 'Debt' }}</th>
               <th class="py-2.5 px-3 w-20 text-center">{{ isZh ? '操作' : isEs ? 'Acción' : 'Action' }}</th>
             </tr>
@@ -134,6 +135,11 @@
 
               <!-- RIF -->
               <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ c.rif_or_cedula || '-' }}</td>
+
+              <!-- 账期 -->
+              <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                <span class="font-mono font-bold text-slate-600 dark:text-slate-400">{{ c.payment_terms || 30 }}</span>
+              </td>
 
               <!-- 欠款：强制单行，右对齐 -->
               <td class="py-2.5 px-3 text-right whitespace-nowrap">
@@ -260,6 +266,10 @@
             <div class="col-span-2">
               <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase mb-1">{{ t.clients.colAddress }}</p>
               <p class="text-slate-700 dark:text-slate-300">{{ currentClient?.address || '-' }}</p>
+            </div>
+            <div class="col-span-2 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+              <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">{{ isZh ? '账期天数' : isEs ? 'Plazo de Pago' : 'Payment Terms' }}</p>
+              <p class="text-base font-black text-slate-700 dark:text-slate-300">{{ currentClient?.payment_terms || 30 }} {{ isZh ? '天' : isEs ? 'Días' : 'Days' }}</p>
             </div>
             <div class="col-span-2 bg-accent/10 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800/30">
               <p class="text-[11px] font-semibold text-blue-500 dark:text-accent uppercase mb-1">{{ isZh ? '信用额度上限' : isEs ? 'Límite de Crédito' : 'Credit Limit' }}</p>
