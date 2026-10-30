@@ -27,24 +27,27 @@
       <!-- 右侧主工作区 -->
       <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
         
-        <header v-if="activeTab !== 'pos'" class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 px-6 flex items-center justify-between shrink-0 z-10 transition-all">
+        <header v-if="activeTab !== 'pos'" class="h-16 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md border-b border-slate-200/20 dark:border-slate-800/20 px-6 flex items-center justify-between shrink-0 z-10 transition-all">
           <div class="flex items-center space-x-4">
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-accent/10/90 rounded-2xl transition-colors cursor-pointer">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-slate-600 hover:bg-accent/10 rounded-2xl transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
           </div>
 
+          <!-- 右上角模块与图标 (顺序：BCV -> 语言 -> 主题 -> 用户 -> 退出 -> 离线指示) -->
           <div class="flex items-center gap-3 h-full">
             
+            <!-- 1. BCV 汇率 -->
             <div class="hidden sm:flex items-center gap-1.5 px-2">
               <span class="text-slate-400 text-[11px] font-bold tracking-wider uppercase">BCV</span>
               <span class="text-slate-700 dark:text-slate-200 font-bold font-mono text-sm">{{ bcvRate }}</span>
             </div>
 
-            <div class="h-4 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
+            <div class="h-4 w-[1px] bg-slate-200/40 dark:bg-slate-700/40"></div>
 
-            <div class="flex items-center gap-1.5">
-              <div class="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" title="Language">
+            <div class="flex items-center gap-2">
+              <!-- 2. 语言切换 -->
+              <div class="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" title="Language">
                 <svg class="w-4 h-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -57,18 +60,14 @@
                 </select>
               </div>
 
-              <div class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 [&>button]:!w-full [&>button]:!h-full [&>button]:!p-0 [&>button]:!bg-transparent [&>button]:!border-0 [&>button]:!shadow-none [&>button>svg]:!w-4 [&>button>svg]:!h-4" title="Theme">
+              <!-- 3. 主题切换 -->
+              <div class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 [&>button]:!w-full [&>button]:!h-full [&>button]:!p-0 [&>button]:!bg-transparent [&>button]:!border-0 [&>button]:!shadow-none [&>button>svg]:!w-4 [&>button>svg]:!h-4" title="Theme">
                 <ThemeSwitcher />
               </div>
-
-              <button @click="handleLogout" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer" title="Logout">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
             </div>
 
-            <div class="flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-slate-700 h-5">
+            <!-- 4. 用户头像与名称 -->
+            <div class="flex items-center gap-2 pl-3 border-l border-slate-200/40 dark:border-slate-700/40 h-5">
               <div class="relative flex items-center justify-center w-7 h-7 rounded-full bg-accent text-white font-bold text-xs uppercase shadow-sm cursor-default" title="User">
                 {{ currentUserObj.username ? currentUserObj.username.charAt(0) : 'U' }}
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 rounded-full"></span>
@@ -76,6 +75,14 @@
               <span class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-default">{{ currentUserObj.username }}</span>
             </div>
 
+            <!-- 5. 退出登录按钮 -->
+            <button @click="handleLogout" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-rose-500/10 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer" title="Logout">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+
+            <!-- 6. 离线状态指示器 -->
             <OfflineIndicator />
           </div>
         </header>
