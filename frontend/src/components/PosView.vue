@@ -1093,12 +1093,9 @@ watch(clientFilterQuery, () => {
 })
 
 const filteredModalClients = computed(() => {
-  const q = (searchQuery.value || '').trim() // 或者看下原来的变量名是什么，可能是另一个变量？
-  // 实际上原代码里 q 可能是从 clientSearchQuery 来的，如果是，保持原变量。
-  // 这里保守处理，直接用当前搜索词：
-  if (!searchQuery.value.trim()) return localClientsList.value
+  if (!clientFilterQuery.value.trim()) return localClientsList.value
   return localClientsList.value.filter(c => 
-    matchSmartSearch(c, searchQuery.value, ['name', 'phone', 'rif_or_cedula'])
+    matchSmartSearch(c, clientFilterQuery.value, ['name', 'phone', 'rif_or_cedula'])
   )
 })
 
@@ -1227,9 +1224,9 @@ const saveNewClient = async () => {
 }
 
 const filteredParts = computed(() => {
-  if (!searchQuery.value.trim()) return []
+  if (!deskSearchQuery.value.trim()) return []
   return props.partsList.filter(p => 
-    matchSmartSearch(p, searchQuery.value, ['oem', 'name', 'brand', 'cross_references'])
+    matchSmartSearch(p, deskSearchQuery.value, ['oem', 'name', 'brand', 'cross_references'])
   ).slice(0, 10)
 })
 

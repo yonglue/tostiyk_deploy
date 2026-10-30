@@ -709,6 +709,9 @@ const tExt = computed(() => {
 })
 
 const activeTab = ref('orders')
+const orderSearchQuery = ref('')
+const orderStartDate = ref('')
+const orderEndDate = ref('')
 const ordersList = ref([])
 const suppliersList = ref([]) 
 
