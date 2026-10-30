@@ -196,7 +196,7 @@ const tExt = computed(() => {
     timeRange30: isZh ? '近 30 天' : isEs ? 'Últimos 30 días' : 'Last 30 days',
     
     quickNavTitle: isZh ? '常用功能快捷直达' : isEs ? 'Navegación Rápida' : 'Quick Navigation',
-    btnPos: isZh ? '快速收银' : isEs ? 'POS' : 'Quick POS',
+    btnPos: isZh ? '快速收银' : isEs ? 'Caja' : 'Quick Cashier',
     btnQuote: isZh ? '开单报价' : isEs ? 'Cotizar' : 'Quotation',
     btnFinancial: isZh ? '财务利润' : isEs ? 'Finanzas' : 'Financials',
     btnParts: isZh ? '配件库存' : isEs ? 'Inventario' : 'Inventory',
