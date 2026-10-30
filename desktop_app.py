@@ -1,4 +1,5 @@
 import os
+import re
 
 import sys
 if getattr(sys, 'frozen', False):
@@ -27,7 +28,8 @@ def get_machine_id():
             hw_id = out.split('"')[3]
         else:
             hw_id = str(uuid.getnode())
-        return f"TK-{hw_id[-8:].upper()}"
+        clean_hw = re.sub(r'[^A-Z0-9]', '', hw_id[-8:].upper())
+        return f"TK-{clean_hw}"
     except Exception:
         return "TK-UNKNOWN"
 
