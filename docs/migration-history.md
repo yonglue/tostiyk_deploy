@@ -31,7 +31,8 @@
 4. `alembic check` 必须保持 `No new upgrade operations detected.` —— 若报差异，说明模型与 DB 漂移，需补迁移而不是手改 DB
 5. SQLite 不支持 `SELECT ... FOR UPDATE`，行锁方案需参考 README 的"数据一致性规则"
 
-## 已知未完成（TODO，非本次范围）
+## 已知未完成（TODO）
 
+暂无。
 - ~~`app/routers/parts.py` 的 `update_part` 路由不接收 `wholesale_price/vip2_price/vip3_price`~~ —— ✅ 已于 2026-10-29 修复（Optional 语义向后兼容，见 commit `0767ab1`）
 - ~~`tests/conftest.py` 用 `sqlite:///:memory:` + `StaticPool`~~ —— ✅ 已于 2026-10-29 修复（改为 tmp_path 文件型测试库）
