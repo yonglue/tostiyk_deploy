@@ -114,6 +114,7 @@ const translations = {
       tax0: "0% 免税",
       costPrice: "进价 ($)",
       profit: "毛利 ($)",
+      profitMargin: "利润率 (%)",
       noImage: "无图片",
       detailTitle: "配件详情",
       binPlaceholder: "例如 A-1"
@@ -283,6 +284,7 @@ const translations = {
       tax0: "0% Exento",
       costPrice: "Costo ($)",
       profit: "Ganancia ($)",
+      profitMargin: "Margen (%)",
       noImage: "Sin foto",
       detailTitle: "Detalle",
       binPlaceholder: "Ej. A-1"
@@ -452,6 +454,7 @@ const translations = {
       tax0: "0% Exempt",
       costPrice: "Cost ($)",
       profit: "Profit ($)",
+      profitMargin: "Margin (%)",
       noImage: "No photo",
       detailTitle: "Details",
       binPlaceholder: "E.g. A-1"

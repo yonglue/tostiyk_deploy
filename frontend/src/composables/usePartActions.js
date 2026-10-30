@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { apiFetch } from '../utils/api'
 import { useNotifications } from './useNotifications'
 import { useInventory } from './useInventory'
@@ -20,6 +20,35 @@ export function usePartActions() {
 
   const handleFileChange = (e) => { 
     selectedFiles.value = Array.from(e.target.files).slice(0, 5) 
+  }
+
+  const newPartMargin = ref(null)
+  let _newMarginLock = false
+
+  watch(
+    () => [newPart.value.price, newPart.value.cost_price],
+    ([p, c]) => {
+      if (_newMarginLock) return
+      const price = Number(p) || 0
+      const cost = Number(c) || 0
+      if (price > 0 && cost > 0) {
+        newPartMargin.value = +(((price - cost) / price) * 100).toFixed(2)
+      } else {
+        newPartMargin.value = null
+      }
+    },
+    { immediate: true }
+  )
+
+  function onNewPartMarginInput(raw) {
+    const m = parseFloat(raw)
+    if (isNaN(m)) { newPartMargin.value = null; return }
+    newPartMargin.value = m
+    const c = Number(newPart.value.cost_price) || 0
+    if (m < 0 || m >= 100 || c <= 0) return
+    _newMarginLock = true
+    newPart.value.price = +(c / (1 - m / 100)).toFixed(2)
+    setTimeout(() => { _newMarginLock = false }, 0)
   }
 
   const handleAddPart = async (tExt, t) => {
@@ -81,7 +110,7 @@ export function usePartActions() {
   }
 
   return {
-    dialogVisible, deletePartModalVisible, targetPartForDelete, newPart, selectedFiles,
+    dialogVisible, deletePartModalVisible, targetPartForDelete, newPart, newPartMargin, onNewPartMarginInput, selectedFiles,
     handleFileChange, handleAddPart, openDeletePartModal, confirmDeletePart
   }
 }

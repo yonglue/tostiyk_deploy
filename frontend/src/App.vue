@@ -237,7 +237,7 @@
 
     <!-- 弹窗组件：录入新汽配 -->
     <div v-if="dialogVisible" @click.self="dialogVisible = false" class="fixed inset-0 erp-modal-overlay flex items-center justify-center z-50 p-4 transition-all">
-      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
+      <div class="erp-modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full md:w-[70vw] md:max-w-[70vw] overflow-hidden border border-slate-200/60 dark:border-slate-700/60 p-0 flex flex-col">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
             <span class="text-xl"></span>
@@ -246,24 +246,15 @@
           <button @click="dialogVisible = false" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
         </div>
 
-        <form @submit.prevent="handleAddPart(tExt, t)" class="space-y-4 max-h-[70vh] overflow-y-auto px-6 py-5">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form @submit.prevent="handleAddPart(tExt, t)" class="space-y-5 max-h-[70vh] overflow-y-auto px-6 py-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <BaseInput v-model="newPart.oem" :label="t.inventory.colOem" :placeholder="tExt.placeholderOem" />
             <BaseInput v-model="newPart.name" :label="t.inventory.colName" :placeholder="tExt.placeholderName" />
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
             <BaseInput v-model="newPart.category" :label="t.inventory.colCategory" :placeholder="tExt.placeholderCategory" />
             <BaseInput v-model="newPart.brand" :label="t.inventory.colBrand" :placeholder="tExt.placeholderBrand" />
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <BaseInput v-model.number="newPart.stock" type="number" min="0" :label="t.inventory.colStock" />
-            <BaseInput v-model.number="newPart.price" type="number" step="0.5" min="0" :label="t.inventory.colPriceUsd" />
-            <BaseInput v-model.number="newPart.cost_price" type="number" step="0.5" min="0" :label="t.inventory.costPrice" />
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <BaseSelect 
               v-model.number="newPart.tax_rate" 
               :label="t.inventory.taxRate"
@@ -276,11 +267,20 @@
             <BaseInput v-model="newPart.bin_location" :label="t.inventory.colBin" :placeholder="t.inventory.binPlaceholder" />
           </div>
 
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+            <BaseInput v-model.number="newPart.stock" type="number" min="0" :allow-calc="true" :label="t.inventory.colStock" />
+            <BaseInput v-model.number="newPart.cost_price" type="number" step="0.5" min="0" :allow-calc="true" :label="t.inventory.costPrice" />
+            <BaseInput :model-value="newPartMargin ?? ''" @update:model-value="onNewPartMarginInput"
+                       type="number" :label="t.inventory.profitMargin"
+                       :hint="currentLang === 'zh' ? '输入 30 自动算售价' : currentLang === 'es' ? 'Ej: 30 → auto-calcula' : 'e.g. 30 auto-calc'" />
+            <BaseInput v-model.number="newPart.price" type="number" step="0.5" min="0" :allow-calc="true" :label="t.inventory.colPriceUsd" />
+          </div>
+
           <div>
             <label class="block text-xs font-semibold text-slate-500 mb-1">🔗 {{ tExt.labelCrossRef }}</label>
             <textarea 
               v-model="newPart.cross_references" 
-              rows="3" 
+              rows="2" 
               :placeholder="tExt.placeholderCrossRef" 
               class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-accent font-mono leading-relaxed resize-none"
             ></textarea>
@@ -547,7 +547,7 @@ const {
 } = useTxActions({ activeTab })
 
 const { 
-  dialogVisible, deletePartModalVisible, targetPartForDelete, newPart, selectedFiles,
+  dialogVisible, deletePartModalVisible, targetPartForDelete, newPart, newPartMargin, onNewPartMarginInput, selectedFiles,
   handleFileChange, handleAddPart, openDeletePartModal, confirmDeletePart
 } = usePartActions()
 
@@ -703,7 +703,12 @@ const handleGlobalKeydown = (e) => {
   if (e.key !== 'Enter') return
 
   if (successModalVisible.value) { e.preventDefault(); successModalVisible.value = false; return; }
-  if (dialogVisible.value) { e.preventDefault(); handleAddPart(tExt, t); return; }
+  if (dialogVisible.value) {
+      const tag = e.target.tagName;
+      // 如果在输入框内按回车，不触发全局的保存操作（交给组件内部去计算）
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      e.preventDefault(); handleAddPart(tExt, t); return; 
+    }
   if (clientDialogVisible.value) { e.preventDefault(); handleAddClient(tExt); return; }
   if (deletePartModalVisible.value) { e.preventDefault(); confirmDeletePart(); return; }
   if (deleteClientModalVisible.value) { e.preventDefault(); confirmDeleteClient(tExt); return; }

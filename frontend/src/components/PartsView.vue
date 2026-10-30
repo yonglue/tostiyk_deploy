@@ -143,7 +143,7 @@
               <td class="py-2.5 px-3 font-bold text-accent">$ {{ Number(item.price || 0).toFixed(2) }}</td>
               <td class="py-2.5 px-3 font-bold text-amber-600">$ {{ Number(item.cost_price || 0).toFixed(2) }}</td>
               <td class="py-2.5 px-3 font-black">
-                <span :class="(item.price - (item.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">$ {{ Number((item.price || 0) - (item.cost_price || 0)).toFixed(2) }}</span>
+                <span :class="(item.price - (item.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">$ {{ Number((item.price || 0) - (item.cost_price || 0)).toFixed(2) }}<span v-if="formatMarginPct(item.price, item.cost_price) !== null" class="text-[10px] text-slate-400 font-normal ml-1">({{ formatMarginPct(item.price, item.cost_price).toFixed(1) }}%)</span></span>
               </td>
               <td class="py-2.5 px-3 text-center" @click.stop>
                 <button @click="$emit('delete-part', item)" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer">{{ t.common.delete }}</button>
@@ -233,7 +233,7 @@
             </div>
             <div>
               <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ t.inventory.profit }}</p>
-              <p class="font-black" :class="(editingPart.price - (editingPart.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">$ {{ Number((editingPart.price || 0) - (editingPart.cost_price || 0)).toFixed(2) }}</p>
+              <p class="font-black" :class="(editingPart.price - (editingPart.cost_price || 0)) > 0 ? 'text-emerald-600' : 'text-rose-500'">$ {{ Number((editingPart.price || 0) - (editingPart.cost_price || 0)).toFixed(2) }}<span v-if="formatMarginPct(editingPart.price, editingPart.cost_price) !== null" class="text-[11px] text-slate-400 font-normal ml-2">({{ formatMarginPct(editingPart.price, editingPart.cost_price).toFixed(1) }}%)</span></p>
             </div>
             <div>
               <p class="text-[11px] font-semibold text-slate-400 uppercase mb-1">{{ t.inventory.taxRate }}</p>
@@ -261,9 +261,12 @@
           <BaseInput v-model="editingPart.name" :label="t.inventory.colName + ' *'" :placeholder="isZh ? '输入配件名称...' : 'Ingrese nombre...'" />
           <BaseInput v-model="editingPart.category" :label="t.inventory.colCategory" />
           <BaseInput v-model="editingPart.brand" :label="t.inventory.colBrand" />
-          <BaseInput v-model.number="editingPart.stock" type="number" :label="t.inventory.colStock" />
-          <BaseInput v-model.number="editingPart.price" type="number" :label="t.inventory.colPriceUsd" />
-          <BaseInput v-model.number="editingPart.cost_price" type="number" :label="t.inventory.costPrice" />
+          <BaseInput v-model.number="editingPart.cost_price" type="number" :allow-calc="true" :label="t.inventory.costPrice" />
+          <BaseInput :model-value="marginPct ?? ''" @update:model-value="onMarginInput"
+                     type="number" :label="t.inventory.profitMargin"
+                     :hint="currentLang === 'zh' ? '输入 30 表示 30% 毛利率，自动算售价' : currentLang === 'es' ? 'Ej: 30 → calcula precio' : 'e.g. 30 auto-calculates price'" />
+          <BaseInput v-model.number="editingPart.price" type="number" :allow-calc="true" :label="t.inventory.colPriceUsd" />
+          <BaseInput v-model.number="editingPart.stock" type="number" :allow-calc="true" :label="t.inventory.colStock" />
           
           <BaseSelect 
             v-model.number="editingPart.tax_rate" 
@@ -450,6 +453,40 @@ const editingPart = ref({
   id: null, oem: '', name: '', brand: '', category: '', stock: 0, 
   price: 0, cost_price: 0, tax_rate: 0.16, bin_location: '', cross_references: '', image_url: ''
 })
+
+// 利润率 (%) 双向联动（Margin 口径：售价 = 成本 / (1 − 利润率/100)）
+const marginPct = ref(null)
+let _marginLock = false
+
+const formatMarginPct = (price, cost) => {
+  const p = Number(price) || 0
+  const c = Number(cost) || 0
+  if (p <= 0 || c <= 0) return null
+  return +(((p - c) / p) * 100).toFixed(2)
+}
+
+// 进入编辑 / price / cost 变化时反向同步利润率
+watch(
+  [drawerMode, () => editingPart.value.price, () => editingPart.value.cost_price],
+  () => {
+    if (_marginLock) return
+    if (drawerMode.value !== 'edit') return
+    marginPct.value = formatMarginPct(editingPart.value.price, editingPart.value.cost_price)
+  },
+  { immediate: true }
+)
+
+// 用户输入利润率 → 自动算售价
+function onMarginInput(raw) {
+  const m = parseFloat(raw)
+  if (isNaN(m)) { marginPct.value = null; return }
+  marginPct.value = m
+  const c = Number(editingPart.value.cost_price) || 0
+  if (m < 0 || m >= 100 || c <= 0) return
+  _marginLock = true
+  editingPart.value.price = +(c / (1 - m / 100)).toFixed(2)
+  setTimeout(() => { _marginLock = false }, 0)
+}
 const editFiles = ref([])
 
 const parseImages = (imageUrlStr) => {
