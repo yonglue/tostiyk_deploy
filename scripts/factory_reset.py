@@ -35,11 +35,21 @@ def factory_reset():
         return
 
     with Session(engine) as session:
+        # SQLite 仅在主键声明 AUTOINCREMENT 时才创建 sqlite_sequence 表；
+        # SQLModel 默认的 INTEGER PRIMARY KEY 不会建它，因此先一次性探测。
+        has_sqlite_sequence = session.exec(
+            text("SELECT 1 FROM sqlite_master "
+                 "WHERE type='table' AND name='sqlite_sequence'")
+        ).first() is not None
+
         for table in TABLES_TO_CLEAR:
             try:
                 session.exec(text(f"DELETE FROM {table};"))
-                # 重置自增 ID
-                session.exec(text(f"DELETE FROM sqlite_sequence WHERE name='{table}';"))
+                if has_sqlite_sequence:
+                    # 重置自增 ID（仅当存在 sqlite_sequence 时）
+                    session.exec(text(
+                        f"DELETE FROM sqlite_sequence WHERE name='{table}';"
+                    ))
                 print(f"  ✅ 已清空: {table}")
             except Exception as e:
                 print(f"  ⚠️ 跳过 {table}: {e}")

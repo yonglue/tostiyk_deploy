@@ -128,9 +128,12 @@ def bootstrap() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     bootstrap()
-    yield
+    backup_task = asyncio.create_task(auto_backup_task())
+    try:
+        yield
+    finally:
+        backup_task.cancel()
 
 
 app = FastAPI(title="TOSTIKYK ERP API", version=__version__, lifespan=lifespan)
@@ -190,19 +193,14 @@ async def catch_exceptions_middleware(request: Request, call_next):
         # 打印完整的报错堆栈到后端终端
         print("=== 后端捕获到未处理异常 ===")
         traceback.print_exc()
-        # 即使报错也强制带上 CORS 响应头，让前端能看到具体的错误内容
+        # 只对白名单 origin 回显 CORS 头，避免 "*" + credentials 的非法组合
+        headers = {}
+        origin = request.headers.get("origin")
+        if origin and origin in CORS_ORIGINS:
+            headers["Access-Control-Allow-Origin"] = origin
+            headers["Access-Control-Allow-Credentials"] = "true"
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"detail": str(e)},
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Credentials": "true",
-            }
+            headers=headers,
         )
-
-@app.on_event("startup")
-async def startup_event():
-    
-    asyncio.create_task(auto_backup_task())
-
-
