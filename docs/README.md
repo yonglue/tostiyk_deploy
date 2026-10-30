@@ -2,6 +2,9 @@
 
 欢迎来到内部开发者知识库。请根据你的需求点击对应文档：
 
+## 🚀 0. 快速接手（AI 与新人必读）
+- [**ONBOARDING.md**](./ONBOARDING.md) - 当前项目背景、最近重构、核心开发铁律与下一步计划。
+
 ## 🏗️ 1. 架构与设计
 - [**architecture.md**](./architecture.md) - 系统架构总览（技术栈、插件化设计、离线同步方案）。
 - [**architecture-analysis.md**](./architecture-analysis.md) - 深度架构分析（包含完整 ER 图、演进痕迹与代码考古）。
