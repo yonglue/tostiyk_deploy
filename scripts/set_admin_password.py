@@ -29,7 +29,7 @@ from app.database import engine  # noqa: E402
 from app.models import AdminUser, StaffUser  # noqa: E402
 from app.security import hash_password, verify_password  # noqa: E402
 
-MIN_LENGTH = 1
+MIN_LENGTH = 8
 _FORBIDDEN = {"factory-default", "factory-pin", "password", "123456"}
 
 
@@ -59,19 +59,24 @@ def _validate(pwd: str) -> None:
         any(c.isdigit() for c in pwd),
         any(not c.isalnum() for c in pwd),
     ])
-    #if kinds < 2:
-    #    print("❌ 密码过于单一，请混合大小写/数字/符号中的至少两类。", file=sys.stderr)
-    #    raise SystemExit(2)
+    if kinds < 2:
+        print("❌ 密码过于单一，请混合大小写/数字/符号中的至少两类。", file=sys.stderr)
+        raise SystemExit(2)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="修改管理员或店员密码")
     parser.add_argument("--username", default=DEFAULT_ADMIN_USERNAME,
                         help=f"要修改的账号（默认 {DEFAULT_ADMIN_USERNAME}）")
+    parser.add_argument("--dev", action="store_true",
+                        help="开发模式：跳过密码强度校验（生产环境禁止使用）")
     args = parser.parse_args()
 
     pwd = _read_password()
-    _validate(pwd)
+    if args.dev:
+        print("⚠️  [dev] 已跳过密码强度校验（仅限本地开发）", file=sys.stderr)
+    else:
+        _validate(pwd)
 
     with Session(engine) as session:
         target = None

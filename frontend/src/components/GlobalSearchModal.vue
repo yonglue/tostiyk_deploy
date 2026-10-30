@@ -100,6 +100,7 @@
 </template>
 
 <script setup>
+import { matchSmartSearch } from '../utils/searchUtils'
 import { useI18n } from '../composables/useI18n'
 
 
@@ -124,9 +125,8 @@ const searchInputRef = ref(null)
 
 const filteredParts = computed(() => {
   if (!searchQuery.value.trim()) return []
-  const q = searchQuery.value.toLowerCase().trim()
   return props.partsList.filter(p => 
-    p.oem.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+    matchSmartSearch(p, searchQuery.value, ['oem', 'name', 'brand', 'category', 'cross_references'])
   ).slice(0, 5) // 最多显示 5 个商品
 })
 

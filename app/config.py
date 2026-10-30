@@ -1,3 +1,17 @@
+
+import sys
+from pathlib import Path
+
+# 判断是否为 PyInstaller 打包后的运行环境
+if getattr(sys, 'frozen', False):
+    # 如果是打包后的程序，基础目录为 exe 所在目录（数据库、上传文件存在这里，重启不丢）
+    TK_BASE_DIR = Path(sys.executable).parent
+    TK_RESOURCE_DIR = Path(sys._MEIPASS) # 静态资源（前端dist、字体）打包在临时目录
+else:
+    # 开发环境
+    TK_BASE_DIR = TK_BASE_DIR
+    TK_RESOURCE_DIR = TK_BASE_DIR
+
 """集中式配置：所有路径均基于项目根目录的绝对路径，与启动时的工作目录无关。"""
 
 import os

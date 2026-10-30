@@ -497,6 +497,7 @@
 </template>
 
 <script setup>
+import { matchSmartSearch } from '../utils/searchUtils'
 import BaseSearchInput from './ui/BaseSearchInput.vue'
 import BaseInput from './ui/BaseInput.vue'
 import BaseSelect from './ui/BaseSelect.vue'

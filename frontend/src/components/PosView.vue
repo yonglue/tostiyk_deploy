@@ -598,6 +598,7 @@
 </template>
 
 <script setup>
+import { matchSmartSearch } from '../utils/searchUtils'
 import PosHeader from './pos/PosHeader.vue'
 import PosFooter from './pos/PosFooter.vue'
 import PosPaymentPanel from './pos/PosPaymentPanel.vue'
@@ -1092,12 +1093,12 @@ watch(clientFilterQuery, () => {
 })
 
 const filteredModalClients = computed(() => {
-  if (!localClientsList.value) return []
-  if (!clientFilterQuery.value.trim()) return localClientsList.value
-  const q = clientFilterQuery.value.toUpperCase()
+  const q = (searchQuery.value || '').trim() // 或者看下原来的变量名是什么，可能是另一个变量？
+  // 实际上原代码里 q 可能是从 clientSearchQuery 来的，如果是，保持原变量。
+  // 这里保守处理，直接用当前搜索词：
+  if (!searchQuery.value.trim()) return localClientsList.value
   return localClientsList.value.filter(c => 
-    (c.name && c.name.toUpperCase().includes(q)) || 
-    (c.phone && c.phone.toUpperCase().includes(q))
+    matchSmartSearch(c, searchQuery.value, ['name', 'phone', 'rif_or_cedula'])
   )
 })
 
@@ -1226,9 +1227,10 @@ const saveNewClient = async () => {
 }
 
 const filteredParts = computed(() => {
-  const qStr = deskSearchQuery.value.trim().toUpperCase()
-  if (!qStr) return []
-  return props.partsList.filter(p => p.oem.toUpperCase().includes(qStr) || p.name.toUpperCase().includes(qStr)).slice(0, 10)
+  if (!searchQuery.value.trim()) return []
+  return props.partsList.filter(p => 
+    matchSmartSearch(p, searchQuery.value, ['oem', 'name', 'brand', 'cross_references'])
+  ).slice(0, 10)
 })
 
 const selectAndAddToCart = (part) => {

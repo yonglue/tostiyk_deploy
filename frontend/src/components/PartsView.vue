@@ -384,6 +384,7 @@ import SideDrawer from './SideDrawer.vue'
 import BaseSearchInput from './ui/BaseSearchInput.vue'
 import BaseInput from './ui/BaseInput.vue'
 import BaseSelect from './ui/BaseSelect.vue'
+import { matchSmartSearch } from '../utils/searchUtils'
 
 const props = defineProps({
   partsList: Array,
@@ -511,31 +512,15 @@ const filteredParts = computed(() => {
     result = result.filter(p => p.timestamp && p.timestamp.slice(0, 10) <= endDate.value)
   }
 
-  // 2. 搜索词处理
-  const query = props.searchQuery ? props.searchQuery.trim().toLowerCase() : ''
-  const cleanQuery = query.replace(/[^a-z0-9]/g, '')
-
-  // 3. 品牌、分类、多字段搜索过滤
+  // 2. 智能模糊搜索（支持多词、乱序、忽略特殊符号）
   return result.filter(i => {
     const matchBrand = props.selectedBrand === 'ALL' || i.brand === props.selectedBrand
     const itemCat = i.category || tExt.value.uncategorized
     const matchCategory = selectedCategory.value === 'ALL' || itemCat === selectedCategory.value
 
-    if (!query) return matchBrand && matchCategory
-
-    const cleanOem = i.oem ? i.oem.toLowerCase().replace(/[^a-z0-9]/g, '') : ''
-    const cleanName = i.name ? i.name.toLowerCase() : ''
-    const cleanBrand = i.brand ? i.brand.toLowerCase() : ''
-    const rawOem = i.oem ? i.oem.toLowerCase() : ''
-    const rawName = i.name ? i.name.toLowerCase() : ''
-    const rawCross = i.cross_references ? i.cross_references.toLowerCase() : ''
-
-    const matchSearch = 
-      cleanOem.includes(cleanQuery) || rawOem.includes(query) || 
-      cleanName.includes(query) || rawName.includes(query) ||
-      cleanBrand.includes(query) || rawCross.includes(query)
-
-    return matchBrand && matchCategory && matchSearch
+    if (!matchBrand || !matchCategory) return false
+    
+    return matchSmartSearch(i, props.searchQuery, ['oem', 'name', 'brand', 'category', 'cross_references', 'bin_location'])
   })
 })
 
