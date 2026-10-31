@@ -10,18 +10,17 @@ import datetime
 import re
 import webbrowser
 import requests
+import tkinter as tk
+from tkinter import messagebox
 from pathlib import Path
 
-# 1. 找到有写入权限的目录存数据库和授权文件（避开 C 盘受保护的 Program Files）
+# 1. 找到有写入权限的目录存数据库和授权文件
 if getattr(sys, 'frozen', False):
-    # 打包后，把数据存在用户的“文档”目录下，防止 C 盘权限报错
     USER_HOME = Path(os.path.expanduser("~"))
     DATA_DIR = USER_HOME / "TostiykERP_Data"
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     os.environ['TK_DESKTOP_DATA_DIR'] = str(DATA_DIR)
     os.environ['TK_IS_DESKTOP'] = '1'
-    
-    # 把工作目录切换过去，防止生成的 db 和 log 落在 C 盘没权限的地方
     os.chdir(DATA_DIR)
 else:
     DATA_DIR = Path(__file__).parent
@@ -87,7 +86,7 @@ def check_license():
         try:
             start_date = datetime.datetime.strptime(saved_key.split("_")[1], "%Y%m%d").date()
             if (datetime.date.today() - start_date).days > 7:
-                return False # 超过7天
+                return False
             return True
         except:
             return False
@@ -95,39 +94,58 @@ def check_license():
     is_valid, _ = verify_key(saved_key)
     return is_valid
 
-# 用控制台版本替代 Tkinter，更稳定
-def show_activation_prompt():
-    print("\n" + "="*40)
-    print(" Tostiyk ERP 软件激活")
-    print("="*40)
-    print(f" 您的机器码: {MACHINE_CODE}")
-    print(" 请输入激活码 (或直接输入 Huiyi1314 开启7天试用):")
-    user_input = input(" > ").strip()
-    
-    if user_input.upper() == "HUIYI1314":
-        today_str = datetime.date.today().strftime("%Y%m%d")
-        with open(LICENSE_FILE, "w") as f:
-            f.write(f"HUIYI1314_{today_str}")
-        print(" ✅ 专属 7 天演示激活成功！")
-        return True
-
-    is_valid, msg = verify_key(user_input)
-    if is_valid:
-        with open(LICENSE_FILE, "w") as f:
-            f.write(user_input)
-        print(" ✅ 激活成功！")
-        return True
-    else:
-        print(f" ❌ 激活失败: {msg}")
-        input("按回车键退出...")
-        return False
-
 def start_backend():
     from app.main import app as fastapi_app
     uvicorn.run(fastapi_app, host="127.0.0.1", port=8523, log_level="error", log_config=None)
 
+def show_activation_window():
+    root = tk.Tk()
+    root.title("Tostiyk ERP - 软件激活")
+    root.geometry("450x250")
+    root.eval('tk::PlaceWindow . center')
+    
+    tk.Label(root, text="软件未授权，请输入试用码", font=("Arial", 12), fg="red").pack(pady=10)
+    
+    frame_code = tk.Frame(root)
+    frame_code.pack(pady=5)
+    code_var = tk.StringVar(value=MACHINE_CODE)
+    tk.Entry(frame_code, textvariable=code_var, state="readonly", font=("Consolas", 14), width=20, justify="center").pack(side=tk.LEFT, padx=5)
+    
+    def copy_code():
+        root.clipboard_clear()
+        root.clipboard_append(MACHINE_CODE)
+        messagebox.showinfo("提示", "机器码已复制")
+    tk.Button(frame_code, text="复制", command=copy_code).pack(side=tk.LEFT)
+
+    tk.Label(root, text="请输入激活码:", font=("Arial", 11)).pack(pady=(15, 5))
+    key_var = tk.StringVar()
+    tk.Entry(root, textvariable=key_var, font=("Consolas", 14), width=30, justify="center").pack()
+
+    def do_activate():
+        user_input = key_var.get().strip().upper()
+        
+        if user_input == "HUIYI1314":
+            today_str = datetime.date.today().strftime("%Y%m%d")
+            with open(LICENSE_FILE, "w") as f:
+                f.write(f"HUIYI1314_{today_str}")
+            messagebox.showinfo("成功", "7天演示激活成功！即将进入系统。")
+            root.destroy()
+            return
+
+        is_valid, msg = verify_key(user_input)
+        if is_valid:
+            with open(LICENSE_FILE, "w") as f:
+                f.write(user_input)
+            messagebox.showinfo("成功", "激活成功！即将进入系统。")
+            root.destroy()
+        else:
+            messagebox.showerror("失败", msg)
+
+    tk.Button(root, text="立即激活", bg="#2563eb", fg="white", font=("Arial", 11, "bold"), width=15, command=do_activate).pack(pady=20)
+    root.mainloop()
+
 if __name__ == '__main__':
-    # 强制请求管理员权限
+    # 强制申请管理员权限
     if sys.platform == 'win32':
         import ctypes
         try:
@@ -136,15 +154,17 @@ if __name__ == '__main__':
                 sys.exit(0)
         except: pass
 
+    # 1. 授权检查
     if not check_license():
-        if not show_activation_prompt():
+        show_activation_window()
+        if not check_license():
             sys.exit(0)
 
-    print("\n正在启动后台服务，请稍候... (请勿关闭此窗口)")
-    
+    # 2. 启动后端
     t = threading.Thread(target=start_backend, daemon=True)
     t.start()
 
+    # 3. 等待后端就绪
     backend_ready = False
     for _ in range(30):
         try:
@@ -155,16 +175,21 @@ if __name__ == '__main__':
             time.sleep(0.5)
 
     if not backend_ready:
-        print("\n❌ 后台服务启动超时！请检查是否被杀毒软件拦截。")
-        input("按回车键退出...")
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("启动失败", "后台服务启动超时！\n请检查是否被杀毒软件拦截，或尝试以管理员身份运行。")
         sys.exit(1)
 
-    print("✅ 后台服务已启动！即将为您打开浏览器...")
+    # 4. 打开浏览器
     webbrowser.open("http://127.0.0.1:8523")
+
+    # 5. 显示一个“保持运行”的常驻小窗口
+    root = tk.Tk()
+    root.title("Tostiyk ERP - 正在运行")
+    root.geometry("300x120")
+    root.eval('tk::PlaceWindow . center')
     
-    print("\n⚠️ 提示：软件正在运行中，请不要关闭这个黑窗口！")
-    print("   如果您关掉黑窗口，软件就无法使用了。")
+    tk.Label(root, text="✅ ERP 已在浏览器中打开", font=("Arial", 12, "bold"), fg="green").pack(pady=15)
+    tk.Label(root, text="请勿关闭此窗口，否则软件将断开。", font=("Arial", 9), fg="gray").pack(pady=5)
     
-    # 挂起主线程，保持后台运行
-    while True:
-        time.sleep(1)
+    root.mainloop()  # 挂起主线程，直到用户关掉这个窗口
