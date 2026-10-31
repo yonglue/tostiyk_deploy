@@ -16,7 +16,9 @@ from app.services.backup import auto_backup_task  # 🌟 导入自动备份定�
 from app.services.housekeeping import cleanup_old_backups
 import asyncio # 如果没导入的话
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from datetime import date
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select

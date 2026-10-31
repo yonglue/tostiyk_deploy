@@ -10,7 +10,7 @@ if getattr(sys, 'frozen', False):
     TK_RESOURCE_DIR = Path(sys._MEIPASS)
 else:
     # 开发环境：全部在项目根目录
-    TK_BASE_DIR = Path(__file__).resolve().parent.parent
+    TK_BASE_DIR = Path(os.getenv('TK_DESKTOP_DATA_DIR', Path(__file__).resolve().parent.parent))
     TK_RESOURCE_DIR = TK_BASE_DIR
 
 BASE_DIR: Path = TK_BASE_DIR
