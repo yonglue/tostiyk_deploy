@@ -19,10 +19,13 @@ frontend/test-results/
 *.db
 *.sqlite3
 *.log
+logs/
+pytest_report.log
 
 # 临时文件
 print_temp.bin
 tree.txt
+tree_after.txt
 
 # 敏感文件（绝不入仓库）
 .env
@@ -40,27 +43,3 @@ uploads/
 .DS_Store
 **/.DS_Store
 .vscode/
-
-# 敏感文件
-.env
-.env.*
-!.env.example
-.jwt_secret
-*.secret
-
-# 运行时数据
-backups/
-uploads/
-.archive/
-
-# macOS / IDE
-.DS_Store
-**/.DS_Store
-.vscode/
-
-# 运行/临时产物
-*.log
-logs/
-__pycache__/
-.pytest_cache/
-pytest_report.log
